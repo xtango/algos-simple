@@ -1,0 +1,20 @@
+/**
+ * Find the first non-repeating character in the input (a string
+ */
+firstNonRepeat = (input) => { 
+	if (input === undefined || input === null) return '';
+	
+	var nonReps = input[0];
+	for (i = 1; i < input.length; i++) {		
+		
+		 nonReps = nonReps.includes(input[i])
+			? nonReps.replace(input[i], '') // remove
+			: nonReps + input[i]; 			// concat
+	}
+	return nonReps.length > 0 ? nonReps[0] : '';	
+}
+
+// Unit Tests
+if (firstNonRepeat('apple') ==='a') { console.log('Passed') } else { console.log('failed'); }
+if (firstNonRepeat('xyzxyzaan') === 'n') { console.log('Passed') } else { console.log('failed'); }
+if (firstNonRepeat('xyzxyzaa') === '') { console.log('Passed') } else { console.log('failed'); }

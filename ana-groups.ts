@@ -8,16 +8,17 @@
  * group(["iceman", "dog", "god", "iceman", "cinema"])
  * -> { aceimn: [iceman, iceman, cinema], dgo: [dog, god] }
  */
-const group = (words: string[]) => {
+const group = (words) => {
     const g = {}; // Maps key (the sorted-word) to word-array. E.g. act -> [iceman, tac]
 
     words.forEach((w) => {
         const sorted = sortWord(w);
-        if (g[sorted]) { // Key exists
-            g[sorted].push(w);
+        if (!g[sorted]) { // Key does not exist
+            g[sorted] = [];
         }
-        else {
-            g[sorted] = [w]; // Value gets new array
+        
+        if (g[sorted].indexOf(w) ===-1) {
+          g[sorted].push(w);
         }
     });
     return g;
@@ -26,7 +27,7 @@ const group = (words: string[]) => {
 /**
  * 'cat' -> 'act'
  */
-const sortWord = (w: string) => w.split('').sort().join('');
+const sortWord = (w) => w.split('').sort().join('');
 
 const pluckVals = (g) => Object.values(g);
 
@@ -35,4 +36,4 @@ const pluckVals = (g) => Object.values(g);
  */
 const W = ["iceman", "dog", "god", "iceman", "cinema"];
 const groupsStr = JSON.stringify(pluckVals(group(W)));
-alert(groupsStr === '[["iceman","iceman","cinema"],["dog","god"]]');
+console.log(groupsStr === '[["iceman","cinema"],["dog","god"]]' ? 'Passed' : 'Failed');

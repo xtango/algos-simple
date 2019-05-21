@@ -22,11 +22,7 @@ function cycleLen(arr) {
         if (visitSequence[idx]) cycleFound = true;
     }
 
-    if (cycleFound) {
-        return seq - visitSequence[idx]
-    } else {
-        return -1
-    }
+    return cycleFound ? seq - visitSequence[idx] : -1;
 }
 
 // Tests

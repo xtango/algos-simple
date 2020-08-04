@@ -133,7 +133,35 @@ const test3 = () => {
         minPath,
         minPath.length === 11 ? 'Passed' : 'Failed');
 }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+
+const test4 = () => {
+    const m =
+        [[1, 0, 1, 1],
+         [1, 0, 1, 1],
+         [1, 1, 1, 1]];
+    const minPath = bfs(m, 3, 4, { r: 0, c: 0 }, { r: 0 , c: 2 });
+    console.log('Test4: maze, minPath',
+        m,
+        minPath,
+        minPath.length === 7 ? 'Passed' : 'Failed');
+}
+
+
+const test5 = () => {
+    const m =
+        [[1, 1, 1, 1],
+         [1, 0, 1, 1],
+         [1, 0, 1, 1],
+         [1, 1, 1, 1]];
+    const minPath = bfs(m, 4, 4, { r: 1, c: 0 }, { r: 0 , c: 2 });
+    console.log('Test5: maze, minPath',
+        m,
+        minPath,
+        minPath.length === 4 ? 'Passed' : 'Failed');
+}
+
 test1();
 test2();
 test3();
+test4();
+test5();

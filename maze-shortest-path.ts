@@ -1,40 +1,60 @@
 /**
- * Shortest path between Source and Destination
- * using a breadth-first-search. The path can
- * be traversed if a cell's value is 1.
+ * Shortest path between Start and Destination using a breadth-first-search.
+ * The path can be traversed if a cell's value is 1.
+ * Uses memoization for improved performance.
  */
-
 interface Coordinate { r: number; c: number };
-type QNode = Coordinate & { dist: number };
+type QNode = Coordinate & { path: Coordinate[] };
 
-const COL = 3;
-const ROW = 3;
+/**
+ * Returns a ROWS x COLS matrix filled with false
+ */
+const falseFill = (rows: number, cols: number) => new Array(rows).fill().map(x => new Array(cols).fill(false));
 
-// Returns a ROW x COL matrix filled with false
-const zeroFill = () => new Array(ROW).fill().map(x => new Array(COL).fill(false));
-
-// To compute the neighbors of a cell
-const ADJACENT_INDEX = {
-    // top, left, right, bottom
-    ROW: [-1, 0, 0, 1],
-    COL: [0, -1, 1, 0]
+/**
+ * To compute the neighbors of a cell: top, right, bottom, left
+ */
+const NEIGHBOR_OFFSETS = {
+    ROW: [-1, 0, 1, 0],
+    COL: [0,  1, 0, -1]
 };
 
-const withinBounds = (pos: Coordinate) =>
+/**
+ * Returns true when position is inside the maze.
+ */
+const withinBounds = (maxRows: number, maxCols: number, pos: Coordinate) =>
     pos.r >= 0 &&
-    pos.r < ROW &&
+    pos.r < maxRows &&
     pos.c >= 0
-    && pos.c < COL;
+    && pos.c < maxCols;
 
-const bfs = (maze: number[][], start: Coordinate, dest: Coordinate): number {
+/**
+ * Returns the shortest path through the maze from the start to destination.
+ * Traverses breath first.
+ */
+const bfs = (
+    maze: number[][],
+    rows: number,
+    cols: number,
+    start: Coordinate,
+    dest: Coordinate): Coordinate[] => {
+
+    // Returns true if not blocked
     const hasWay = (pos: Coordinate) => maze[pos.r][pos.c] === 1;
-    const visited = zeroFill();
+
+    // For memoization
+    const visited = falseFill(rows, cols);
 
     // Mark start cell as visited
      visited[start.r][start.c] = true; 
 
-    // Enqueue source
-    const q: QNode[] = [{ r: start.r, c: start.c, dist: 0 }]; 
+    // Enqueue start cell
+    const q: QNode[] = [
+        {
+            r: start.r,
+            c: start.c,
+            path: [{ r: start.r, c: start.c }]
+        }]; 
 
     // BFS
     while (q.length) {
@@ -42,44 +62,78 @@ const bfs = (maze: number[][], start: Coordinate, dest: Coordinate): number {
 
         // Reached destination?
         if (curr.r === dest.r && curr.c == dest.c) {
-            return curr.dist;
+            return curr.path;
         }
+
+        //console.log('Curr: ', curr);
 
         // Enqueue 4 adjacent cells
         for (let i = 0; i < 4; i++) {
             const adj = {
-                r: curr.r + ADJACENT_INDEX.ROW[i],
-                c: curr.c + ADJACENT_INDEX.COL[i]
+                r: curr.r + NEIGHBOR_OFFSETS.ROW[i],
+                c: curr.c + NEIGHBOR_OFFSETS.COL[i]
             };
+            // console.log('i, adj: ', i, adj);
 
-            // Enqueue and mark visited when within bounds, has way, not visited yet
-            if (withinBounds(adj) && hasWay(adj) && !visited[adj.r][adj.c]) {
-                q.push({ r: adj.r, c: adj.c, dist: curr.dist + 1 });
+            // Enqueue and mark visited when
+            // within bounds, has-way, & not visited yet
+            if (withinBounds(rows, cols, adj) && hasWay(adj) && !visited[adj.r][adj.c]) {
+                q.push(
+                    {
+                        r: adj.r,
+                        c: adj.c,
+                        path: [...curr.path, { r: adj.r, c: adj.c }]
+                    }
+                );
                 visited[adj.r][adj.c] = true;
-                console.log('>>> enqueueing: q', [...q]);
             }
-
-            console.log('curr: ', curr);
-            console.log('Adj i: ', i, adj);
-            console.log('withinBounds, hasWay, hasVisited qAfter',
-                withinBounds(adj),
-                withinBounds(adj) ? hasWay(adj) : 'N/A',
-                withinBounds(adj) ? visited[adj.r][adj.c] : 'N/A',
-                [...q]
-            );
         }
     }
 
-    return -1; // No path found
+    return undefined; // No path found
 }
 
 /**
- * Test
+ * Tests
  */
-const m1 =
-    [[1, 0, 1],
-     [1, 0, 1],
-     [1, 1, 1]];
+const test1 = () => {
+    const m1 =
+        [[1, 0, 1],
+        [1, 0, 1],
+        [1, 1, 1]];
+    const minPath = bfs(m1, 3, 3, { r: 0, c: 0 }, { r: 0, c: 2 });
+    console.log('Test 1: maze, minPath: ',
+        m1,
+        minPath,
+        minPath.length === 7 ? 'Passed' : 'Failed');
+}
 
-console.log(zeroFill());            
-console.log(bfs(m1, { r: 0, c: 0 }, { r: 0, c: 2 }) === 6 ? 'Passed': 'Failed');
+const test2 = () => {
+    const m =
+        [[0, 0, 0, 0],
+        [1, 0, 0, 1],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1]];
+    const minPath = bfs(m, 4, 4, { r: 1, c: 0 }, { r: 1, c: 3 });
+    console.log('Test 2: maze, minPath',
+        m,
+        minPath,
+        minPath.length === 6 ? 'Passed' : 'Failed');
+}
+
+const test3 = () => {
+    const m =
+        [[1, 1, 0, 0],
+         [1, 0, 1, 1],
+         [1, 1, 0, 1],
+         [1, 1, 1, 1]];
+    const minPath = bfs(m, 4, 4, { r: 0, c: 1 }, { r: 1, c: 2 });
+    console.log('Test3: maze, minPath',
+        m,
+        minPath,
+        minPath.length === 11 ? 'Passed' : 'Failed');
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+test1();
+test2();
+test3();

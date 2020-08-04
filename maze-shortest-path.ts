@@ -10,7 +10,8 @@ type QNode = Coordinate & { dist: number };
 const COL = 3;
 const ROW = 3;
 
-const zeroFill = () => new Array(ROW).fill(new Array(COL).fill(0));
+// Returns a ROW x COL matrix filled with false
+const zeroFill = () => new Array(ROW).fill().map(x => new Array(COL).fill(false));
 
 // To compute the neighbors of a cell
 const ADJACENT_INDEX = {
@@ -19,20 +20,21 @@ const ADJACENT_INDEX = {
     COL: [0, -1, 1, 0]
 };
 
-const withinBounds = (pos: Coordinate) {
-    return pos.r >= 0 && pos.r < ROW && pos.c >= 0 && pos.c < COL;
-}
+const withinBounds = (pos: Coordinate) =>
+    pos.r >= 0 &&
+    pos.r < ROW &&
+    pos.c >= 0
+    && pos.c < COL;
 
-
-const bfs = (maze: number[][], start: Coordinate, dest: Coordinate) {
-    
-
+const bfs = (maze: number[][], start: Coordinate, dest: Coordinate): number {
+    const hasWay = (pos: Coordinate) => maze[pos.r][pos.c] === 1;
     const visited = zeroFill();
 
     // Mark start cell as visited
-    visited[start.y][start.x] = true; 
+     visited[start.r][start.c] = true; 
 
-    const q: QNode[] = [{ r: start.r, c: start.c, dist: 0 }]; // Enqueue source
+    // Enqueue source
+    const q: QNode[] = [{ r: start.r, c: start.c, dist: 0 }]; 
 
     // BFS
     while (q.length) {
@@ -51,17 +53,24 @@ const bfs = (maze: number[][], start: Coordinate, dest: Coordinate) {
             };
 
             // Enqueue and mark visited when within bounds, has way, not visited yet
-            if (withinBounds(adj) &&
-                // Not blocked 
-                maze[adj.r][adj.c] === 1 &&
-                // Not yet visited
-                !visited[adj.r][adj.c] 
-            ) {
+            if (withinBounds(adj) && hasWay(adj) && !visited[adj.r][adj.c]) {
                 q.push({ r: adj.r, c: adj.c, dist: curr.dist + 1 });
                 visited[adj.r][adj.c] = true;
+                console.log('>>> enqueueing: q', [...q]);
             }
+
+            console.log('curr: ', curr);
+            console.log('Adj i: ', i, adj);
+            console.log('withinBounds, hasWay, hasVisited qAfter',
+                withinBounds(adj),
+                withinBounds(adj) ? hasWay(adj) : 'N/A',
+                withinBounds(adj) ? visited[adj.r][adj.c] : 'N/A',
+                [...q]
+            );
         }
     }
+
+    return -1; // No path found
 }
 
 /**
@@ -69,8 +78,8 @@ const bfs = (maze: number[][], start: Coordinate, dest: Coordinate) {
  */
 const m1 =
     [[1, 0, 1],
-    [1, 0, 1],
-    [1, 1, 1]];
-    
-            
-bfs(m1, { y: 0, x: 0 }, { y: 0, x: 2 });
+     [1, 0, 1],
+     [1, 1, 1]];
+
+console.log(zeroFill());            
+console.log(bfs(m1, { r: 0, c: 0 }, { r: 0, c: 2 }) === 6 ? 'Passed': 'Failed');

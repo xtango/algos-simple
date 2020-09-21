@@ -43,7 +43,7 @@ const AIRPORTS: Graph = [
     /* 2 */ { name: 'HKG', adj: [] },
     /* 3 */ { name: 'TOK', adj: [2] },
     /* 4 */ { name: 'LAX', adj: [5] },
-    /* 4 */ { name: 'ICN', adj: [1] }
+    /* 5 */ { name: 'ICN', adj: [1] }
 ];
 
 console.log('bfs Passed?',

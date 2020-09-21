@@ -6,17 +6,18 @@ interface Edge {
     adj: number[]; // adjacency list
 }
 type Graph = Edge[];
+type Path = Edge[];
 
 /**
  * Returns the breadth-first traversal path
  */
-const bfs = (g: Graph, v: number): number[] => {
+const bfs = (g: Graph, v: number): Path => {
     const visited: boolean[] = [];
-    const path: number[] = [];  // visitation order
+    const path: Path = [];  // visitation order
 
     const visit = (i: number) => {
         visited[i] = true;
-        path.push(i);
+        path.push(g[i]);
 
         // Enqueue adjacent edges
         (g[i].adj || []).forEach(i => q.push(i));
@@ -47,6 +48,6 @@ const AIRPORTS: Graph = [
 
 console.log('bfs Passed?',
     bfs(AIRPORTS, 5)
-        .map(a => AIRPORTS[a].name)
+        .map(x => x.name)
         .join(' ') === 'ICN JFK LAX TOK HKG'
 );

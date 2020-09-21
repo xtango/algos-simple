@@ -17,6 +17,10 @@ const bfs = (g: Graph, v: number): number[] => {
     const visit = (i: number) => {
         visited[i] = true;
         path.push(i);
+
+        // Enqueue adjacent edges
+        (g[i].adj || []).forEach(i => q.push(i));
+        console.log('q=', q);
     }
 
     const q: number[] = [v];
@@ -24,8 +28,6 @@ const bfs = (g: Graph, v: number): number[] => {
         const head: number = q.shift() as number; // dequeue
         if (!visited[head]) {
             visit(head);
-            (g[head].adj || []).forEach(i => q.push(i)); // enqueue
-            console.log('q=', q);
         }
     }
     return path;
@@ -42,4 +44,9 @@ const AIRPORTS: Graph = [
     /* 4 */ { name: 'LAX', adj: [5] },
     /* 4 */ { name: 'ICN', adj: [1] }
 ];
-console.log('bfs path: ', bfs(AIRPORTS, 5).map(a => AIRPORTS[a].name));
+
+console.log('bfs Passed?',
+    bfs(AIRPORTS, 5)
+        .map(a => AIRPORTS[a].name)
+        .join(' ') === 'ICN JFK LAX TOK HKG'
+);

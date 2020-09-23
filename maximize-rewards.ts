@@ -1,70 +1,127 @@
 /**
- * Find path to maximize the total prizes you can collect starting from u in a grid.
- * You can move 1 step per move, either right or up.
+ * Find path to maximize the total prizes you can collect starting from (x, y) in a grid.
+ * You can move 1 step either RIGHT or UP per move.
  */
 
+interface Cell { x: number; y: number; };
+
+type Board = number[][];
+
+const enum PathFrom {
+    None = 'None',
+    Left = 'Left',
+    Down = 'Down'
+}
+
+interface CumulCell {
+    cumul: number;
+    path: PathFrom; // the predecessor cell
+}
+
+type CumulBoard = CumulCell[][];
+
 /**
- * Intuition: The cumulative reward at a cell is its reward R + the max of the down and left cells cumulatives.
+ * Returns the Right and Top cells of curr.
+ */
+const getRightAndTop = (boardX: number, cell: Readonly<Cell>): Cell[] => {
+    const adjacents = []; // right and up
+    // Right
+    if (cell.x < boardX - 1) {
+        adjacents.push({ x: cell.x + 1, y: cell.y });
+    }
+    // Up
+    if (cell.y > 0) {
+        adjacents.push({ x: cell.x, y: cell.y - 1 });
+    }
+    return adjacents;
+}
+
+const initialiCumulBoard = (xSize: number, ySize: number): CumulBoard => {
+    const board: CumulBoard = [];
+    for (let i = 0; i < ySize; i++) {
+        const cells: CumulCell[] = [];
+        for (let j = 0; j < xSize; j++) {
+            cells.push({ cumul: 0, path: PathFrom.None });
+        }
+        board.push(cells);
+    }
+    return board;
+}
+
+const prettyCell = (c: Cell) => `(${c.x}, ${c.y})`;
+
+
+/**
+ * Intuition: CR, the cumulative reward at a cell, is its reward  R + max of the Down and Left cells' cumulatives:
+ * 
  *      CR(x, y) = R(x,y) + Max(CR(down), CR(left))
  * 
- * Example: Say nodes a, b, c, d have rewards 1, 2, 3, 5
+ * Example: Say nodes A, B, C, D have rewards 1, 2, 3, and 5 respectively:
  * 
- * Rewards:
- * C:3   D:5   
- * A:1   B:2
- * 
- * CR(A) = 1 + max(Reward(down), Reward(left)) = 1 + max(0, 0) = 0 // down and up are outside the BOARD, hence both 0
- * CR(B) = 2 + max(1, 0) = 3
- * CR(C) = 3 + max(1, 0) = 4
- * 
- * We can now calculate the CR(D) = 5 + max(4, 3) = 9
+ *          C:3   D:5   
+ *          A:1   B:2
  *
- * {id: C, reward: 3, cumul: 4}------- {id: D, reward: 5, cuml: 9}
+ *          CR(A) = 1 + max(Reward(down), Reward(left))
+ *                = 1 + max(0, 0) = 1 // down and up are outside the BOARD, hence both 0
+ *          CR(B) = 2 + max(1, 0) = 3
+ *          CR(C) = 3 + max(1, 0) = 4
+ * 
+ *          We can now calculate the CR(D) = 5 + max(4, 3) = 9
+ *          to produce this state:
+ * 
+ *          {id: C, reward: 3, cumul: 4}------- {id: D, reward: 5, cuml: 9}
  *                                                |
  *                                                |
  *                                     {id: B, reward: 2, cumul:3} 
  */
-interface Cell { x: number; y: number;};
+const bfs = (
+    board: Readonly<Board>,
+    boardX: Readonly<number>, // size x
+    boardY: Readonly<number>, // size y
+    start: Readonly<Cell> // starting cell
+): CumulBoard => {
+    const scoreBoard: CumulBoard = initialiCumulBoard(boardX, boardY);
+    const q = [start];
 
-const bfs = (board: number[][], cell: Cell ) => {
-    const left = cell.x >= 0 ? board[cell.y][cell.x - 1] : 0;
-    const down = cell.y >= 0 ? board[cell.y - 1][cell.x] : 0;
+    /**
+     * Visits a cell and accumulates reward.
+     */
+    const visit = (c: Cell) => {
+        const leftCumul = c.x > 0 ? (scoreBoard[c.y][c.x - 1]).cumul : 0;
+        const downCumul = c.y < boardY - 1 ? (scoreBoard[c.y + 1][c.x]).cumul : 0;
+        const cellReward = board[c.y][c.x];
+        scoreBoard[c.y][c.x].cumul = cellReward + (leftCumul > downCumul ? leftCumul : downCumul);
+        scoreBoard[c.y][c.x].path = leftCumul > downCumul ? PathFrom.Left : PathFrom.Down;
 
-    const q = [cell];
-    let i = 0;
+        console.log(`visit: ${prettyCell(c)}, reward: ${cellReward}, MAX(leftCumul: ${leftCumul}, downCumul: ${downCumul}) -> cumul: ${scoreBoard[c.y][c.x].cumul}`);
+    };
 
-    const getAdjacents = (curr: Cell) => {
-        const adjacents = []; // right and top
-        if (curr.x < board[0].length) {
-            adjacents.push({x: curr.x + 1, y: curr.y});
-        } 
-        if (curr.y < board.length) {
-            adjacents.push({x: curr.x, y: curr.y -1 });
-        }
-        console.log(`adj of (${curr.x}, ${curr.y}):  ${JSON.stringify(adjacents)}`);
-        return adjacents;
-    }
-    
-    while(q.length > 0 && i < 2) {
-        const curr: Cell = q.shift() as Cell; // deq
-        getAdjacents(curr).forEach( a => {
-            console.log(`visit: (${curr.x}, ${curr.y}) r: ${board[curr.y][curr.x]}`);
-            // todo: set cumulative
-
-            // enque right and left
-            getAdjacents(a).forEach(rOrL => q.push(rOrL);
+    while (q.length > 0) {
+        const cell: Cell = q.shift() as Cell; // dequeu
+        const adjList = getRightAndTop(boardX, cell);
+        console.log(`adj-list ${prettyCell(cell)} ->  ${adjList.map(x => prettyCell(x))}`);
+        visit(cell);
+        adjList.forEach(a => {
+            visit(a);
+            // enque right and top
+            getRightAndTop(boardX, a).forEach(rOrL => q.push(rOrL));
         });
-
-       console.log(`[${i}] q: `, q);
-        i++;
     }
 
-
+    return scoreBoard;
 }
-const BOARD = [
-    [9, 0, 6, 1],
-    [3, 5, 0, 5],
-    [0, 2, 0, 5],
-];
 
-bfs(BOARD, {x: 0, y: 2})
+
+/**
+ * Tests
+ */
+// console.log(zeroFillBoard(3, 4));
+const BOARD: Board = [
+    [3, 5],
+    [7, 2]
+];
+const START = { x: 0, y: BOARD.length - 1 };
+console.log(`MAXIMIZE REWARD\n board: ${JSON.stringify(BOARD)}, start: ${prettyCell(START)}`);
+const scores = bfs(BOARD, BOARD[0].length, BOARD.length, START);
+console.log('SCORES', scores);
+// todo pretty print the path

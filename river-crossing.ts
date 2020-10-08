@@ -2,6 +2,7 @@
  * River Crossing Puzzle
  * 
  * From https://en.wikipedia.org/wiki/Wolf,_goat_and_cabbage_problem
+ * 
  * "Once upon a time a farmer went to a market and purchased a wolf, a goat, and a cabbage.
  * On his way home, the farmer came to the bank of a river and rented a boat.
  * But crossing the river by boat, the farmer could carry only himself and a single one
@@ -34,13 +35,15 @@ const UNSAFE_STATES: { [key: string]: boolean } = {
 interface State {
   location: Cargo[][]; // Who is where, by side
   boat: Bank; // Which side is the boat (& the farmer)
+  path?: string; // The path as a string to this state
 }
 
 type Visited = { [key: string]: boolean };
 
 const START_STATE: State = {
   location: [/* left */[Cargo.Farmer, Cargo.Wolf, Cargo.Goat, Cargo.Cabbage], /* right */[]],
-  boat: Bank.Left
+  boat: Bank.Left,
+  path: ''
 }
 
 const pretty = (state: State) => makeStateKey(state);
@@ -83,35 +86,58 @@ const nextStates = (state: State, visited: Visited): State[] => {
     .filter(s => !isUnsafe(s) && !hasVisited(s, visited))
 }
 
+const stateIsTarget = (state: State) => state.location[Bank.Left].length === 0
+
+/**
+ * In-place update of visited
+ */
+const visit = (state: State, visited: Visited) => {
+  visited[makeStateKey(state)] = true;
+  console.log(`[CROSS]....New State: ${pretty(state)}`);
+}
 /**
  * DFS search of paths to move everyone to the right bank of the river.
  */
 const search = (initState: State, maxDepth: number) => {
+
   // Helper function for recursive calls
-  const searchHelper = (state: State, depth: number, visited: Visited = {}) => {
-    if (depth > maxDepth) return;
+  const searchHelper = (
+    state: State,
+    depth: number,
+    visited: Visited = {},
+    path: string): boolean => {
+
+  // Defensive code
+    if (depth > maxDepth) return false;
+    if (stateIsTarget(state)) {
+      console.log(`[INITIAL STATE IS TARGET]`);
+      return true;
+    }
+
+    visit(state, visited);
 
     const branches = nextStates(state, visited);
     console.log(`[SEARCH].......Depth: ${depth}`);
-    console.log(`[QUEUE]..Next States: ${branches.map(x => pretty(x)).join('; ')}`);
+    console.log(`[QUEUE]..Next States: ${branches.map(x => pretty(x)).join(', ')}`);
 
-    // Note: cannot use forEach because we need to break out of the loop when found
-    for (let branch of branches) {
-      visited[makeStateKey(branch)] = true;
-      console.log(`[CROSS]....New State: ${pretty(branch)}`);
-
+    let found = false;
+    let i = 0;
+    while(i < branches.length && !found) {
       // Moved everything to the right?
-      if (branch.location[Bank.Left].length === 0) {
-        console.log('[DONE]................ PATH FOUND! <<<<<<<<<')
-        break;
+      if (stateIsTarget(branches[i])) {
+        console.log(`[FOUND] ${path} ! Final: ${pretty(branches[i])}`);
+        found = true;
+      } else {
+        // Recurse
+        found = searchHelper(branches[i], depth + 1, visited, `${path}->${pretty(branches[i])}`);
       }
-
-      // Recurse
-      searchHelper(branch, depth + 1, visited);
+      i++;
     }
+
+    return found;
   }
 
-  searchHelper(initState, 0, { [makeStateKey(initState)]: true });
+  searchHelper(initState, 0, { [makeStateKey(initState)]: true }, pretty(initState));
 }
 
 /**
@@ -128,5 +154,5 @@ console.log('[TEST] crossing',
     === 'CFW_G'
     ? 'Passed'
     : 'Failed');
-
-search(START_STATE, 10); // Set MAX_DEPTH to avoid infinite recursion    
+    
+search(START_STATE, 10); // Set MAX_DEPTH to avoid infinite recursion  

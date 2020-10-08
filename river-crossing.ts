@@ -1,32 +1,49 @@
 /**
- * River cross   ************* WORK IN PROGRESS *******************
+ * River Crossing Puzzle
+ * 
+ * From https://en.wikipedia.org/wiki/Wolf,_goat_and_cabbage_problem
+ * "Once upon a time a farmer went to a market and purchased a wolf, a goat, and a cabbage.
+ * On his way home, the farmer came to the bank of a river and rented a boat.
+ * But crossing the river by boat, the farmer could carry only himself and a single one
+ * of his purchases: the wolf, the goat, or the cabbage.
+ * If left unattended together, the wolf would eat the goat, or the goat would eat the cabbage.
+ * The farmer's challenge was to carry himself and his purchases to the far bank of the river,
+ * leaving each purchase intact. How did he do it?"
  */
-enum Cargo { Farmer = 'FA', Fox = 'FX', Goose = 'GO', Grain = 'GR' }
+enum Cargo { Farmer = 'F', Wolf = 'W', Goat = 'G', Cabbage = 'C' }
 
 enum Bank { Left, Right }
 
-const makeStateKey = (state: State) => `${state.location[Bank.Left].sort()}_${state.location[Bank.Right].sort()}`;
+const makeStateKey = (state: State) => `${state.location[Bank.Left].sort().join('')}_${state.location[Bank.Right].sort().join('')}`;
 
-const ILLEGAL = {
-  [makeStateKey({ location: [[Cargo.Fox, Cargo.Goose], [Cargo.Farmer, Cargo.Grain]], boat: Bank.Right })]: true,
-  [makeStateKey({ location: [[Cargo.Fox, Cargo.Goose, Cargo.Grain], [Cargo.Farmer]], boat: Bank.Right })]: true,
-  [makeStateKey({ location: [[Cargo.Goose, Cargo.Grain], [Cargo.Farmer, Cargo.Fox]], boat: Bank.Right })]: true,
+/**
+ * Disallowed states object for constant time lookup.
+ */
+const UNSAFE_STATES: { [key: string]: boolean } = {
+  [makeStateKey({ location: [[Cargo.Wolf, Cargo.Goat], [Cargo.Farmer, Cargo.Cabbage]], boat: Bank.Right })]: true,
+  [makeStateKey({ location: [[Cargo.Farmer, Cargo.Cabbage], [Cargo.Wolf, Cargo.Goat]], boat: Bank.Left })]: true,
+
+  [makeStateKey({ location: [[Cargo.Wolf, Cargo.Goat, Cargo.Cabbage], [Cargo.Farmer]], boat: Bank.Right })]: true,
+  [makeStateKey({ location: [[Cargo.Farmer], [Cargo.Wolf, Cargo.Goat, Cargo.Cabbage]], boat: Bank.Right })]: true,
+
+  [makeStateKey({ location: [[Cargo.Goat, Cargo.Cabbage], [Cargo.Farmer, Cargo.Wolf]], boat: Bank.Right })]: true,
+  [makeStateKey({ location: [[Cargo.Farmer, Cargo.Wolf], [Cargo.Goat, Cargo.Cabbage]], boat: Bank.Right })]: true,
 };
 
 
 interface State {
-  location: Cargo[][]; // who is where, by side
+  location: Cargo[][]; // Who is where, by side
   boat: Bank; // Which side is the boat (& the farmer)
 }
 
 type Visited = { [key: string]: boolean };
 
 const START_STATE: State = {
-  location: [/* left */[Cargo.Farmer, Cargo.Fox, Cargo.Goose, Cargo.Grain], /* right */[]],
+  location: [/* left */[Cargo.Farmer, Cargo.Wolf, Cargo.Goat, Cargo.Cabbage], /* right */[]],
   boat: Bank.Left
 }
 
-const pretty = (state: State) => `${state.location[Bank.Left]}_${state.location[Bank.Right]}`
+const pretty = (state: State) => makeStateKey(state);
 
 const otherSide = (side: Bank) => side === Bank.Left ? Bank.Right : Bank.Left;
 
@@ -36,9 +53,7 @@ const cloneState = (state: State) => {
   return newState;
 }
 
-const isIllegal = (state: State): boolean => ILLEGAL[makeStateKey(state)];
-
-const leftBehind = (state: State, x: Cargo) => state.location[state.boat].filter(y => y !== x && y !== Cargo.Farmer);
+const isUnsafe = (state: State): boolean => UNSAFE_STATES[makeStateKey(state)];
 
 /**
  * Moves and returns the new state
@@ -55,25 +70,17 @@ const crossRiver = (state: State, cargoList: Cargo[]): State => {
 const hasVisited = (state: State, visited: Visited) => visited[makeStateKey(state)] !== undefined;
 
 /**
- * Reducer to get passenger combos, e.g. [[Farmer], [Farmer, Goose]]
- * that would leave those not in the boat (left behind) in a legal state.
+ * Reducer to get the next valid states that have not been already visited.
+ * Valid states are those that would leave those not in the boat (left behind) in a safe state.
  * 
  * @param state The current state
  * @param visited Hash map of states already visited states
  */
 const nextStates = (state: State, visited: Visited): State[] => {
-  // const reducer = (accum: State[], x: State) => {
-  //   const newAccum = !isIllegal(state) // && !visited[makeKey(lb)]
-  //     ? [...accum, x === Cargo.Farmer ? [x] : [Cargo.Farmer, x]]
-  //     : accum;
-  //   // console.log(`combo: [${x}], behind: ${leftBehind}, legal?: ${isLegal(leftBehind)} -> newAcc: ${newAccum}`);
-  //   return newAccum;
-  // };
-
   return state
     .location[state.boat] // -> the cargo on a particular bank
     .map(x => crossRiver(state, x === Cargo.Farmer ? [x] : [Cargo.Farmer, x])) // All states after crossing with farmer
-    .filter(s => !isIllegal(s) && !hasVisited(s, visited))
+    .filter(s => !isUnsafe(s) && !hasVisited(s, visited))
 }
 
 /**
@@ -84,22 +91,24 @@ const search = (initState: State, maxDepth: number) => {
   const searchHelper = (state: State, depth: number, visited: Visited = {}) => {
     if (depth > maxDepth) return;
 
-    // Moved everthing to the right?
-    if (state.location[Bank.Left].length === 0) return;
-
     const branches = nextStates(state, visited);
-    console.log(`[SEARCH] Depth: ${depth}, Q:`, branches.map(x=> pretty(x)));
+    console.log(`[SEARCH].......Depth: ${depth}`);
+    console.log(`[QUEUE]..Next States: ${branches.map(x => pretty(x)).join('; ')}`);
 
-    branches.forEach(branch => {
+    // Note: cannot use forEach because we need to break out of the loop when found
+    for (let branch of branches) {
       visited[makeStateKey(branch)] = true;
+      console.log(`[CROSS]....New State: ${pretty(branch)}`);
 
-      console.log(`> Cross(${branch})`);
-      console.log(`....NewState: ${pretty(branch)}`);
-      console.log(`.... Visited: `, visited);
-      
+      // Moved everything to the right?
+      if (branch.location[Bank.Left].length === 0) {
+        console.log('[DONE]................ PATH FOUND! <<<<<<<<<')
+        break;
+      }
+
       // Recurse
       searchHelper(branch, depth + 1, visited);
-    });
+    }
   }
 
   searchHelper(initState, 0, { [makeStateKey(initState)]: true });
@@ -108,18 +117,16 @@ const search = (initState: State, maxDepth: number) => {
 /**
  * TESTS
  */
-console.log('[TEST] Illegal lookup', ILLEGAL['FX,GO,GR_FA'] ? 'Passed' : 'Failed');
+console.log('[TEST] Illegal lookup', UNSAFE_STATES['CGW_F'] ? 'Passed' : 'Failed');
 
 const afterCrossings = crossRiver(
-  crossRiver(START_STATE, [Cargo.Farmer, Cargo.Goose]), 
-    [Cargo.Farmer]);
+  crossRiver(START_STATE, [Cargo.Farmer, Cargo.Goat]),
+  [Cargo.Farmer]);
 
 console.log('[TEST] crossing',
   pretty(afterCrossings)
-    === 'FA,FX,GR_GO'
+    === 'CFW_G'
     ? 'Passed'
     : 'Failed');
 
-// // console.log('LegalCombos', legalPassengerCombos(START_STATE));
-
-// search(START_STATE, 2); // Set MAX_DEPTH to avoid infinite recursion
+search(START_STATE, 10); // Set MAX_DEPTH to avoid infinite recursion    

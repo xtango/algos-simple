@@ -86,6 +86,9 @@ const nextStates = (state: State, visited: Visited): State[] => {
     .filter(s => !isUnsafe(s) && !hasVisited(s, visited))
 }
 
+/**
+ * Moved everything to the right bank?
+ */
 const stateIsTarget = (state: State) => state.location[Bank.Left].length === 0
 
 /**
@@ -93,10 +96,11 @@ const stateIsTarget = (state: State) => state.location[Bank.Left].length === 0
  */
 const visit = (state: State, visited: Visited) => {
   visited[makeStateKey(state)] = true;
-  console.log(`[CROSS]....New State: ${pretty(state)}`);
+  console.log(`[CROSS RIVER]...State: ${pretty(state)}`);
 }
+
 /**
- * DFS search of paths to move everyone to the right bank of the river.
+ * DFS search of paths to move every object to the right bank of the river.
  */
 const search = (initState: State, maxDepth: number) => {
 
@@ -107,7 +111,7 @@ const search = (initState: State, maxDepth: number) => {
     visited: Visited = {},
     path: string): boolean => {
 
-  // Defensive code
+    // Defensive code
     if (depth > maxDepth) return false;
     if (stateIsTarget(state)) {
       console.log(`[INITIAL STATE IS TARGET]`);
@@ -116,22 +120,20 @@ const search = (initState: State, maxDepth: number) => {
 
     visit(state, visited);
 
-    const branches = nextStates(state, visited);
-    console.log(`[SEARCH].......Depth: ${depth}`);
-    console.log(`[QUEUE]..Next States: ${branches.map(x => pretty(x)).join(', ')}`);
+    const q = nextStates(state, visited);
+    console.log(`[SEARCH]........Depth: ${depth}`);
+    console.log(`[ENQUEUE] Next States: ${q.map(x => pretty(x)).join(', ')}`);
 
     let found = false;
-    let i = 0;
-    while(i < branches.length && !found) {
-      // Moved everything to the right?
-      if (stateIsTarget(branches[i])) {
-        console.log(`[FOUND] ${path} ! Final: ${pretty(branches[i])}`);
+    while (q.length && !found) {
+      const head = q.shift() as State; // Dequeue
+      if (stateIsTarget(head)) {
+        console.log(`[FOUND] ${path} ! Final: ${pretty(head)}`);
         found = true;
       } else {
         // Recurse
-        found = searchHelper(branches[i], depth + 1, visited, `${path}->${pretty(branches[i])}`);
+        found = searchHelper(head, depth + 1, visited, `${path}->${pretty(head)}`);
       }
-      i++;
     }
 
     return found;
@@ -154,5 +156,5 @@ console.log('[TEST] crossing',
     === 'CFW_G'
     ? 'Passed'
     : 'Failed');
-    
-search(START_STATE, 10); // Set MAX_DEPTH to avoid infinite recursion  
+
+search(START_STATE, 10); // Set MAX_DEPTH to avoid infinite recursion 

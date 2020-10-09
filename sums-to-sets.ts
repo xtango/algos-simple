@@ -12,7 +12,7 @@ const sumsTo = (arr: number[], target: number) => {
     } else {
         const last = arr[arr.length - 1];
         if (last === target) {
-            // 2 lists. itself and the rest
+            // 2 lists: itself and the rest. (The rest can contain subset adding to target)
             const rest = sumsTo(withoutLast(arr), target);
             ret = rest ? [last, rest] : last;
         } else if (last > target) {

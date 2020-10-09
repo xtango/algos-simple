@@ -1,8 +1,9 @@
 /**
  * Recursive function to find sets in arr that sum up to the target number target.
- * 
  * @example sumsTo([2, 4, 6], 6)) 
  *  ->  [[2, 4], [6]] // since the elements of each set add up to 6.
+ *
+ * Approach: sort and work backwards recursively, inlcluding or excluding last.
  */
 const sumsTo = (arr: number[], target: number) => {
     console.log(`sumsTo: arr: [${arr}], target: ${target}`);
@@ -12,7 +13,7 @@ const sumsTo = (arr: number[], target: number) => {
     } else {
         const last = arr[arr.length - 1];
         if (last === target) {
-            // 2 lists: itself and the rest. (The rest can contain subset adding to target)
+            // 2 lists: itself and the rest. (The rest can contain subsets adding to target)
             const rest = sumsTo(withoutLast(arr), target);
             ret = rest ? [last, rest] : last;
         } else if (last > target) {

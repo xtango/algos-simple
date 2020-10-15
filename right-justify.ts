@@ -51,7 +51,7 @@ const pad = (words: string[], remaingLen: number): string[] => {
     let i = 0;
     while (lenAvailable > 0) {
         paddedWords[i] = paddedWords[i] + '_';
-        // Circular next: When end is reached end, go back to head, other go to next word
+        // Circular next: When end is reached end, go back to head. Otherwise go to next word.
         i = i === words.length - 1 ? 0 : i + 1;
         lenAvailable--;
     }

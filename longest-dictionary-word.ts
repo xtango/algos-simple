@@ -19,7 +19,7 @@ class LongestDictionaryWord {
      * E.g. invertDict(['dog', 'god'] ) returns
      *      { dgo: [ 'god', 'dog']}
      */
-    static invertDict(dict: string[]): { string: string[]} {
+    static invertDict(dict: string[]): { string: string[] } {
         // SORTED LETTERS    -> REDUCE
         // --------------       ------------------
         // god  -> dgo     
@@ -28,23 +28,38 @@ class LongestDictionaryWord {
         const lookup = dict.reduce((accum, x) => {
             const sorted = LongestDictionaryWord.sortLetters(x);
             if (accum[sorted]) {
-                accum[sorted].push(x); 
+                accum[sorted].push(x);
             } else {
                 (accum[sorted] = []).push(x);
             }
             return accum;
         },
-        {});
+            {});
         return lookup;
     }
 
     static find(dict: string[], word: string): [] {
         const invertedDict = LongestDictionaryWord.invertDict(dict);
         const wordSorted = LongestDictionaryWord.sortLetters(word);
-        
+
         // Simple Exact length match.
-        // todo: Keep dropping one char at a time if not found
+        // todo: use the combo function
         return invertedDict[wordSorted];
+    }
+
+    /**
+     *  combo("ab" => ["a", "ab", "b"] 
+     */
+    combo(s: string): string[] {
+        const helper = (accum: string[], prefix: string, rest: string) => {
+            accum.push(prefix);
+            for (let i = 0; i < rest.length; i++) {
+                helper(accum, prefix + rest[i], rest.substring(i + 1));
+            }
+            return accum;
+        }
+
+        return helper([], '', s).filter(x => x !== '');
     }
 }
 

@@ -7,12 +7,20 @@ import (
 )
 
 /**
- * Creates a reverse dictionary of dict
- */
-func makeReverseIndex(dict []string) map[string]int {
-	m := make(map[string]int)
+  * Creates a { key -> [dictionaryWord]} object, where key is the sorted letters entry.
+   * E.g. invertDict(['dog', 'god'] ) returns
+   *      { dgo: [ 'god', 'dog']}
+*/
+func makeInvertedDict(dict []string) map[string][]string {
+	m := make(map[string][]string
 	for _, word := range dict {
-		m[sortWord(word)] = 1
+		sorted := sortWord(word)
+		val, found := m[sorted]
+		if found {
+			fmt.Printf("found: %s %s", sorted, val)
+		} else {
+			m[sorted] = []string{word}
+		}
 	}
 	return m
 }
@@ -25,13 +33,13 @@ func sortWord(w string) string {
 
 func longestWord(dict []string) {
 	fmt.Printf("[longestWord] dict: %s\n", strings.Join(dict, ", "))
-	m := makeReverseIndex(dict)
+	m := makeInvertedDict(dict)
 	fmt.Print(m)
 
 }
 
 func main() {
 
-	longestWord([]string{"go", "to"})
+	longestWord([]string{"go", "to", "god", "dog"})
 
 }

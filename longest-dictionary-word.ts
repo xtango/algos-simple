@@ -1,4 +1,18 @@
 /**
+ *  combo("ab") => ["a", "ab", "b"] 
+ */
+const combo = (s: string): string[] => {
+    const helper = (accum: string[], prefix: string, rest: string) => {
+        accum.push(prefix);
+        for (let i = 0; i < rest.length; i++) {
+            helper(accum, prefix + rest[i], rest.substring(i + 1));
+        }
+        return accum;
+    }
+
+    return helper([], '', s).filter(x => x !== '');
+}
+/**
  * Finds the longest set of words that can be made from letters in your hand (think SRABBLE!)
  * from a valid set of dictionary words. The letters can be shuffled in any possible way.
  * 
@@ -46,22 +60,11 @@ class LongestDictionaryWord {
         // todo: use the combo function
         return invertedDict[wordSorted];
     }
-
-    /**
-     *  combo("ab" => ["a", "ab", "b"] 
-     */
-    combo(s: string): string[] {
-        const helper = (accum: string[], prefix: string, rest: string) => {
-            accum.push(prefix);
-            for (let i = 0; i < rest.length; i++) {
-                helper(accum, prefix + rest[i], rest.substring(i + 1));
-            }
-            return accum;
-        }
-
-        return helper([], '', s).filter(x => x !== '');
-    }
 }
 
+/**
+ * Tests
+ */
+console.log('Combinations of "abc"', combo('abc'));
 console.log(LongestDictionaryWord.invertDict(['god', 'dog', 'to']));
 console.log('Longest:', LongestDictionaryWord.find(['cat', 'mango'], 'tca'));

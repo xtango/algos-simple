@@ -6,18 +6,22 @@ import (
 	"strings"
 )
 
+func getDict() []string {
+	return []string{"go", "to", "god", "dog"}
+}
+
 /**
-  * Creates a { key -> [dictionaryWord]} object, where key is the sorted letters entry.
-   * E.g. invertDict(['dog', 'god'] ) returns
-   *      { dgo: [ 'god', 'dog']}
-*/
+ * Creates a { key -> [dictionaryWord]} object, where key is the sorted letters entry.
+ * E.g. makeInvertedDict(['dog', 'god'] ) returns
+ *      { dgo: [ 'god', 'dog']}
+ */
 func makeInvertedDict(dict []string) map[string][]string {
-	m := make(map[string][]string
+	m := make(map[string][]string)
 	for _, word := range dict {
 		sorted := sortWord(word)
 		val, found := m[sorted]
 		if found {
-			fmt.Printf("found: %s %s", sorted, val)
+			m[sorted] = append(val, word)
 		} else {
 			m[sorted] = []string{word}
 		}
@@ -31,15 +35,13 @@ func sortWord(w string) string {
 	return strings.Join(s, "")
 }
 
-func longestWord(dict []string) {
-	fmt.Printf("[longestWord] dict: %s\n", strings.Join(dict, ", "))
-	m := makeInvertedDict(dict)
-	fmt.Print(m)
-
-}
+//func longestWord(dict []string, hand string) {
+//	m := makeInvertedDict(dict)
+//}
 
 func main() {
-
-	longestWord([]string{"go", "to", "god", "dog"})
-
+	dict := getDict()
+	fmt.Printf("LONGEST DICTIONARY WORD\n")
+	fmt.Printf("   Dictionary: %s\n", strings.Join(dict, " "))
+	fmt.Printf("     Inverted: %s", makeInvertedDict(dict))
 }

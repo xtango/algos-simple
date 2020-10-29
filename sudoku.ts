@@ -21,6 +21,7 @@ const isNumValid = (g: Grid, y: number, x: number, n: number): boolean =>
 
 const parse = (st: string[]): number[][] => st.map(l => l.split(' ').map(x => Number(x)));
 
+const prettyYXN = (y: number, x: number , n: number): string => `(${y}, ${x}): ${n}`;
 /**
  * Returns the y, x tuple of the next empty cell or [-1, -1] when none.
  */
@@ -38,17 +39,19 @@ const solve = (g: Grid) => {
     let backTrackCount = 0;
 
     const solveRecur = (g: Grid): boolean => {
+        console.log(pretty(g));
+     
         const [y, x] = nextEmpty(g);
-        console.log(`[solveRecur] ${y}, ${x}`);
+        console.log(`[solveRecur] ${prettyYXN(y,x, 0)}`);
 
         if (y === -1) {
             return true; // No more empty cells
         }
 
-        // Brute force: try out every valid num
-        for (let n = 1; n < 3; n++) {
+        // Brute force: try out nums 1..9 in the empty cell
+        for (let n = 1; n <= 9; n++) {
             if (isNumValid(g, y, x, n)) {
-                console.log(`${y} ${x}: Trying ${n}`);
+                console.log(`...${prettyYXN(y,x, n)} Valid`);
                 // Change value for the next grid state
                 g[y][x] = n;
 
@@ -56,13 +59,13 @@ const solve = (g: Grid) => {
                 if (solveRecur(g)) {
                     return true;
                 } else {
-                    // Ran into a conflict. Let's back back track
-                    console.log('...Conflict -> backtracking');
-                    g[y][x] = 0;
+                    // Ran into a conflict. Let's back track
+                    console.log(`...${prettyYXN(y, x, n)} -> conflict backtrack`);
+                    g[y][x] = 0; // Change back to 0 (was changed to n, see above)
                     backTrackCount++;
                 }
             } else {
-                console.log(`${y} ${x}: ${n} invalid. Trying another...`);
+                console.log(`...${prettyYXN(y,x, n)} -> invalid, try another...`);
             }
              
         }
@@ -75,7 +78,7 @@ const solve = (g: Grid) => {
 
 
 const pretty = (g: Grid): string => {
-    let s = ''
+    let s = '\n';
     for (let r = 0; r < g.length; r++) {
         s += (r % 3 === 0) ? '-'.repeat(22) + '\n' : ''
 

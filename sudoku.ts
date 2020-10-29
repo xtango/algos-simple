@@ -1,15 +1,16 @@
 /**
  * Sodoku Solver
  * 
- * "In classic sudoku, the objective is to fill a 9×9 grid with
- * digits so that each column, each row, and each of the nine 3×3 subgrids that
- * compose the grid (also called "boxes", "blocks", or "regions") contain all 
- * of the digits from 1 to 9. The puzzle setter provides a partially completed 
- * grid, which for a well-posed puzzle has a single solution."
+ *      "In classic sudoku, the objective is to fill a 9×9 grid with
+ *      digits so that each column, each row, and each of the nine 3×3 subgrids that
+ *      compose the grid (also called "boxes", "blocks", or "regions") contain all 
+ *      of the digits from 1 to 9. The puzzle setter provides a partially completed 
+ *      grid, which for a well-posed puzzle has a single solution."
  *                                                              - Wikipedia
  *
- * Approach: brute force with backtracking. 
-*/
+ * Approach: Brute force with backtracking. 
+ * Limitations: No "implications" are used, hence slow.
+ */
 type Grid = number[][];
 
 type CoordinateYX = number[]; // y, x
@@ -24,11 +25,11 @@ const isNumOkInRow = (g: Grid, y: number, n: number) => g[y].every(el => el !== 
  * Each subgrid should have distinct (no dups) numbers, 1..9
  */
 const isNumOkInSubGrid = (g: Grid, y: number, x: number, n: number): boolean => {
-    const xOffset = Math.floor(x / 3) * 3; 
+    const xOffset = Math.floor(x / 3) * 3;
     const yOffset = Math.floor(y / 3) * 3;
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-            if (g[i+yOffset][j+xOffset] === n) {
+            if (g[i + yOffset][j + xOffset] === n) {
                 return false;
             }
         }
@@ -57,11 +58,14 @@ const nextEmpty = (grid: Grid): CoordinateYX => {
     return [-1, -1];
 }
 
-const solve = (g: Grid) => {
+/**
+ * Recursive solver that uses backtracking
+ */
+const solve = (g: Grid, MAX_RECURSION_DEPTH: number = 100) => {
 
     const solveRecur = (g: Grid, backtrackCount: number = 0, depth: number = 0): boolean => {
         console.log(`[solveRecur] recurDepth: ${depth}, backtrack: ${backtrackCount} ${pretty(g)}`);
-        if (depth > 10) {
+        if (depth > MAX_RECURSION_DEPTH) {
             console.log('[solveRecur] Abort: max recur depth reached');
             return true;
         }
@@ -70,6 +74,7 @@ const solve = (g: Grid) => {
         console.log(`[solveRecur] ${prettyYXN(y, x, 0)}`);
 
         if (y === -1) {
+            console.log('SOLVED!');
             return true; // No more empty cells
         }
 
@@ -80,7 +85,7 @@ const solve = (g: Grid) => {
                 // Change value for the next grid state
                 g[y][x] = n;
 
-                // Recurse with the next grid state
+                // Recurse using the next grid state
                 if (solveRecur(g, backtrackCount, depth + 1)) {
                     return true;
                 } else {
@@ -118,7 +123,8 @@ const pretty = (g: Grid): string => {
 
 
 /**
- * Tests
+ * TESTS
+ *
  * An empty cell is represented by 0.
  */
 const SIMPLE = parse([
@@ -134,9 +140,27 @@ const SIMPLE = parse([
     '5 7 0 1 0 0 2 0 0',
     '9 2 8 0 0 0 0 6 0']);
 
+/**
+ * A solution to SIMPLE
+    [solveRecur] recurDepth: 48, backtrack: 10
+    ----------------------
+    8 4 5 | 6 3 2 | 1 7 9
+    7 3 2 | 9 1 8 | 6 5 4
+    1 9 6 | 7 4 5 | 3 2 8
+    ----------------------
+    6 8 3 | 5 7 4 | 9 1 2
+    4 5 7 | 2 9 1 | 8 3 6
+    2 1 9 | 8 6 3 | 5 4 7
+    ----------------------
+    3 6 1 | 4 2 9 | 7 8 5
+    5 7 4 | 1 8 6 | 2 9 3
+    9 2 8 | 3 5 7 | 4 6 1
+*/
+
 console.log(SIMPLE[0][1] === 4 ? 'passed' : 'failed');
 console.log(colSlice(SIMPLE, 3)[6] === 4 ? 'passed' : 'failed');
 console.log(nextEmpty(SIMPLE).join('_') === '0_0' ? 'passed' : 'failed');
 console.log(isNumOkInSubGrid(SIMPLE, 3, 0, 8) === false ? 'passed' : 'failed');
 console.log(isNumOkInSubGrid(SIMPLE, 3, 0, 7) === true ? 'passed' : 'failed');
+
 solve(SIMPLE);

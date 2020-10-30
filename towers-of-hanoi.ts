@@ -30,7 +30,7 @@ const moveTop = (state: State, from: Tower, to: Tower): State => {
 }
 
 /**
- * Initial state with all disks on Tower 0, e.g. [0, 1, 2], [], []
+ * Initial state with all disks on Tower 0, e.g. [0,1,2],[],[]
  */
 const initState = (nDisks: number): State => [range(nDisks), [], []];
 
@@ -91,7 +91,7 @@ const solve = (nDisks: number): State => {
 
         // 3. Move spare to destination
         const state3 = move(state2, spare, to, from, largest - 1, recurDepth + 1);
-        console.log(`[Depth ${recurDepth}]    After step 3: spare -> dest: ${pretty(state2)}`);
+        console.log(`[Depth ${recurDepth}]    After step 3: spare -> dest: ${pretty(state3)}`);
 
         return state3;
     }
@@ -100,5 +100,6 @@ const solve = (nDisks: number): State => {
 
 }
 
+// console.log(initTowers(3));
 console.log(moveTop(initState(3), 0, 1));
 console.log(`FINAL: ${pretty(solve(3))}`);

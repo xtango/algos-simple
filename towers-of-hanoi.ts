@@ -1,7 +1,7 @@
 /**
  * TOWERS OF HANOI
  * 
- * Goal: Move disks from A to C.
+ * Goal: Move disks from Tower A to Tower C with the help of spare Tower B.
  * 
  *    -       |       |  
  *   ---      |       |
@@ -17,7 +17,7 @@ type State = Disks[];
 
 const range = (n: number) => [...Array(n).keys()];
 
-const pretty = (towers: State): string => towers.map(t => `[${t.toString()}]`).join('...');
+const pretty = (towers: State): string => towers.map(t => `[${t.join(' ')}]`).join('...');
 
 /**
  * Moves the top disk to the dest tower
@@ -30,7 +30,7 @@ const moveTop = (state: State, from: Tower, to: Tower): State => {
 }
 
 /**
- * Initial state with all disks on Tower 0, e.g. [0,1,2],[],[]
+ * Initial state with all disks on Tower 0, e.g. [0, 1, 2], [], []
  */
 const initState = (nDisks: number): State => [range(nDisks), [], []];
 
@@ -56,7 +56,7 @@ const initState = (nDisks: number): State => [range(nDisks), [], []];
 const solve = (nDisks: number): State => {
     /**
      * Recursive func to move all disks to destination that are >= largestDisk
-     * The call tree for N = 2 (s is state) looks like this:
+     * The call tree for N = 2 (where s is state) looks like this:
      *
      *              ----------    move(s, A, B, C, 2) --------
      *              |                                         |   
@@ -65,21 +65,33 @@ const solve = (nDisks: number): State => {
      *     move(s, A, B, C, 0)                              move(s, A, C, B, 0)
      *        moveTop(s, A, B)                                 moveTop(s, A, C)
      */
-    const move = (state: State, from: Tower, to: Tower, spare: Tower, largest: number): State => {
+    const move = (
+        state: State,
+        from: Tower,
+        to: Tower,
+        spare: Tower,
+        largest: number, // Move disks >= largest disk
+        recurDepth: number = 0): State => {
+
+        console.log(`[Depth ${recurDepth}] move(${Tower[from]}->${Tower[to]}, ${largest})`);
+
         // Base cond: move smallest to destination
         if (largest === 0) {
             return moveTop(state, from, to);
         }
 
         // 1. Move all but the largest: source -> spare. This is Step 1 in the func comments.
-        const state1 = move(state, from, spare, to, largest - 1);
+        const state1 = move(state, from, spare, to, largest - 1, recurDepth + 1);
+        console.log(`[Depth ${recurDepth}]    After step 1:  src -> spare: ${pretty(state1)}`);
         // At this stage the state when nDisk = 3 should be: [2], [0, 1], []
 
         // 2. Move largest to destination
         const state2 = moveTop(state1, from, to);
+        console.log(`[Depth ${recurDepth}]    After step 2: lrgst -> dest: ${pretty(state2)}`);
 
         // 3. Move spare to destination
-        const state3 = move(state2, spare, to, from, largest - 1);
+        const state3 = move(state2, spare, to, from, largest - 1, recurDepth + 1);
+        console.log(`[Depth ${recurDepth}]    After step 3: spare -> dest: ${pretty(state2)}`);
 
         return state3;
     }
@@ -88,7 +100,5 @@ const solve = (nDisks: number): State => {
 
 }
 
-// console.log(initTowers(3));
 console.log(moveTop(initState(3), 0, 1));
-console.log(solve(3));
-// console.log(pretty(solve(3)));
+console.log(`FINAL: ${pretty(solve(3))}`);

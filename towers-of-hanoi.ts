@@ -55,7 +55,7 @@ const initState = (nDisks: number): State => [range(nDisks), [], []];
  */
 const solve = (nDisks: number): State => {
     /**
-     * Recursive func to move all disks to destination that are >= largestDisk
+     * Recursive func to move all disks to destination that are <= largestDisk
      * The call tree for N = 2 (where s is state) looks like this:
      *
      *              ----------    move(s, A, B, C, 2) --------

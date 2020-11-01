@@ -24,44 +24,40 @@ const range = (n: Number) => [...Array(n).keys()];
 
 const vectorWin = (vector: Cell[]) => vector.every(e => e !== Cell._ && e === vector[0]);
 
-const diagonalCells = (b: Board): Cell[][] => [range(3).map(i => b[i][i]), range(3).map(i => b[i][3 - i])];
+const diagonalCells = (b: Board): Cell[][] => [
+    range(b.length).map(i => b[i][i]),
+    range(b.length).map(i => b[i][b.length - i])];
 
 /**
- * Returns true when there's a winning position in either side. 
+ * Returns true when there's a winning position for either player. 
  */
 const isWin = (b: Board): boolean => {
     const pluckCol = (c: number) => b.map(row => row[c]);
     const horOrVertWinAtOffset = (i: number) => vectorWin(pluckCol(i)) || vectorWin(b[i]);
-    const nonDiag = range(3).map(i => horOrVertWinAtOffset(i)).some(x => x);
+    const nonDiag = range(b.length).map(i => horOrVertWinAtOffset(i)).some(x => x);
     return nonDiag || vectorWin(diagonalCells(b)[0]) || vectorWin(diagonalCells(b)[1]);
 }
 
 const parse = (lines: string[]): Board => lines.map(e => [...e].map(x => Cell[x as keyof typeof Cell]));
 
-const pretty = (b: Board): string => '\n'.concat(b.map(r => r.map(x=> x).join(' ').concat('\n')).join(''));
+const pretty = (b: Board): string => '\n'.concat(b.map(r => r.map(x => x).join(' ').concat('\n')).join(''));
 
 /**
  * TESTS
  */
-console.log(!isWin(
-    parse([
-        'XOX',
-        'OOX',
-        '___'])) ? 'passed' : 'failed');
-
-console.log(isWin(
-    parse([
-        'XOX',
-        'OOX',
-        '_O_'])) ? 'passed' : 'failed');
-
-console.log(isWin(
-    parse([
-        'O_X',
-        'OOX',
-        '_OO'])) ? 'passed' : 'failed');
-
+console.log(!isWin(parse([
+    'XOX',
+    'OOX',
+    '___'])) ? 'passed' : 'failed');
+console.log(isWin(parse([
+    'XOX',
+    'OOX',
+    '_O_'])) ? 'passed' : 'failed');
+console.log(isWin(parse([
+    'O_X',
+    'OOX',
+    '_OO'])) ? 'passed' : 'failed');
 console.log(pretty(parse([
-        'O_X',
-        'OOX',
-        '_OO'])));
+    'O_X',
+    'OOX',
+    '_OO'])));

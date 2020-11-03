@@ -45,13 +45,13 @@ const isWin = (b: Board): boolean => {
 const parse = (lines: string[]): Board =>
     lines.map(e => [...e].map(x => x === 'X' ? Cell.X : x === 'O' ? Cell.O : Cell.Empty))
 
-const pretty = (b: Board): string => '\n'.concat(b.map(r => r.map(x => x).join(' ').concat('\n')).join(''));
+const pretty = (b: Board): string => '\n'.concat(
+    b.map(r => r.map(x => x)
+    .join(' ')
+    .concat('\n')).join(''));
 
-const emptyCellsIndicesInRow = cells: Cell[] => cells
-    .map((c: Cell, cIdx: number) => [c, cIdx])
-    .filter(x => x[0] === Cell.Empty);
 /**
- * Returns the empty cells y,x tuple available on the board
+ * Returns y, x tuples for empty cells
  */
 const emptyCordinates = (b: Board): Coordinate[] => {
     const coordinates: Coordinate[] = [];
@@ -64,19 +64,29 @@ const emptyCordinates = (b: Board): Coordinate[] => {
     }
     return coordinates;
 }
-// filter(e => e === Cell.Empty >));
 
 
 /**
  *  Given b, the board, find the optimal play for maximizer/minimizer player
  */
-// const minMax = (b: Board, isMaxmizer: boolean) => {
-//     if (isMaxmizer) {
-//         let best = Infinity * -1;
-//     } else {
-        
-//     }
-// }
+const miniMax = (b: Board, isMaxmizer: boolean): number => {
+    const moves = emptyCordinates(b);
+    if (isMaxmizer) {
+        let best = Infinity * -1;
+        moves.forEach(move => {
+            const minimizerVal = miniMax(b, false); 
+            best = Math.max(minimizerVal, best );
+        });
+        return best;
+    } else {
+        let best = Infinity;
+        moves.forEach(move => {
+            const maximizerVal = miniMax(b, true); // maximizer val
+            best = Math.min(maximizerVal, best );
+        });
+        return best;
+    }
+}
 
 /**
  * TESTS
@@ -108,4 +118,3 @@ console.log(emptyCordinates(parse([
     'OOX',
     '_OO'
 ]))); 
-

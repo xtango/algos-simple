@@ -16,13 +16,16 @@
  *                                                                              - Wikipedia 
  */
 
-enum Cell { X = 'X', O = 'O', _ = '_' }
+
+enum Cell { X = 'X', O = 'O', Empty = '_' }
 
 type Board = Cell[][];
 
+type Coordinate = number[];
+
 const range = (n: Number) => [...Array(n).keys()];
 
-const vectorWin = (vector: Cell[]) => vector.every(e => e !== Cell._ && e === vector[0]);
+const isNInARow = (vector: Cell[]) => vector.every(e => e !== Cell.Empty && e === vector[0]);
 
 const diagonalCells = (b: Board): Cell[][] => [
     range(b.length).map(i => b[i][i]),
@@ -33,22 +36,60 @@ const diagonalCells = (b: Board): Cell[][] => [
  */
 const isWin = (b: Board): boolean => {
     const pluckCol = (c: number) => b.map(row => row[c]);
-    const horOrVertWinAtOffset = (i: number) => vectorWin(pluckCol(i)) || vectorWin(b[i]);
-    const nonDiag = range(b.length).map(i => horOrVertWinAtOffset(i)).some(x => x);
-    return nonDiag || vectorWin(diagonalCells(b)[0]) || vectorWin(diagonalCells(b)[1]);
+    const horOrVertWinAtOffset = (i: number) => isNInARow(pluckCol(i)) || isNInARow(b[i]);
+    const nonDiagWin = range(b.length).map(i => horOrVertWinAtOffset(i)).some(x => x);
+    const diags = diagonalCells(b);
+    return nonDiagWin || isNInARow(diags[0]) || isNInARow(diags[1]);
 }
 
-const parse = (lines: string[]): Board => lines.map(e => [...e].map(x => Cell[x as keyof typeof Cell]));
+const parse = (lines: string[]): Board =>
+    lines.map(e => [...e].map(x => x === 'X' ? Cell.X : x === 'O' ? Cell.O : Cell.Empty))
 
 const pretty = (b: Board): string => '\n'.concat(b.map(r => r.map(x => x).join(' ').concat('\n')).join(''));
+
+const emptyCellsIndicesInRow = cells: Cell[] => cells
+    .map((c: Cell, cIdx: number) => [c, cIdx])
+    .filter(x => x[0] === Cell.Empty);
+/**
+ * Returns the empty cells y,x tuple available on the board
+ */
+const emptyCordinates = (b: Board): Coordinate[] => {
+    const coordinates: Coordinate[] = [];
+    for (let i = 0; i < b.length; i++) {
+        for (let j = 0; j < b.length; j++) {
+            if (b[i][j] === Cell.Empty) {
+                coordinates.push([i, j])
+            }
+        }
+    }
+    return coordinates;
+}
+// filter(e => e === Cell.Empty >));
+
+
+/**
+ *  Given b, the board, find the optimal play for maximizer/minimizer player
+ */
+// const minMax = (b: Board, isMaxmizer: boolean) => {
+//     if (isMaxmizer) {
+//         let best = Infinity * -1;
+//     } else {
+        
+//     }
+// }
 
 /**
  * TESTS
  */
+
+console.log(isNInARow([Cell.X, Cell.X, Cell.X]) ? 'passed' : 'failed');
+console.log(!isNInARow([Cell.Empty, Cell.Empty, Cell.Empty]) ? 'passed' : 'failed');
+
 console.log(!isWin(parse([
     'XOX',
     'OOX',
     '___'])) ? 'passed' : 'failed');
+
 console.log(isWin(parse([
     'XOX',
     'OOX',
@@ -61,3 +102,10 @@ console.log(pretty(parse([
     'O_X',
     'OOX',
     '_OO'])));
+
+console.log(emptyCordinates(parse([
+    'O_X',
+    'OOX',
+    '_OO'
+]))); 
+

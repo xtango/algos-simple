@@ -35,17 +35,15 @@ const diagonalCells = (b: Board): Player[][] => [
  */
 const winner = (b: Board): Player => {
     const pluckCol = (c: number) => b.map(row => row[c]);
-    const horizWinAtOffset = (i: number) => isNInARow(pluckCol(i))
-    const VertWinAtOffset = (i: number) => isNInARow(pluckCol(i))
 
-    const horizWinner = range(b.length).forEach(i => {
-        if (horizWinAtOffset(i)) {
+    for (let i = 0; i < b.length; i++) {
+        if (isNInARow(b[i])) { // Horiz win
             return b[i][0];
-        } else if (VertWinAtOffset(i)) {
+        } else if (isNInARow(pluckCol(i))) { // Vertical win
             return b[0][i];
         }
-        return Player.None;
-    })
+    }
+
     const diags = diagonalCells(b);
     if (isNInARow(diags[0]) || isNInARow(diags[1])) {
         return b[1][1]; // center cell
@@ -76,7 +74,7 @@ const possibleMoves = (b: Board): Coordinate[] => {
     return moves;
 }
 
-const prettyMove = (depth: number, y: number, x: number ) => `[Depth ${depth}] ${y},${x}`;
+const prettyMove = (depth: number, y: number, x: number) => `[Depth ${depth}] ${y},${x}`;
 
 /**
  * Changes the board in place at y, x.
@@ -132,26 +130,27 @@ console.log(isNInARow([Player.X, Player.X, Player.X]) ? 'passed' : 'failed');
 
 console.log(!isNInARow([Player.None, Player.None, Player.None]) ? 'passed' : 'failed');
 
-console.log(!winner(parse([
+console.log(winner(parse([
     'XOX',
     'OOX',
-    '___'])) ? 'passed' : 'failed');
+    '___'])) === Player.None ? 'passed' : 'failed');
 
 console.log(winner(parse([
     'XOX',
     'OOX',
-    '_O_'])) ? 'passed' : 'failed');
+    '_O_'])) === Player.O ? 'passed' : 'failed');
+
 console.log(winner(parse([
     'O_X',
     'OOX',
-    '_OO'])) ? 'passed' : 'failed');
+    '_OO'])) === Player.O ? 'passed' : 'failed');
 console.log(pretty(parse([
     'O_X',
     'OOX',
     '_OO'])));
 
-console.log(miniMax(parse([
-    'O_X',
-    'OOX',
-    '_OO'
-]), true));
+// console.log(miniMax(parse([
+//     'O_X',
+//     'OOX',
+//     '_OO'
+// ]), true));

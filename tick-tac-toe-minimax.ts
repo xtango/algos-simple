@@ -22,6 +22,8 @@ type Board = Player[][];
 
 type Coordinate = number[];
 
+interface Move { y: number, x: number, player: Player }
+
 const range = (n: Number) => [...Array(n).keys()];
 
 const isNInARow = (vector: Player[]) => vector.every(e => e !== Player.None && e === vector[0]);
@@ -54,10 +56,15 @@ const winner = (b: Board): Player => {
 const parse = (lines: string[]): Board =>
     lines.map(e => [...e].map(x => x === 'X' ? Player.X : x === 'O' ? Player.O : Player.None))
 
-const pretty = (b: Board): string => '\n'.concat(
+const pretty = (b: Board): string => {
+    const grid = '\n'.concat(
     b.map(r => r.map(x => x)
         .join(' ')
         .concat('\n')).join(''));
+
+    const whoWon = winner(b);
+    return `${grid}${whoWon == Player.None ? '' : whoWon + ' wins'}`
+}
 
 /**
  * Returns y, x tuples for empty cells
@@ -79,15 +86,16 @@ const prettyMove = (depth: number, y: number, x: number) => `[Depth ${depth}] ${
 /**
  * Changes the board in place at y, x.
  */
-const move = (b: Board, y: number, x: number, player: Player) => {
-    b[y][x] = player;
+const makeMove = (b: Board, mv: Move, depth: number) => {
+    b[mv.y][mv.x] = mv.player;
+    console.log(prettyMove(depth, mv.y, mv.x));
 }
 
 
 /**
  *  Given b, the board, find the optimal play for maximizer/minimizer player
  */
-const miniMax = (b: Board, isMaxmizer: boolean, depth: number = 0): number => {
+const miniMax = (b: Board, isMaximizer: boolean, depth: number = 0): number => {
     if (depth >= 3) {// Max Recursion Depth
         console.log('Aborting, max recursion reached');
         return -1;
@@ -98,28 +106,18 @@ const miniMax = (b: Board, isMaxmizer: boolean, depth: number = 0): number => {
         return 0; // Draw
     } else {
         const whoWon: Player = winner(b);
-        console.log(`winner => ${winner}`)
+        if (whoWon === Player.X) return 1;
+        else if (whoWon === Player.O) return -1;
     }
 
-    if (isMaxmizer) {
-        let bestVal = Infinity * -1;
-        moves.forEach(move => {
-            console.log(prettyMove(depth, move[0], move[1]));
-            const minimizerVal = miniMax(b, false, depth + 1);
-            bestVal = Math.max(minimizerVal, bestVal);
-        });
-        console.log(`[maximizer] best -> `, bestVal);
-        return bestVal;
-    } else {
-        let best = Infinity;
-        moves.forEach(move => {
-            console.log(prettyMove(depth, move[0], move[1]));
-            const maximizerVal = miniMax(b, true, depth + 1); // maximizer val
-            best = Math.min(maximizerVal, best);
-            console.log(`[minimizer] best -> `, best);
-        });
-        return best;
-    }
+    let bestVal = isMaximizer ? Infinity * -1 : Infinity;
+    moves.forEach(mv => {
+        makeMove(b, { y: mv[0], x: mv[1], player: isMaximizer ? Player.X : Player.O }, depth);
+        const val = miniMax(b, !isMaximizer, depth + 1);
+        bestVal = isMaximizer ? Math.max(val, bestVal) : Math.min(val, bestVal);
+    });
+    console.log(`[maximizer] bestVal -> `, bestVal, pretty(b));
+    return bestVal;
 }
 
 /**
@@ -149,8 +147,8 @@ console.log(pretty(parse([
     'OOX',
     '_OO'])));
 
-// console.log(miniMax(parse([
-//     'O_X',
-//     'OOX',
-//     '_OO'
-// ]), true));
+console.log(miniMax(parse([
+    'X_X',
+    'OOX',
+    '_OO'
+]), true));

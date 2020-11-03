@@ -47,42 +47,49 @@ const parse = (lines: string[]): Board =>
 
 const pretty = (b: Board): string => '\n'.concat(
     b.map(r => r.map(x => x)
-    .join(' ')
-    .concat('\n')).join(''));
+        .join(' ')
+        .concat('\n')).join(''));
 
 /**
  * Returns y, x tuples for empty cells
  */
-const emptyCordinates = (b: Board): Coordinate[] => {
-    const coordinates: Coordinate[] = [];
+const possibleMoves = (b: Board): Coordinate[] => {
+    const moves: Coordinate[] = [];
     for (let i = 0; i < b.length; i++) {
         for (let j = 0; j < b.length; j++) {
             if (b[i][j] === Cell.Empty) {
-                coordinates.push([i, j])
+                moves.push([i, j])
             }
         }
     }
-    return coordinates;
+    return moves;
 }
 
 
 /**
  *  Given b, the board, find the optimal play for maximizer/minimizer player
  */
-const miniMax = (b: Board, isMaxmizer: boolean): number => {
-    const moves = emptyCordinates(b);
+const miniMax = (b: Board, isMaxmizer: boolean, depth: number = 0): number => {
+    const moves = possibleMoves(b);
+    if (depth >= 10) {// MAX_DEPTH_RECURSION
+        console.log('Aborting, max recursion reached');
+        return -1;
+    }
+
     if (isMaxmizer) {
         let best = Infinity * -1;
         moves.forEach(move => {
-            const minimizerVal = miniMax(b, false); 
-            best = Math.max(minimizerVal, best );
+            const minimizerVal = miniMax(b, false, depth + 1);
+            best = Math.max(minimizerVal, best);
         });
+        console.log(`[maximizer] best -> `, best);
         return best;
     } else {
         let best = Infinity;
         moves.forEach(move => {
-            const maximizerVal = miniMax(b, true); // maximizer val
-            best = Math.min(maximizerVal, best );
+            const maximizerVal = miniMax(b, true, depth + 1); // maximizer val
+            best = Math.min(maximizerVal, best);
+            console.log(`[minimizer] best -> `, best);
         });
         return best;
     }
@@ -113,8 +120,8 @@ console.log(pretty(parse([
     'OOX',
     '_OO'])));
 
-console.log(emptyCordinates(parse([
+console.log(miniMax(parse([
     'O_X',
     'OOX',
     '_OO'
-]))); 
+]), true));

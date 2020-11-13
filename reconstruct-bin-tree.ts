@@ -3,15 +3,15 @@
  * 
  * Background: Order of traversal
  * Remember Pre, In, and Post with respect to to A, the ROOT node.
- *      A          Pre  : ABC         ROOT Left Right. This is a depth-first-traversal
- *    /   \        In   : BAC         Left ROOT Right
- *   B     C       Post : BCA         Left Right ROOT
+ *      A               Pre  : ABC         ROOT Left Right. This is a depth-first-traversal
+ *    /   \             In   : BAC         Left ROOT Right
+ *   B     C            Post : BCA         Left Right ROOT
  *
  * For implementation, we can count how many times visited:
- *                                       Print when:
- *            A       Pre  : ABDGHEICFJ  1st time/leaf (Depth-first-traversal)
- *         /    \     In   : GDHBIEACJF  2nd time/leaf
- *        B      C    Post : GHDIEBJFCA  3rd time/leaf
+ *                                         Print when:
+ *            A         Pre  : ABDGHEICFJ  1st time/leaf (Depth-first-traversal)
+ *         /    \       In   : GDHBIEACJF  2nd time/leaf
+ *        B      C      Post : GHDIEBJFCA  3rd time/leaf
  *      /   \      \
  *     D     E      F
  *    / \   /      /
@@ -41,21 +41,62 @@
  *    / \    
  *   3   7
  * 
- * global: poIdx = postOrder.len // post-order-index
+ * global: poIdx = postOrder.len // post-order-index. Start from rightmost.
  * 
- * recon(postOder, inOrder):     
- *   node           = postOrder[postOrderIdx]
- *   inOrderIdx     = inOrder.indexOf(node)
- *   inOrderLeft    = inOrder[0 to inOrderIdx]
- *   inOrderRight   = inOrder[inOrderIdx + 1, inOrder.len]
+ *                                             // 
+ *                                             // inOrder  : 3, 5, 7
+ * postOder                                    // [3, 7, 5]
+ *                                              
+ * recon(                                      Iter 1            Iter 2 (left recur)    Iter 3 (right recur)
+ *   inOrder,                                  // [3, 5, 7]      // [3]                 // [7]
+ *   poIdx):                                   // 2              // 1                   // 1
+ * 
+ *   node    = postOrder[poIdx]                // 5              // 7                   // 7
+ *   ioIdx   = inOrder.indexOf(node)           // 1              // -1                  // 0
+ *   ioLeft  = inOrder[0 to inOrderIdx - 1]    // [3]            // []                  // []
+ *   ioRight = inOrder[ioIdx+1, inOrder.len]   // [7]            // []                  // []
  * 
  *   // Base case
- *   return node when inOrderLeft and inORderRight are both empty
- * 
- *   node = {                                   // i: 2   
- *      val:    postOrder[i],                  // 5
- *      left:   recon(postorder, inOrderLeft),  // recon([3,7,5], [3])
- *      right:  recon(postorder, inOrderRight), // recon([3,7,5], [7])
+ *   return node if ioLeft && ioRight empty    //                                       // return 7
+ *  
+ *   stast = {                                   
+ *      val:    postOrder[i],                  // val: 5        
+ *      left:   recon(inOrderLeft),            // recon([3], 1) 
+ *      right:  recon(inOrderRight),           // recon([7], 1)
  *   }
- *   return node
+ *   return node                              
  */
+
+const reconstruct = (postOrder: number[]) => {
+    const reconHelper = (inOrderList: number[], postOrderIdx: number) => {
+        const node = postOrder[postOrderIdx];
+        const inOrderIdx = inOrderList.indexOf(node);
+        const inOrderLeft = inOrderList.slice(0, inOrderIdx);
+        const inOrderRight = inOrderList.slice(inOrderIdx + 1);
+        console.log('ioLeft, node, ioRight', inOrderLeft, node, inOrderRight);
+
+        // Base case
+        if (inOrderLeft.length === 0 && inOrderRight.length === 0) {
+            return node;
+        }
+
+        const state = {
+            val: node,
+            left: reconHelper(inOrderLeft, postOrderIdx - 1),
+            right: reconHelper(inOrderRight,  postOrderIdx - 1)
+        }
+        console.log('state...', state);
+        return node;
+    }
+
+    const inOrder = [...postOrder];
+    inOrder.sort();
+    console.log('---Reconstructing ---', postOrder);
+    console.log('inOrder..............', inOrder);
+    reconHelper(inOrder, postOrder.length - 1);
+}
+
+/**
+ * Test
+ */
+reconstruct([3, 7, 5]);

@@ -69,11 +69,12 @@
 
 const reconstruct = (postOrder: number[]) => {
     const reconHelper = (inOrderList: number[], postOrderIdx: number) => {
+        console.log('inOrderList..............', inOrderList);
         const node = postOrder[postOrderIdx];
         const inOrderIdx = inOrderList.indexOf(node);
-        const inOrderLeft = inOrderList.slice(0, inOrderIdx);
-        const inOrderRight = inOrderList.slice(inOrderIdx + 1);
-        console.log('ioLeft, node, ioRight', inOrderLeft, node, inOrderRight);
+        const inOrderLeft = inOrderIdx > -1 ? inOrderList.slice(0, inOrderIdx) : [];
+        const inOrderRight = inOrderIdx > -1 && inOrderIdx < inOrderList.length ? inOrderList.slice(inOrderIdx + 1) : [];
+        console.log('....ioLeft, node, ioRight', inOrderLeft, node, inOrderRight);
 
         // Base case
         if (inOrderLeft.length === 0 && inOrderRight.length === 0) {
@@ -92,7 +93,6 @@ const reconstruct = (postOrder: number[]) => {
     const inOrder = [...postOrder];
     inOrder.sort();
     console.log('---Reconstructing ---', postOrder);
-    console.log('inOrder..............', inOrder);
     reconHelper(inOrder, postOrder.length - 1);
 }
 

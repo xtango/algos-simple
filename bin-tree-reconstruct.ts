@@ -14,69 +14,66 @@
  * 2   4   8
  */
 
-/**
- * recon(postOrder, inOrder)
- * Reconstructs a binary tree given postOrder and inOrder nodes.
- * 
- * Intuition: we know that the right-most is the root and going from 
- * right to left will 1st taverse the right subtree.
- * 
- * Given  postOrder: 3, 7 , 5 (and inOrder: 3, 5, 7) we construct 3 nodes:
- *     5 
- *    / \    
- *   3   7
- * 
- * global: poIdx = postOrder.len // post-order-index. Start from rightmost.
- * 
- *                                             // 
- *                                             // inOrder  : 3, 5, 7
- * postOder                                    // [3, 7, 5]
- *                                              
- * recon(                                      Iter 1            Iter 2 (left recur)    Iter 3 (right recur)
- *   inOrder,                                  // [3, 5, 7]      // [3]                 // [7]
- *   poIdx):                                   // 2              // 1                   // 1
- * 
- *   node    = postOrder[poIdx]                // 5              // 7                   // 7
- *   ioIdx   = inOrder.indexOf(node)           // 1              // -1                  // 0
- *   ioLeft  = inOrder[0 to inOrderIdx - 1]    // [3]            // []                  // []
- *   ioRight = inOrder[ioIdx+1, inOrder.len]   // [7]            // []                  // []
- * 
- *   // Base case
- *   return node if ioLeft && ioRight empty    //                                       // return 7
- *  
- *   stast = {                                   
- *      val:    postOrder[i],                  // val: 5        
- *      left:   recon(inOrderLeft),            // recon([3], 1) 
- *      right:  recon(inOrderRight),           // recon([7], 1)
- *   }
- *   return node                              
- */
+interface BinNode { val: number, left: BinNode | undefined, right: BinNode | undefined }
 
-const reconstruct = (postOrder: number[]) => {
-    const reconHelper = (inOrderList: number[], postOrderIdx: number) => {
+/**
+ * Reconstructs a binary tree recursively given postOrder and inOrder nodes.
+ * @returns The head node of the tree.
+ */
+const reconstruct = (postOrder: number[], inOrder: number[]) => {
+
+    /**
+     * Helper function for recursion. Intuition: Post Order's right-most is the root.
+     * Going from right to left we traverse first the right and then the left subtrees.
+     * Example: Given postOrder: 3, 7, 5 and inOrder: 3, 5, 7, we construct 3 nodes:
+     *   5
+     *  / \    
+     * 3   7
+     * global: poIdx = postOrder.len // post-order-index. Start from rightmost.
+     *                                             // inOrder  : 3, 5, 7
+     * postOder                                    // [3, 7, 5]
+     *                                              
+     * recon(                                    Iter 1            Iter 2 (L recur)       Iter 3 (R recur)
+     * inOrder,                                  // [3, 5, 7]      // [3]                 // [7]
+     * poIdx):                                   // 2              // 1                   // 1
+     * 
+     * node    = { val: postOrder[poIdx] }       // 5              // 7                   // 7
+     * ioIdx   = inOrder.indexOf(node)           // 1              // -1                  // 0
+     * ioLeft  = inOrder[0 to inOrderIdx - 1]    // [3]            // []                  // []
+     * ioRight = inOrder[ioIdx + 1, inOrder.len] // [7]            // []                  // []
+     * 
+     * // Base case
+     * return node if ioLeft && ioRight empty    //                                       // return { val: 7, left: right {}
+     *
+     * node.left  = recon(inOrderLeft),          // recon([3], 1) 
+     * node.right = recon(inOrderRight),         // recon([7], 1)
+     * return node
+     */
+    const reconHelper = (inOrderList: number[], postOrderIdx: number): BinNode => {
         console.log('inOrderList..............', inOrderList);
-        const node = postOrder[postOrderIdx];
-        const inOrderIdx = inOrderList.indexOf(node);
+        const val = postOrder[postOrderIdx];
+        const inOrderIdx = inOrderList.indexOf(val);
         const inOrderLeft = inOrderIdx > -1 ? inOrderList.slice(0, inOrderIdx) : [];
         const inOrderRight = inOrderIdx > -1 && inOrderIdx < inOrderList.length ? inOrderList.slice(inOrderIdx + 1) : [];
-        console.log('....ioLeft, node, ioRight', inOrderLeft, node, inOrderRight);
+        console.log('....ioLeft, val, ioRight', inOrderLeft, val, inOrderRight);
 
         // Base case
-        if (inOrderLeft.length === 0 && inOrderRight.length === 0) {
-            return node;
-        }
+        const node = (inOrderLeft.length === 0 && inOrderRight.length === 0)
+            ? {
+                val,
+                left: undefined,
+                right: undefined
+            }
+            : {
+                val,
+                left: reconHelper(inOrderLeft, postOrderIdx - 1),
+                right: reconHelper(inOrderRight, postOrderIdx - 1)
+            }
 
-        const state = {
-            val: node,
-            left: reconHelper(inOrderLeft, postOrderIdx - 1),
-            right: reconHelper(inOrderRight,  postOrderIdx - 1)
-        }
-        console.log('state...', state);
+        console.log('....returning node', node);
         return node;
-    }
 
-    const inOrder = [...postOrder];
-    inOrder.sort();
+    }
     console.log('---Reconstructing ---', postOrder);
     reconHelper(inOrder, postOrder.length - 1);
 }
@@ -84,4 +81,4 @@ const reconstruct = (postOrder: number[]) => {
 /**
  * Test
  */
-reconstruct([3, 7, 5]);
+reconstruct([3, 7, 5], [3, 5, 7]);

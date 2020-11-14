@@ -1,21 +1,6 @@
 /**
  * RECONSTRUCT BIN TREE
- * 
- * Background: Order of traversal
- * Remember Pre, In, and Post with respect to to A, the ROOT node.
- *      A               Pre  : ABC         ROOT Left Right. This is a depth-first-traversal
- *    /   \             In   : BAC         Left ROOT Right
- *   B     C            Post : BCA         Left Right ROOT
- *
- * For implementation, we can count how many times visited:
- *                                         Print when:
- *            A         Pre  : ABDGHEICFJ  1st time/leaf (Depth-first-traversal)
- *         /    \       In   : GDHBIEACJF  2nd time/leaf
- *        B      C      Post : GHDIEBJFCA  3rd time/leaf
- *      /   \      \
- *     D     E      F
- *    / \   /      /
- *   G  H  I      J
+ * @see: bin-tree-traversal.ts gives an explanation of pre, in, and post-order traversal of a binary tree.
  *
  * CHALLENGE
  * Given the sequence of keys visited by a postorder traversal of a binary

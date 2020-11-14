@@ -2,8 +2,7 @@
  * RECONSTRUCT BIN TREE
  * @see: bin-tree-traversal.ts gives an explanation of pre, in, and post-order traversal of a binary tree.
  *
- * CHALLENGE
- * Given the sequence of keys visited by a postorder traversal of a binary
+ * CHALLENGE Given the sequence of keys visited by a postorder traversal of a binary
  * search tree, reconstruct the tree. For example, given the sequence
  * 2, 4, 3, 8, 7, 5, you should construct the following tree:
  *
@@ -14,13 +13,28 @@
  * 2   4   8
  */
 
-interface BinNode { val: number, left: BinNode | undefined, right: BinNode | undefined }
+interface BinNode { val: number, left?: BinNode, right?: BinNode }
+
+const prettyNode = (n: BinNode): string => {
+    const rightEdge = n.right !== undefined ? '  \\' : '';
+    const leftEdge = n.left !== undefined ? ' / ' : '   ';
+    const edgeLine = `${leftEdge}${rightEdge}`;
+    const leftStr = n.left !== undefined ? `${n.left.val}` : '   ';
+    const rightStr = n.right !== undefined ? `${n.right.val}` : '';
+    return `\n    ${n.val}\n ${edgeLine}\n${leftStr}      ${rightStr}`
+}
+
+const prettyHeader = (postSeq: number[], inSeq: number[]): string => {
+    return `\n${'-'.repeat(55)} \nRECONONSTRUCT BINARY TREE\nPost Seq: ${postSeq.join(',')}\nIn Seq  : ${inSeq.join(',')}`;
+}
 
 /**
  * Reconstructs a binary tree recursively given postOrder and inOrder nodes.
+ * @param postSeq Post-order sequence
+ * @param inSeq In-order sequence
  * @returns The head node of the tree.
  */
-const reconstruct = (postOrder: number[], inOrder: number[]) => {
+const reconstruct = (postSeq: number[], inSeq: number[]) => {
 
     /**
      * Helper function for recursion. Intuition: Post Order's right-most is the root.
@@ -48,17 +62,21 @@ const reconstruct = (postOrder: number[], inOrder: number[]) => {
      * node.left  = recon(inOrderLeft),          // recon([3], 1) 
      * node.right = recon(inOrderRight),         // recon([7], 1)
      * return node
+     * 
+     * @param inSeq In-order sequence
+     * @param postIdx Post-order index
+     * @param depth Recursion depth
      */
-    const reconHelper = (inOrderList: number[], postOrderIdx: number): BinNode => {
-        console.log('inOrderList..............', inOrderList);
-        const val = postOrder[postOrderIdx];
-        const inOrderIdx = inOrderList.indexOf(val);
-        const inOrderLeft = inOrderIdx > -1 ? inOrderList.slice(0, inOrderIdx) : [];
-        const inOrderRight = inOrderIdx > -1 && inOrderIdx < inOrderList.length ? inOrderList.slice(inOrderIdx + 1) : [];
-        console.log('....ioLeft, val, ioRight', inOrderLeft, val, inOrderRight);
+    const reconHelper = (inSeq: number[], postIdx: number, depth: number = 1): BinNode => {
+        console.log(`[Depth ${depth}] inSeq...............`, inSeq);
+        const val = postSeq[postIdx];
+        const inIdx = inSeq.indexOf(val);
+        const inLeft = inIdx > -1 ? inSeq.slice(0, inIdx) : [];
+        const inRight = inIdx > -1 && inIdx < inSeq.length ? inSeq.slice(inIdx + 1) : [];
+        console.log(`[Depth ${depth}] inLeft, val, inRight`, inLeft, val, inRight);
 
         // Base case
-        const node = (inOrderLeft.length === 0 && inOrderRight.length === 0)
+        const node = (inLeft.length === 0 && inRight.length === 0)
             ? {
                 val,
                 left: undefined,
@@ -66,19 +84,23 @@ const reconstruct = (postOrder: number[], inOrder: number[]) => {
             }
             : {
                 val,
-                left: reconHelper(inOrderLeft, postOrderIdx - 1),
-                right: reconHelper(inOrderRight, postOrderIdx - 1)
+                left: reconHelper(inLeft, postIdx - 1, depth + 1),
+                right: reconHelper(inRight, postIdx - 1, depth + 1)
             }
 
-        console.log('....returning node', node);
+        console.log(`[Depth ${depth}] returning node`, prettyNode(node));
         return node;
 
     }
-    console.log('---Reconstructing ---', postOrder);
-    reconHelper(inOrder, postOrder.length - 1);
+    
+    console.log(prettyHeader(postSeq, inSeq));
+    reconHelper(inSeq, postSeq.length - 1);
 }
 
 /**
  * Test
  */
+console.log('Test prettyNode 2 children', prettyNode({ val: 5, left: { val: 1 }, right: { val: 9 } }));
+console.log('Test prettyNode right only', prettyNode({ val: 5, right: { val: 9 } }));
+console.log('Test prettyNode left only', prettyNode({ val: 5, left: { val: 8} }));
 reconstruct([3, 7, 5], [3, 5, 7]);

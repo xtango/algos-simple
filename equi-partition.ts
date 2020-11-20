@@ -1,12 +1,25 @@
 /**
- * Determine whether a given set can be partitioned into two subsets such that the sum of elements in both subsets is the same. 
+ * Given a multiset of integers, return whether it can be partitioned into two subsets 
+ * whose sums are the same.
+ *
+ * For example, given the multiset {15, 5, 20, 10, 35, 15, 10}, 
+ * it would return true, since we can split it up  into {15, 5, 10, 15, 10} and {20, 35}, 
+ * which both add up to 55.
+ *
+ * Given the multiset {15, 5, 20, 10, 35}, it would return false, since we can't split it up into two subsets 
+ * that add up to the same sum.
+ */
+
+/**
+ * Returns the sum of arr
  */
 const sum = (arr: number[]): number => {
     return arr.reduce((x, acc) => acc + x, 0);
 }
 
 /**
- * @example equiPartitionable([1, 5, 11, 5]) -> true because sum(1, 5, 5) = sum (11)
+ * Determines whether arr can be partitioned  into 2 subsets whose sums are the same.
+ * @example equiPartitionable([1, 5, 11, 5]) -> true because sum([1, 5, 5]) equals sum([11])
  */
 const equiPartitionable = (arr: number[]): boolean => {
     /**

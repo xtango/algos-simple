@@ -20,16 +20,19 @@ const canPartition = (arr: number[]): boolean => {
     }
 
     /**
-     * We move from right to left
-     * left           Right         leftSum  rightSum
-     * [1, 2, 4, 5]                 12       12-12=0
-     * [1, 2, 4]      [5]           12-5=7   0+5=5
-     * [2, 4]         [5, 1]        7-1=6    5+1=6  --> true
+     * We move from numbers from the left hand side to the right.
+     * Left           Right     Left Sum    RightSum
+     * -------------  --------  ---------   -----------------------------------------------
+     * @example Partionable
+     * [1, 2, 4, 5]   []        12          12-12=0
+     * [1, 2, 4]      [5]       12-5=7      0+5=5
+     * [2, 4]         [5, 1]    7-1=6       5+1=6  --> return true when leftSum == rightSum
      * 
      * @example Not partionable
      * [3, 4, 6]
-     * [3, 4]       [6]             7        6
+     * [3, 4]         [6]       7           6      --> return false when leftSum > rightSum 
      * 
+     * param i: right index. We start from array lenght -1 and decrement it.
      */
     const partitionHelper = (i: number, leftSum: number): boolean => {
         const rightSum = fullSum - leftSum;
@@ -40,7 +43,8 @@ const canPartition = (arr: number[]): boolean => {
         } 
         
         if (leftSum > rightSum) { // e.g  sum(1, 2, 4) > sum(5)
-            return partitionHelper(i - 1, leftSum + ) // move smallest from left to right
+            const leftIdx = arr.length() - i;
+            return partitionHelper(i - 1, leftSum - sorter[leftIdx] ) // move leftmost to the right
         }
 
         if (leftSum === rightSum) {

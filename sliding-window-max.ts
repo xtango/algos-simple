@@ -1,7 +1,7 @@
 /**
- * Sliding Window Max
+ * MAX OF SLIDING WINDOW
  */
- 
+
 /**
  * Double-Edged-Queue. Stores values in descending order
  */
@@ -14,7 +14,7 @@ type DEQ = number[];
  * @example deqPushSorted([3, 2, 0], 4) -> [4]
  */
 const deqPushSorted = (q: DEQ, val: number): DEQ => {
-    while (q.length > 1 && val > q[q.length -1]) {
+    while (q.length > 0 && val > q[q.length -1]) {
         q = deqPopRight(q);
     }
     q.push(val);
@@ -32,4 +32,3 @@ console.log(deqPopRight([1,2,3]).join(',') == '1,2');
 console.log(deqPushSorted([], 3).join(',') === '3');
 console.log(deqPushSorted([3, 2, 0], 1).join(',') === '3,2,1');
 console.log(deqPushSorted([3, 2, 0], 4).join(',') === '4');
- 

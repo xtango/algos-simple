@@ -9,30 +9,32 @@
  */
 
 /**
- * Double-Edged-Queue. Stores indices to values in descending order
+ * Double-Edged-Queue. Stores indices to values. When de-referenced the values are 
+ * in descending order
  */
 type DEQ = number[];
 
 /**
  * Pops at right until we find a larger elem. Then pushes at right.
  * 
- * @param arr The sequence of values
- * @param q Double-edge-queue of indices to arr
- * @param index The current index into arr.
+ * @param nums The sequence of values.
+ * @param q Queue of indices to nums.  When de-referenced, the resulant
+ *          values are in descending order.
+ * @param index The current index into 'nums'.
  * 
- * Though 'q' stores indices to values in 'arr' in descending order, 
- * for illustration, the example below show values instead of indices.
- * @example deqPushSorted([3, 2, 0], 1) -> [3, 2, 1]  
- * @example deqPushSorted([3, 2, 0], 4) -> [4]
+ * Though 'q' stores indices to values in 'nums', for easier understanding
+ * these examples use values instead of indices:
+ * @example deqPushSorted([3, 2, 0], 1) -> pop, push(1) and return [3, 2, 1]  
+ * @example deqPushSorted([3, 2, 0], 4) -> pop thrice, push(4) and return [4]
  */
 const deqPushSorted = (
-    arr: Readonly<number[]>,
+    nums: Readonly<number[]>,
     q: DEQ,
     index: number): DEQ => {
     while (q.length > 0
-        // When current val is greater than the back of queue, pop
-        // (the smaller val is no longer relevant)
-        && arr[index] > arr[q[q.length - 1]]) {
+        // When current num is greater than the back of queue, pop
+        // (the smaller num is no longer relevant to determine max)
+        && nums[index] > nums[q[q.length - 1]]) {
         q = deqPopRight(q);
     }
     q.push(index);

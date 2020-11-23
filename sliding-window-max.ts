@@ -52,9 +52,10 @@ const deqPushSorted = (
 
     while (qIndices.length > 0) {
         // Pop left if front is not in window 
-        if (deqFront(qIndices) < leftIdx) {
-            deqPopLeft(qIndices);
-        }
+        // if (deqFront(qIndices) < leftIdx) {
+        //     console.log('...[popL] qIndices, vals...', qIndices, qIndices.map(x => nums[x]));
+        //     qIndices = deqPopLeft(qIndices);
+        // }
 
         if (
             // Pop when 
@@ -66,12 +67,12 @@ const deqPushSorted = (
             (deqBack(qIndices) < leftIdx)
         ) {
             qIndices = deqPopRight(qIndices);
-            console.log('...[pop] qIndices, vals...', qIndices, qIndices.map(x => nums[x]))
+            console.log('...[popR] qIndices, vals...', qIndices, qIndices.map(x => nums[x])); 
         }
     }
 
     qIndices.push(rightIdx);
-    console.log('...[push] qIndices, vals..', qIndices, qIndices.map(x => nums[x]))
+    console.log('...[pushR] qIndices, vals..', qIndices, qIndices.map(x => nums[x])); 
     return qIndices;
 
 }

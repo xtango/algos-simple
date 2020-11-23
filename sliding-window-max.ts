@@ -23,6 +23,11 @@ const deqFront = (q: DEQ) => q[0];
  */
 const deqPopRight = (q: DEQ): DEQ => q.slice(0, q.length - 1);
 
+/**
+ * Returns a new q without the left-most elem.
+ */
+const deqPopLeft = (q: DEQ): DEQ => q.slice(1);
+
 
 /**
  * Pops at right until we find a larger elem. Then pushes at right.
@@ -42,23 +47,33 @@ const deqPushSorted = (
     qIndices: DEQ,
     rightIdx: number,
     k: number): DEQ => {
-    while (qIndices.length > 0
-        && (
+    // Left window index (inclusive)
+    const leftIdx = rightIdx - k - 1;
+
+    while (qIndices.length > 0) {
+        // Pop left if front is not in window 
+        if (deqFront(qIndices) < leftIdx) {
+            deqPopLeft(qIndices);
+        }
+
+        if (
             // Pop when 
             // a. Current num is greater than the back of queue
             // (the smaller num is no longer relevant to determine max)
             nums[rightIdx] > nums[deqBack(qIndices)]
             ||
             // or b. When q's back in no longer in the window
-            (deqBack(qIndices) < rightIdx - k)
-        )) {
-        qIndices = deqPopRight(qIndices);
-        console.log('...[pop] qIndices, vals...', qIndices, qIndices.map(x => nums[x]))
+            (deqBack(qIndices) < leftIdx)
+        ) {
+            qIndices = deqPopRight(qIndices);
+            console.log('...[pop] qIndices, vals...', qIndices, qIndices.map(x => nums[x]))
+        }
     }
 
     qIndices.push(rightIdx);
     console.log('...[push] qIndices, vals..', qIndices, qIndices.map(x => nums[x]))
     return qIndices;
+
 }
 
 const prettyWindow = (nums: Readonly<number[]>, k: Readonly<number>, rightIdx: number): string => {
@@ -81,7 +96,8 @@ const slideMax = (nums: Readonly<number[]>, k: Readonly<number>): number[] => {
         console.log(`--------i: ${i}, window--------- ${prettyWindow(nums, k, i)}`);
         q = deqPushSorted(nums, q, i, k);
 
-        if (i >= k) {
+        if (i >= k - 1) {
+            console.log('>>> max: ', nums[deqFront(q)]);
             maxList.push(nums[deqFront(q)])
         }
     }

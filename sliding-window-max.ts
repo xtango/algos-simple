@@ -1,12 +1,14 @@
 /**
  * MAX OF SLIDING WINDOW
- * 
  * Given an array nums, there is a sliding window of size k which is moving from
  * the very left of the array to the very right. You can only see the k numbers 
  * in the window. Each time the sliding window moves right by one position.
  * Return the max sliding window.
  *
  * Example: Input: nums = [1,3,-1,-3,5,3,6,7], and k = 3.  Output: [3,3,5,5,6,7] 
+ * 
+ * APPROACH
+ * Priority queue that store the indices of descending sorted values.
  */
 
 /**
@@ -65,10 +67,10 @@ const deqPushSorted = (
     const MAX_ITER = 10;
     let iter = 0; // Used to prevent stop while loop while debugging
 
-    // PopLleft if front is not in window 
-    if (qIndices.length > 0 && deqFront(qIndices) < rightIdx - k) {
+    // Pop Left if front is not in window 
+    if (qIndices.length > 0 && deqFront(qIndices) <= rightIdx - k) {
          qIndices = deqPopLeft(qIndices);
-         console.log(`[q pop left] ${deqPretty(qIndices, nums)}`);
+         console.log(`[q pop left] -> ${deqPretty(qIndices, nums)}`);
      }
 
     /**
@@ -85,19 +87,19 @@ const deqPushSorted = (
     }
 
 
-    // Pop until bigger found
+    // Pop Right until bigger found
     while (qIndices.length > 0
         && iter < MAX_ITER
         && (canPrioritize(qIndices)
         || !isBackInWindow(qIndices, rightIdx, k))
     ) {
         qIndices = deqPopRight(qIndices);
-        console.log(`[q pop right] ${deqPretty(qIndices, nums)}`);
+        console.log(`[q pop right] -> ${deqPretty(qIndices, nums)}`);
         iter++;
     }
 
     qIndices.push(rightIdx);
-    console.log(`[q push right] ${deqPretty(qIndices, nums)}`);
+    console.log(`[q push right] -> ${deqPretty(qIndices, nums)}`);
     return qIndices;
 
 }
@@ -110,13 +112,15 @@ const slideMax = (nums: number[], k: Readonly<number>): number[] => {
     let q: DEQ = []
     const maxList: number[] = [];
     for (let i = 0; i < nums.length; i++) {
-        console.log(`--------i: ${i}, window: ${prettyWindow(nums, k, i)}, ${deqPretty(q, nums)}`);
+        console.log('-'.repeat(50));
+        console.log(`i: ${i}, window: ${prettyWindow(nums, k, i)}, ${deqPretty(q, nums)}`);
         q = deqPushSorted(nums, q, i, k);
 
-        // if (i >= k - 1) {
-        //     console.log('>>> max: ', nums[deqFront(q)]);
-        //     maxList.push(nums[deqFront(q)])
-        // }
+        // Output
+        if (i >= k - 1) {
+            console.log(`${' '.repeat(20)} Max of ${prettyWindow(nums, k, i)} -> ${nums[deqFront(q)]}`);
+            maxList.push(nums[deqFront(q)])
+        }
     }
 
     return maxList;
@@ -138,8 +142,10 @@ const prettyWindow = (nums: Readonly<number[]>, k: Readonly<number>, rightIdx: n
 // Test deq
 console.log(deqBack([8, 7, 9]) === 9);
 console.log(deqBack([]) === undefined);
-// console.log(deqPopRight([1, 2, 3]).join(',') == '1,2');
-// console.log(deqPushSorted([3, 2, 0], [], 0).join(',') === '0');
-// console.log(deqPushSorted([3, 2, 0, 1, 4], [0, 1, 2], 3).join(',') === '0,1,3');
-// console.log(deqPushSorted([3, 2, 0, 1, 4], [0, 1, 2], 4).join(',') === '4');
-console.log(slideMax([1, 4, 0, 3, 2, 6], 3));
+console.log(deqPopRight([1, 2, 3]).join(',') == '1,2');
+console.log(deqPushSorted([3, 2, 0], [], 0, 3).join(',') === '0');
+console.log(deqPushSorted([3, 2, 0, 1, 4], [0, 1, 2], 3, 3).join(',') === '0,1,3');
+console.log(deqPushSorted([3, 2, 0, 1, 4], [0, 1, 2], 4, 3).join(',') === '4');
+
+// Test slide max
+console.log(slideMax([1, 4, 0, 3, 2, 6], 3).join(',') === '4,4,3,6');

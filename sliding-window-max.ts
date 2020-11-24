@@ -8,7 +8,7 @@
  * Example: Input: nums = [1,3,-1,-3,5,3,6,7], and k = 3.  Output: [3,3,5,5,6,7] 
  * 
  * APPROACH
- * Priority queue that store the indices of descending sorted values.
+ * Priority queue that stores the indices of descending sorted values in the sliding window.
  */
 
 /**

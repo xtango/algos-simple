@@ -1,7 +1,6 @@
 /**
  * FIFTEEN PUZZLE SOLVER
  */
-
 type Grid = number[][];
 
 interface State {
@@ -10,6 +9,15 @@ interface State {
 }
 
 interface Coord { y: number; x: number }
+
+const COORD_DELTA = {
+    up: { y: -1, x: 0 },
+    down: { y: 1, x: 0 },
+    right: { y: 0, x: 1 },
+    left: { y: 1, x: -1 }
+}
+
+type Neighbor = 'up' | 'down' | 'right' | 'left';
 
 const padNum = (num: number) => num.toString().padStart(3, ' ');
 
@@ -40,25 +48,19 @@ const cost = (g: Grid): number => {
     return cost;
 }
 
-const emptyCoordinate = (g: Grid): { x: number, y: number } => {
+/**
+ * The coordinate of the empty cell
+ */
+const emptyCell = (g: Grid): Coord => {
     for (let y = 0; y < g.length; y++) {
         for (let x = 0; x < g.length; x++) {
             if (g[y][x] === 0) {
-                return { x, y };
+                return { x, y }; // Found
             }
         }
     }
-    return { x: -1, y: -1 } // error
+    return { x: -1, y: -1 } // Not found -> error
 }
-
-const DELTAS = {
-    up: { y: -1, x: 0 },
-    down: { y: 1, x: 0 },
-    right: { y: 0, x: 1 },
-    left: { y: 1, x: -1 }
-}
-
-type Neighbor = 'up' | 'down' | 'right' | 'left';
 
 const cloneGrid = (g: Grid): Grid => g.map(r => [...r])
 
@@ -71,17 +73,18 @@ const isPosInBounds = (g: Grid, pos: Coord): boolean =>
 const inBounds = (g: Grid, emptyPos: Coord, neighbor: Neighbor): boolean =>
     isPosInBounds(g,
         {
-            y: emptyPos.y + DELTAS[neighbor].y,
-            x: emptyPos.x + DELTAS[neighbor].x
+            y: emptyPos.y + COORD_DELTA[neighbor].y,
+            x: emptyPos.x + COORD_DELTA[neighbor].x
         });
 
 
 /**
- * Moves neighbor 'from' into emptyPos specified by 'to'
+ * Moves neighbor 'from' into an empty cell specified by 'to'
  */
-const move = (g: Grid, from: Coord, to: Coord) => {
+const move = (g: Grid, from: Coord, to: Coord): Grid => {
     const clone = cloneGrid(g);
     clone[to.y][to.x] = g[from.y][from.x];
+    clone[from.y][from.x] = 0;
     return clone;
 }
 
@@ -96,10 +99,10 @@ const move = (g: Grid, from: Coord, to: Coord) => {
  * __ 14    14 12
  */
 const nextStates = (g: Grid): Grid[] => {
-    const emptyPos = emptyCoordinate(g);
+    const emptyPos = emptyCell(g);
 
-
-    [UP, DOWN, RIGHT, LEFT].forEach(dir => {
+    Object.keys(COORD_DELTA).map(neighbor => {
+        
 
     });
 }
@@ -123,4 +126,6 @@ const PUZZLE_1 = [
 console.log(cost(GOAL) === 0);
 console.log(prettyState({ grid: PUZZLE_1, cost: 2 }));
 console.log(cost(PUZZLE_1) === 2);
-console.log([emptyCoordinate(PUZZLE_1).y, emptyCoordinate(PUZZLE_1).x].join(',') === '3,3');
+console.log([emptyCell(PUZZLE_1).y, emptyCell(PUZZLE_1).x].join(',') === '3,3');
+console.log(move(PUZZLE_1, {y: 3, x: 2}, { y: 3, x: 3})[3][3] == 15);
+console.log(move(PUZZLE_1, {y: 3, x: 2}, { y: 3, x: 3})[3][2] == 0);

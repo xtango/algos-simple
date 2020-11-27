@@ -15,7 +15,7 @@
  * 
  * BASIC BUILDING BLOCKS
  * - State:     The grid, its cost and its previous state.
- * - Costing:   Functions to determine the cost of a state
+ * - Coster:    To determine the cost of a state
  * - Queue:     A priority queue to help explore states in order of lowest cost.
  * - Solver:    A* Search func that uses all of the above.
  */

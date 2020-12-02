@@ -1,6 +1,9 @@
 /**
  * LONGEST INCREASING SUB-SEQUENCE IN ARRAY
  * 
+ * A subsequence is a sequence that can be derived from another sequence by deleting some or
+ * no elements without changing the order of the remaining elements
+ *
  * Methodology
  * Approach 1: Store longest to the left of i that's smaller than seq[i]. Perf: O(n^2)
  * Approach 2: Bin Tree. TODO. Should be faster for bigger n.

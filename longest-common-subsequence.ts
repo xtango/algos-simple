@@ -1,13 +1,17 @@
 /**
  * LONGEST COMMON SUBSEQUENCE
  * 
- * a = 'xzdshaore', b = 'aldskhaxyre' -> 'share'
+ * LCS('xzdshaore', 'aldskhaxyre') => 5 // Common = 'share'
  */
 const lcs = (A: string, B: string) => {
 
-    // Memoization of LCS at (aIdx, bIdx)
-    let memo: number[][];
+    // 2D memoization of LCS at (aIdx, bIdx)
+    let memo: number[][]; /
 
+    /**
+     * Return the lenght of the longest subsequence at location (aIdx, bIdx)
+     * the indices into strings A and B respectively.
+     */ 
     const lcsHelper = (aIdx: number, bIdx: number, depth: number): number => {
         console.log(pretty(depth, aIdx, bIdx));
         let retVal = 0;
@@ -36,6 +40,9 @@ const lcs = (A: string, B: string) => {
         return `[Depth ${depth}] ${funcSignature}${lastChar}`;
     }
 
+    /**
+     * Initializes memo to -1
+     */
     const newMemo = () => {
         const mem = new Array(A.length);
         for (let i = 0; i < A.length; i++) {

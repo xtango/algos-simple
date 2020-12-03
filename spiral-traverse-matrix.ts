@@ -3,9 +3,13 @@
  * Traverse a matrix in a clock-wise spiral order.
  * 
  * Example
- * 1 2 3 
- * 4 5 6    -> 1 2 3 6 9 9 7 4 5
- * 7 8 9  
+ * 1 -> 2 -> 3 
+ *           |
+ *           v
+ * 4 -> 5    6    -> 1 2 3 6 9 8 7 4 5
+ * ^         |
+ * |         v
+ * 7 <- 8 <- 9  
  */
 
 type DirOffset = { y: number, x: number };
@@ -65,7 +69,7 @@ const spiralWalk = (mat: number[][]): number[] => {
 }
 
 /**
- * TESTS
+ * TEST
  */
 console.log('Test', spiralWalk(
     [[1, 2, 3],

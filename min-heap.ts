@@ -1,4 +1,5 @@
 /**
+ *      Min Heap           elems array 
  *          3              3        
  *        /  \             4
  *       4     8           8
@@ -15,44 +16,59 @@ class MinHeap {
 
 
     /**
-     * Inserts always in teh bottom-left empty node
+     * Inserts always in the bottom-left empty node
      */
     insert(data: number) {
+        console.log('[insert] data', data);
         const len = this.elems.push(data);
-        const idx = this.elems[len - 1];
+        let currentIdx = len - 1; // bottom
+        let parentIdx = this.parent(currentIdx);
+        console.log('[insert] parent idx', parentIdx);
         // Bubble up if parent is bigger
-        if (idx > 0 && this.parent(idx) > data) {
-            console.log('parent bigger - must bubble up');
+        while (parentIdx > -1 && this.elems[parentIdx] > this.elems[currentIdx]) {
+            console.log('[insert] parent bigger, bubbling up');
+            // swap
+            this.elems[currentIdx] = this.elems[parentIdx];
+            this.elems[parentIdx] = data;
+            currentIdx = parentIdx;
+            parentIdx = this.parent(currentIdx);
         }
+        console.log(`[insert] elems: ${this.elems.join(' ')}`);
     }
 
+    /**
+     * @example parent(0) -> -1
+     * @example parent(1) -> -1/2 = -.5 -> 0
+     * @example parent(2) -> 0/2 = 0.5 -> 0
+     */
     parent(idx: number): number {
-        return this.elems[(idx - 2) / 2];
+        return Math.round( (idx - 2) / 2); 
     }
 
     left(idx: number): number {
-        return this.elems[(idx * 2) + 1];
+        return (idx * 2) + 1;
     }
 
     pretty() {
-        // print root
+        let line = `\nMin Heap\n[0]${'.'.repeat(16)}${this.elems[0]}\n`; // root
         let i = 1;
-        console.log(`[0] ${'.'.repeat(16)}${this.elems[0]}`);
         let level = 1;
         while (i < this.elems.length) {
             let s = '.'.repeat(10 - level);
             for (let n = 0; n < level * 2; n++) {   // 0 -> 1, 1 => 2,  2 => 4
-                s += (i < this.elems.length ? '.'.repeat(5 - level) + this.elems[i] : '');
+                s += '.'.repeat(7 - level * 2) + (i < this.elems.length ? + this.elems[i] : '_');
                 i++;
             }
-            console.log(`[${level}] ${s}`);
-
+            line += `[${level}]${s}\n`;
             level++;
         }
+        return line;
     }
 }
 
-const x = new MinHeap([]);
-x.elems = [3, 4, 8, 9, 7, 10];
-
-x.pretty();
+/**
+ * TESTS
+ */
+const heap1 = new MinHeap([3, 4, 8, 10, 9, 7]);
+console.log(heap1.elems.join(' ') == '3 4 7 10 9 8');
+console.log(heap1.pretty());

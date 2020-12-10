@@ -1,11 +1,23 @@
 /**
- *      Min Heap           elems array 
- *          3              3        
- *        /  \             4
- *       4     8           8
- *      / \   / \          9           
- *     9  7  10            7
- *                         10
+ * MIN HEAP
+ * 
+ * A binary tree where:
+ * 1. the data of each node <= node's children.
+ * 2. the binary tree is complete (no gaps)
+ */
+
+/**
+ * We use an array to store the elements of the heap.
+ * In the example below, #n represents the idx into elems
+ * and the (x) represents the data value.
+ * 
+ *             MinHeap                    elems array 
+ *             #0 (3)                     3        
+ *             /      \                   4
+ *        #1 (4)       #2 (8)             8
+ *        /  \        /     \             9           
+ *   #3 (9)  #4 (7)  #5 (10)  null        7
+ *                                        10
  */
 class MinHeap {
     elems: number[] = []; // stores data
@@ -16,7 +28,7 @@ class MinHeap {
 
 
     /**
-     * Inserts always in the bottom-left empty node
+     * Inserts always in teh bottom-left empty node
      */
     insert(data: number) {
         console.log('[insert] data', data);
@@ -66,9 +78,6 @@ class MinHeap {
     }
 }
 
-/**
- * TESTS
- */
 const heap1 = new MinHeap([3, 4, 8, 10, 9, 7]);
 console.log(heap1.elems.join(' ') == '3 4 7 10 9 8');
 console.log(heap1.pretty());

@@ -14,10 +14,20 @@
  *      is considered valid.
  *
  * METHODOLOGY
- * We use a graph, whose edges weights represent directions.
+ * We use a graph with edges weights representing directions.
  * On adding a rule, we check if edge weights contradict existing weights.
  *
- * @example: validRule(['A S B', 'B S A']) -> false
+ */
+interface GraphNode {
+    edges: { [key: string]: { y: number; x: number } }
+}
+
+interface Graph { [key: string]: GraphNode }
+
+/**
+ * Parse rules that are in the form <from> <direction> <to>.
+ * Create nodes if they don't exist.
+ * @example: isValid(['A S B', 'B S A']) -> false
  *           Rule 1: 'A S B', A is south of B, gives edges1 = {
  *		           A: { B: {y: 1, x: undefined} }   // A is south of B
  *		           B: { A: {y: -1, x: undefined}}}  // B is north of A
@@ -28,34 +38,35 @@
  *                   A
  *          Rule 2: 'B S A' gives edges2 = {A: {y: 0, x: 0}, B: {y: 1}}
  *          which contradicts rule 1: graph1.B.y != graph2..B.y
- */
-interface GraphNode {
-    edges?: { [key: string]: { y: number; x: number } }
-}
-
-interface Graph { [key: string]: GraphNode }
-
-/**
- * Parse rules that are in the form <from> <direction> <to>.
- * Create nodes if they don't exist.
  * 
- * @returns Invalid if a rule is inconsistent with an existing rule.
+ * @returns False if a rule is inconsistent with another rule.
  */
 const isValid = (rules: string[]): boolean => {
     const graph: Graph = {};
 
-    const add = (rule: string) => {
-        const tokens = rule.split(' ');
-        console.log('rule tokens', tokens);
-        const [source, dir, target] = [tokens[0], tokens[1], tokens[2]];
-
-
-        if (graph[source] === undefined) {
-            graph[source] = { }
+    const createNodesWhenNotExists = (source: string, target: string) => {
+        if (!graph[source]) {
+            graph[source] = { edges: {} }
         }
         if (graph[target] === undefined) {
-            graph[target] = { }
+            graph[target] = { edges: {} }
         }
+    }
+
+    const addEdges = (source: string, target: string): void => {
+        // Set edge soure to target and vice versa.
+        graph[source].edges[target] = { y: 0, x: 0 };
+        graph[target].edges[source] = { y: 0, x: 0 };
+    }
+
+    /**
+     * Adds a rule
+     */
+    const add = (rule: string) => {
+        const tokens = rule.split(' ');
+        const [source, dir, target] = [tokens[0], tokens[1], tokens[2]];
+        createNodesWhenNotExists(source, target);
+
         console.log('graph: ', graph);
         return true;
     }
@@ -66,6 +77,4 @@ const isValid = (rules: string[]): boolean => {
 /**
  * Tests
  */
-
 console.log(isValid(['A NE B']));
-

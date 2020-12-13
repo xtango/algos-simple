@@ -18,11 +18,18 @@
  * On adding a rule, we check if edge weights contradict existing weights.
  *
  */
+interface DestinationDirection { [key: string]: { y: number; x: number } }
+
 interface GraphNode {
-    edges: { [key: string]: { y: number; x: number } }
+    edges: DestinationDirection;
 }
 
 interface Graph { [key: string]: GraphNode }
+
+const DIRECTION: DestinationDirection = {
+    'N': { y: -1, x: 0 },
+    'S': { y: 1, x: 0 }
+}
 
 /**
  * Parse rules that are in the form <from> <direction> <to>.
@@ -32,10 +39,10 @@ interface Graph { [key: string]: GraphNode }
  *		           A: { B: {y: 1, x: undefined} }   // A is south of B
  *		           B: { A: {y: -1, x: undefined}}}  // B is north of A
  *
- *                   B
+ *                     B
  *             south |   ^
  *   	             v   | north
- *                   A
+ *                     A
  *          Rule 2: 'B S A' gives edges2 = {A: {y: 0, x: 0}, B: {y: 1}}
  *          which contradicts rule 1: graph1.B.y != graph2..B.y
  * 
@@ -44,19 +51,21 @@ interface Graph { [key: string]: GraphNode }
 const isValid = (rules: string[]): boolean => {
     const graph: Graph = {};
 
-    const createNodesWhenNotExists = (source: string, target: string) => {
-        if (!graph[source]) {
-            graph[source] = { edges: {} }
+    const createNodesWhenNotExists = (start: string, dest: string) => {
+        if (!graph[start]) {
+            graph[start] = { edges: {} }
         }
-        if (graph[target] === undefined) {
-            graph[target] = { edges: {} }
+        if (graph[dest] === undefined) {
+            graph[dest] = { edges: {} }
         }
     }
 
-    const addEdges = (source: string, target: string): void => {
-        // Set edge soure to target and vice versa.
-        graph[source].edges[target] = { y: 0, x: 0 };
-        graph[target].edges[source] = { y: 0, x: 0 };
+    /**
+     * Set edge soure to target and vice versa.
+     */
+    const addEdges = (start: string, dest: string, dir: string): void => {
+        graph[start].edges[dest] = DIRECTION[dir];
+        graph[dest].edges[start] = { y: DIRECTION[dir].y * -1, x: DIRECTION[dir].x * -1};
     }
 
     /**
@@ -64,8 +73,9 @@ const isValid = (rules: string[]): boolean => {
      */
     const add = (rule: string) => {
         const tokens = rule.split(' ');
-        const [source, dir, target] = [tokens[0], tokens[1], tokens[2]];
-        createNodesWhenNotExists(source, target);
+        const [start, dir, target] = [tokens[0], tokens[1], tokens[2]];
+        createNodesWhenNotExists(start, target);
+        addEdges(start, target, dir);
 
         console.log('graph: ', graph);
         return true;
@@ -77,4 +87,5 @@ const isValid = (rules: string[]): boolean => {
 /**
  * Tests
  */
-console.log(isValid(['A NE B']));
+console.log(isValid(['A S B']);
+//console.log(isValid(['A S B', 'B S A']));

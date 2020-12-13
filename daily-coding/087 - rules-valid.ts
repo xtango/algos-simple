@@ -17,18 +17,17 @@
  *
  * METHODOLOGY
  * We use a graph, whose edges weights represent directions.
- * When we add a rule, check if edge weights contradict existing weights.
+ * On adding a rule, we check if edge weights contradict existing weights.
  *
  * @example: validRule(['A S B', 'B S A']) -> false
  * Rule 1: 'A S B', A is south of B, gives graph1 = {
- *		A: edges: { B: {y: 1, x: undefined}} // A is south of B
- *		B: edges: { A: {y: -1, x: undefined}}// B is north of A
- *		}
- *              B
- *      south |   ^
- *   	      v   | north
- *              A
- *      Edges:  { N: { y: -1, x: 0}, S: { y: 1, x: 0} }
+ *		           A: edges: { B: {y: 1, x: undefined}}  // A is south of B
+ *		           B: edges: { A: {y: -1, x: undefined}} // B is north of A
+ *		        }
+ *               B
+ *       south |   ^
+ *   	         v   | north
+ *               A
  * Rule 2: 'B S A' gives graph2 = {A: edges: {y: 0, x: 0}, B: {y: 1}}
  *         which contradicts rule 1: graph1.B.y != graph2..B.y
  *

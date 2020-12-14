@@ -64,13 +64,6 @@ const isValid = (rules: string[]): boolean => {
         graph[key] = { edges: {} }
     }
 
-    /**
-     * Set edge soure to target and vice versa.
-     *                     B
-     *             south |   ^
-     *   	             v   | north
-     *                     A
-     */
     const addEdge = (start: string, dest: string, y: number, x: number): void => {
         graph[start].edges[dest] = { y, x };
     }

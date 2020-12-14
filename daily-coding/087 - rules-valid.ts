@@ -17,14 +17,15 @@
  * We use a graph with edges weights representing directions.
  * On adding a rule, we check if edge weights contradict existing weights.
  */
+
 interface DestDirection { [key: string]: { y: number; x: number } }
 interface GraphNode { edges: DestDirection; }
 interface Graph { [key: string]: GraphNode }
 
 /**
- *      ---> X
- *      |
- *      v Y
+ *  ---> X
+ *  |
+ *  v Y
  */
 const DEST_OFFSET: DestDirection = {
     'N': { y: -1, x: 0 },
@@ -49,11 +50,10 @@ const tokenize = (rule: string) => {
  * Create nodes and edges and compares existing edge weights.
  * @example: isValid(['A S B', 'B S A']) -> false
  *           Rule 1: 'A S B', A is south of B, gives edges1 = {
- *		           A: { B: {y: 1, x: undefined} }   // A is south of B
- *		           B: { A: {y: -1, x: undefined}}}  // B is north of A
-
- *          Rule 2: 'B S A' gives edges2 = {A: {y: 0, x: 0}, B: {y: 1}}
- *          which contradicts rule 1: graph1.B.y != graph2..B.y
+ *		             A: { B: {y: 1, x: undefined} }   // A is south of B
+ *		             B: { A: {y: -1, x: undefined}}}  // B is north of A
+ *           Rule 2: 'B S A' gives edges2 = {A: {y: 0, x: 0}, B: {y: 1}}
+ *                   which contradicts rule 1: graph1.B.y != graph2..B.y
  * 
  * @returns False if a rule is inconsistent with another rule.
  */
@@ -73,13 +73,10 @@ const isValid = (rules: string[]): boolean => {
      */
     const sameDirection = (start: string, dest: string, dir: string): boolean => {
         const edge = graph[start].edges[dest];
-        if (edge === undefined) {
-            return true
-        } else {
-            return (edge.y === 0 || DEST_OFFSET[dir].y === 0 || edge.y === DEST_OFFSET[dir].y)
-                &&
-                (edge.x === 0 || DEST_OFFSET[dir].x === 0 || edge.x === DEST_OFFSET[dir].x);
-        }
+        const offset = DEST_OFFSET[dir];
+        return (edge === undefined)
+            ? true
+            : (edge.y * offset.y) !== -1 && (edge.x * offset.x) !== -1;
     }
 
     /**
@@ -106,7 +103,7 @@ const isValid = (rules: string[]): boolean => {
         return valid;
     }
 
-    console.log(`\nVALIDATE RULE [ ${rules.map(x=>`'${x}'`).join(', ')} ]`);
+    console.log(`\nVALIDATE RULE [ ${rules.map(x => `'${x}'`).join(', ')} ]`);
     return rules.every(r => add(r))
 }
 

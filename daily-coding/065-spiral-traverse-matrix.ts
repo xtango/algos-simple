@@ -1,5 +1,6 @@
 /**
- * SPIRAL WALK
+ *                                  065 - SPIRAL WALK
+ * This problem was asked by Amazon.
  * Traverse a matrix in a clock-wise spiral order.
  * 
  * Example
@@ -47,9 +48,7 @@ const spiralWalk = (mat: number[][]): number[] => {
 
     let direction: DirOffset = { y: 0, x: 1 } // Move right initially
 
-    let y = 0;
-    let x = 0;
-    let i = 0;
+    let [y, x, i] = [0, 0, 0];
     const out = [];
     const MAX_I = mat.length * mat[0].length;
     

@@ -22,6 +22,6 @@
  * 
  * Important:
  * The problem statement asks for 0(1) time for both the set() and get(). Using minHeap,
- * getting the minimum item without removing it, then it's indeed O(1); but modiying 
- * the  heap (e.g. removing the first item), it's O(log n).
+ * getting the minimum item without removal, is indeed O(1); but modifying 
+ * the  heap (e.g. removing the first item), is an O(log n) operation.
  */

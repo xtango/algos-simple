@@ -10,14 +10,15 @@
  * We use an array to store the elements of the heap.
  * In the example below, #n represents the idx into elems
  * and the (x) represents the data value.
- * 
- *             MinHeap                    elems array 
- *             #0 (3)                     3        
- *             /      \                   4
- *        #1 (4)       #2 (8)             8
- *        /  \        /     \             9           
- *   #3 (9)  #4 (7)  #5 (10)  null        7
- *                                        10
+ *                                        Array Store
+ *            MIN HEAP                    -----------
+ *                                        Idx   Value
+ *             #0 (3)                     0     3        
+ *             /      \                   1     4
+ *        #1 (4)       #2 (8)             2     8
+ *        /  \        /     \             3     9           
+ *   #3 (9)  #4 (7)  #5 (10)  null        4     7
+ *                                        5     10
  */
 class MinHeap {
     elems: number[] = []; // stores data
@@ -28,7 +29,7 @@ class MinHeap {
 
 
     /**
-     * Inserts always in teh bottom-left empty node
+     * Inserts always in the bottom-left empty node
      */
     insert(data: number) {
         console.log('[insert] data', data);

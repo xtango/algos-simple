@@ -23,6 +23,13 @@
  * Output: 2
  * It takes 1 step to move from (0, 0) to (1, 1). It takes one more step to
  * move from (1, 1) to (1, 2). 
+ *
+ * SOLUTION
+ * Aspects that make this a trivial geometry problem rather than a search problem:
+ * 1. You are already given the order in which you need to cover the points. 
+ *    (Had the problem not given you the order, you would have to search 
+ *    for the optimal path).
+ * 2. The minimum number of steps from point A to B is a strikingly simple formula.
  */
 
 type Point = number[];
@@ -46,22 +53,23 @@ const minStepsToCover = (points: Point[]) => {
     /**
      * @param point The current point.
      * @param remaining The rest of the points.
-     * @param accumSteps, accumPath The accumulated number of steps and path.
+     * @param accumSteps, accumPath The accumulated number of steps and path (for debugging),
      * @parama depth Recursion depth.
      */
-    const helper = (point: Point, remaining: Point[], accumSteps: number, accumPath: string, depth: number = 0): number => {
+    const helper = (
+        point: Point,
+        remaining: Point[], accumSteps: number,
+        accumPath: string,
+        depth: number = 0): number => {
         const path = accumPath + '->' + prettyPoint(point);
-        console.log(`[depth: ${depth}] curr: ${prettyPoint(point)}, cumul steps: ${accumSteps}\n\tpath: ${path}`);
+        //console.log(`[depth: ${depth}] curr: ${prettyPoint(point)}, cumul steps: ${accumSteps}\n\tpath: ${path}`);
 
         // Base case
         if (remaining.length === 0) {
             return accumSteps;
         }
 
-        // Prioritize remaining
-        const remainingPrioritized = remaining.sort((a, b) => minStepsFromTo(point, a) - minStepsFromTo(point, b));
-
-        const minSteps = minStepsFromTo(point, remainingPrioritized[0]);
+        const minSteps = minStepsFromTo(point, remaining[0]);
         return helper(remaining[0], remaining.slice(1), accumSteps + minSteps, path, depth + 1);
     }
 
@@ -84,5 +92,4 @@ const minStepsToCover = (points: Point[]) => {
 console.log(minStepsFromTo([0, 0], [2, 3]) == 3);
 console.log(minStepsToCover([[0, 0], [1, 1], [1, 2]]) == 2);
 console.log(minStepsToCover([[0, 0], [1, 2], [1, 3]]) == 3);
-// Same as above but in different order
-console.log(minStepsToCover([[0, 0], [1, 3], [1, 2]]) == 3); 
+console.log(minStepsToCover([[0, 0], [1, 3], [1, 2]]) == 4); 

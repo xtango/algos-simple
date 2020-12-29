@@ -14,6 +14,13 @@
  * if a < c or a==c and b < d.
  */
 
+
+/**
+ * Return [0, 1, ... n] instead of true in the pseudocde
+ * This simplifies the filtering.
+ */
+const arrayIndices = (n: number) => [...Array(n + 1).keys()];
+
 /**
  * Generates primes using the Sieve of Eratoshenes
  * 
@@ -29,9 +36,7 @@
  *   return all i such that A[i] is true.
  */
 const sieveEratoshenes = (n: number): number[] => {
-    // Initialize to [0, 1, ... n] instead of true in the pseudocde
-    // This simplifies the filtering.
-    const primes = [...Array(n + 1).keys()];
+    const primes = arrayIndices(n);
 
     const sqrt = Math.sqrt(n);
     for (let i = 2; i <= sqrt; i++) {
@@ -41,7 +46,7 @@ const sieveEratoshenes = (n: number): number[] => {
             }
         }
     }
-    return primes.filter(x => x !== 0 && x !== 1);
+    return primes.filter(x => x > 1);
 }
 
 const sumPrimes = (sumsTo: number): number[] => {
@@ -59,5 +64,5 @@ const sumPrimes = (sumsTo: number): number[] => {
 /**
  * ASSERTIONS
  */
-console.log(sieveEratoshenes(30).join(' ') ===  '2 3 5 7 11 13 17 19 23 29');
+console.log(sieveEratoshenes(30).join(' ') === '2 3 5 7 11 13 17 19 23 29');
 console.log(sumPrimes(10).join(' ') == '3 7');

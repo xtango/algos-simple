@@ -14,7 +14,6 @@
  * if a < c or a==c and b < d.
  */
 
-
 /**
  * Return the sequence [0, 1, ... n] instead of true in the pseudocde. This simplifies the filtering.
  */

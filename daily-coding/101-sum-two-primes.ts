@@ -16,10 +16,9 @@
 
 
 /**
- * Return [0, 1, ... n] instead of true in the pseudocde
- * This simplifies the filtering.
+ * Return the sequence [0, 1, ... n] instead of true in the pseudocde. This simplifies the filtering.
  */
-const arrayIndices = (n: number) => [...Array(n + 1).keys()];
+const sequence = (n: number) => [...Array(n + 1).keys()];
 
 /**
  * Generates primes using the Sieve of Eratoshenes
@@ -36,8 +35,7 @@ const arrayIndices = (n: number) => [...Array(n + 1).keys()];
  *   return all i such that A[i] is true.
  */
 const sieveEratoshenes = (n: number): number[] => {
-    const primes = arrayIndices(n);
-
+    const primes = sequence(n);
     const sqrt = Math.sqrt(n);
     for (let i = 2; i <= sqrt; i++) {
         if (primes[i] !== 0) {
@@ -49,6 +47,9 @@ const sieveEratoshenes = (n: number): number[] => {
     return primes.filter(x => x > 1);
 }
 
+/**
+ * Return two prime numbers whose sum will be equal to sumsTo
+ */
 const sumPrimes = (sumsTo: number): number[] => {
     const primes = sieveEratoshenes(sumsTo);
     for (let i = 0; i <= primes.length; i++) {

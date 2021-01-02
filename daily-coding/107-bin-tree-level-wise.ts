@@ -13,7 +13,7 @@
  *     4   5
  */
 
-interface BinTreeNode {val: number; left?: BinTreeNode; right?: BinTreeNode;}
+interface BinTreeNode { val: number; left?: BinTreeNode; right?: BinTreeNode; }
 
 /**
  * Recursive function to return values level-wise, i.e. in sorted order.
@@ -24,13 +24,12 @@ interface BinTreeNode {val: number; left?: BinTreeNode; right?: BinTreeNode;}
  */
 const levelOrder = (node: BinTreeNode, orderedAccum: number[] = []): number[] => {
     orderedAccum.push(node.val);
-    const q = [node.left as BinTreeNode, node.right as BinTreeNode]
-        .filter(x => x !== undefined);
-
+    const q = [node.left, node.right].filter(x => x !== undefined);
     while (q.length > 0) {
         const head = q.shift();
         orderedAccum = levelOrder(head as BinTreeNode, orderedAccum);
     }
+
     return orderedAccum;
 }
 

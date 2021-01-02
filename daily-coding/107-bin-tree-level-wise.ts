@@ -13,44 +13,31 @@
  *     4   5
  */
 
-interface BinTreeNode {
-    val: number;
-    left?: BinTreeNode;
-    right?: BinTreeNode;
-}
+interface BinTreeNode {val: number; left?: BinTreeNode; right?: BinTreeNode;}
 
 /**
- * Returns node values level-wise, i.e. in sorted order
+ * Recursive function to return values level-wise, i.e. in sorted order.
+ * 
+ * @param node Root of the binary tree
+ * @param orderedAccum Accumulator of the values of the nodes visited.
+ * @returns The node values in sorted order.
  */
-const levelOrder = (root: BinTreeNode): number[] => {
-    
-    
-    const helper = (node: BinTreeNode) => {
-        console.log('[helper]->', root.val);
-        const q: BinTreeNode[] = [];
-        if (node.left) {
-            q.push(node.left);
-        }
-        console.log('[helper] q: ', q);
-        if (node.right) {
-            q.push(node.right);
-        }
-        console.log('[helper] q: ', q);
-        while (q.length > 0) {
-            const head = q.shift();
-            helper(head as BinTreeNode);
-        }
+const levelOrder = (node: BinTreeNode, orderedAccum: number[] = []): number[] => {
+    orderedAccum.push(node.val);
+    const q = [node.left as BinTreeNode, node.right as BinTreeNode]
+        .filter(x => x !== undefined);
+
+    while (q.length > 0) {
+        const head = q.shift();
+        orderedAccum = levelOrder(head as BinTreeNode, orderedAccum);
     }
-
-    helper(root);
-    return [];
-
+    return orderedAccum;
 }
 
 /**
- * ASSERTIONS
+ * ASSERTION
  */
-levelOrder({
+const tree1 = {
     val: 1,
     left: { val: 2 },
     right: {
@@ -58,4 +45,5 @@ levelOrder({
         left: { val: 4 },
         right: { val: 5 },
     }
-})
+};
+console.log(levelOrder(tree1).join(' ') === "1 2 3 4 5");

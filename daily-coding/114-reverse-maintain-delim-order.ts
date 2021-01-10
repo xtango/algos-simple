@@ -12,44 +12,46 @@
  * "hello//world:here"
  */
 
-const reverseWithDelimeters = (input: string, delims: string): string => {
-    console.log(`${'='.repeat(15)} REVERSE ${'='.repeat(15)}\n${input}`);
-    const isDelim = (char: string): boolean => delims.indexOf(char) > -1;
 
-    const wordStack: string[] = [];
-    const delimStack: string[] = [];
-    let wordAccum = ''; //  word accumulator, e.g. 'her'
-    let delimAccum = ''; //  delimiter accumulator, e.g. '//'
+type State = { stack: string[], accum: string };
+
+const reverseWithDelimeters = (input: string, delims: string): string => {
+    const word: State = { stack: [], accum: '' };
+    const delim: State = { stack: [], accum: '' };
+
+    console.log(`${'='.repeat(15)} REVERSE ${'='.repeat(15)}\n${input}`);
+
+    const isDelim = (char: string): boolean => delims.indexOf(char) > -1;
 
     for (let i = 0; i < input.length; i++) {
         if (isDelim(input[i])) {
-            if (delimAccum.length === 0) { // prev char was not a delim
-                wordStack.push(wordAccum);
-                wordAccum = '';
+            if (delim.accum.length === 0) { // prev char was not a delim
+                word.stack.push(word.accum);
+                word.accum = '';
             }
-            delimAccum += input[i];
-        } else {
-            if (wordAccum.length === 0 && delimAccum.length > 0) {
-                delimStack.push(delimAccum);
-                delimAccum = '';
+            delim.accum += input[i];
+        } else { // Not delim
+            if (word.accum.length === 0 && delim.accum.length > 0) {
+                delim.stack.push(delim.accum);
+                delim.accum = '';
             }
 
-            // Special handlinkg for last char
+            // Special case for last char
             if (i === input.length - 1) {
-                wordStack.push(wordAccum + input[i]);
+                word.stack.push(word.accum + input[i]);
             }
 
-            wordAccum += input[i];
+            word.accum += input[i];
         }
 
-        console.log('[word: accum, stack ]', wordAccum, wordStack);
-        console.log('[delim: accum, stack]', delimAccum, delimStack);
+        console.log(`[${i} ${input[i]}]\nWord ${JSON.stringify(word)} \nDelim ${JSON.stringify(delim)}`);
     }
 
-    let reversed = wordStack[wordStack.length - 1];
+
+    let reversed = word.stack[word.stack.length - 1];
     let delimIdx = 0;
-    for (let i = wordStack.length - 2; i >= 0; i--) {
-        reversed += delimStack[delimIdx] + wordStack[i];
+    for (let i = word.stack.length - 2; i >= 0; i--) {
+        reversed += delim.stack[delimIdx] + word.stack[i];
         delimIdx++;
     }
     return reversed;
@@ -58,6 +60,6 @@ const reverseWithDelimeters = (input: string, delims: string): string => {
 /**
  * ASSERTIONS
  */
-console.log(reverseWithDelimeters('hello/world:here', ':/') === 'here/world:hello'); // passes
-console.log(reverseWithDelimeters("hello//world:here", ':/') === 'here//world:hello'); // passes
-//console.log(reverseWithDelimeters('hello/world:here/', ':/')); // fails
+// console.log(reverseWithDelimeters('hello/world:here', ':/') === 'here/world:hello'); // passes
+// console.log(reverseWithDelimeters("hello//world:here", ':/') === 'here//world:hello'); // passes
+console.log(reverseWithDelimeters('hello/world:here/', ':/')); // fails

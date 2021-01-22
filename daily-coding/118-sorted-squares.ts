@@ -6,8 +6,8 @@
  * For example, given [-9, -2, 0, 2, 3], return [0, 4, 4, 9, 81].
  * 
  * SOLUTION
- * Recognize that the last number in the input is the last number in the output.
  * We use 2 pointers that traverse from outside left and outside right until they meet inside.
+ * Move the appropriate pointer if the number squared is larger.
  */
 const sortedSquares = (input: number[]): number[] => {
     let [left, right] = [0, input.length - 1];

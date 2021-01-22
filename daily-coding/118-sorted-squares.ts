@@ -6,7 +6,7 @@
  * For example, given [-9, -2, 0, 2, 3], return [0, 4, 4, 9, 81].
  * 
  * SOLUTION
- * We use 2 pointers that traverse from outside left and outside right until they meet inside.
+ * We use 2 pointers that traverse from outermost-left and outermost-right until they meet inside.
  * Move the appropriate pointer if the number squared is larger.
  */
 const sortedSquares = (input: number[]): number[] => {

@@ -1,5 +1,5 @@
 /**
- * RECONSTRUCT BIN TREE
+ *                          RECONSTRUCT BIN SEARCH TREE
  * @see: bin-tree-traversal.ts gives an explanation of pre, in, and post-order traversal of a binary tree.
  *
  * CHALLENGE Given the sequence of keys visited by a postorder traversal of a binary

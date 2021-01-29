@@ -48,18 +48,22 @@ const minTree = (root: BSTNode): BSTNode | undefined => {
  * Traverse upwards using parent links until until node R is a left child of its parent.
  * The parent P of such a node is the IOS.
  */
-const findSuccInAncestors(root: BSTNode): BSTNode => {
-    if (root) {
-        
+const findSuccInAncestors = (root: BSTNode): BSTNode => {
+    let node = root;
+    while (node.parent) {
+        if (node.parent.left === node) {
+            return node.parent;
+        }
+        node = node.parent;
     }
-
+    return node;
 }
 
 const inOrderSucc = (root: BSTNode): BSTNode | undefined => {
     if (root.right) {
         return minTree(root.right);
     } else {
-        return findInAncestors(root)
+        return findSuccInAncestors(root);
     }
 }
 
@@ -102,3 +106,4 @@ n14.parent = n12;
 
 console.log(minTree(n20)?.val === 4);
 console.log(minTree(n12)?.val === 10);
+

@@ -34,12 +34,12 @@
 
 interface BSTNode { val: number; parent?: BSTNode; left?: BSTNode; right?: BSTNode }
 
-const minTree = (root: BSTNode): BSTNode | undefined => {
+const minTree = (root: BSTNode): BSTNode => {
     // console.log('minTree: root val', root.val);
     if (!root.left && !root.right) {
         return root;
     } else if (!root.left) {
-        return root.right;
+        return root.right as BSTNode;
     } else {
         return minTree(root.left);
     }
@@ -59,7 +59,10 @@ const findSuccInAncestors = (root: BSTNode): BSTNode => {
     return node;
 }
 
-const inOrderSucc = (root: BSTNode): BSTNode | undefined => {
+/**
+ * Returns the node with the next bigger value.
+ */
+const inOrderSucc = (root: BSTNode): BSTNode => {
     if (root.right) {
         return minTree(root.right);
     } else {
@@ -69,14 +72,6 @@ const inOrderSucc = (root: BSTNode): BSTNode | undefined => {
 
 /**
  * ASSERTIONS
- */
-const subtree1: BSTNode = {
-    val: 12,
-    left: { val: 10 },
-    right: { val: 14 }
-};
-
-/**
  *                   20
  *                  /  \
  *                 8    22
@@ -106,4 +101,10 @@ n14.parent = n12;
 
 console.log(minTree(n20)?.val === 4);
 console.log(minTree(n12)?.val === 10);
-
+console.log(findSuccInAncestors(n14).val === 20);
+console.log(inOrderSucc(n4).val === 8);
+console.log(inOrderSucc(n10).val === 12);
+console.log(inOrderSucc(n14).val === 20);
+console.log(inOrderSucc(n12).val === 14);
+console.log(inOrderSucc(n20).val === 22);
+console.log(inOrderSucc(n22).val === 22); // Rightmost leaf special case (no successor)

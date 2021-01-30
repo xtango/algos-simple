@@ -1,11 +1,12 @@
 /**
-*           LINKED LIST CLONE RANDOM
+ *      
 * This question was asked by Snapchat.
 * 
 * Given the head to a singly linked list, where each node also has a “random” pointer
 * that points to anywhere in the linked list,  deep clone the list.
 */
 interface SLLNode { val: number; next?: SLLNode; randomPtr?: SLLNode }
+interface SourceClonePair {source:SLLNode, clone: SLLNode, next?: SourceClonePair}
 
 /**
  * Clone keeping an array of source to copy of each node.
@@ -14,18 +15,27 @@ interface SLLNode { val: number; next?: SLLNode; randomPtr?: SLLNode }
 const deepClone = (root: SLLNode): SLLNode => {
     console.log('deepClone: ', pretty(root));
     let clone: SLLNode = { val: root.val }
-    let node: SLLNode = root;
-    let cloneHead: SLLNode = clone;
+    let source: SLLNode = { val: root.val, next: root.next };
+    let sourceTargetPair: SourceClonePair = {source, clone};
     //const sourceToCloneMap: {[SLLNode]: SLLNode};
+    const cloneHead = clone;
 
-    while (node.next) {
-        console.log('node: ', node);
-        if (node.next) {
-            clone.next = { val: node.next.val };
+    let idx = 0;
+    while (source.next) {
+        if (source.next) {
+            clone.next = { val: source.next.val};
+            sourceTargetPair.next = {source, clone} 
             clone = clone.next;
         }
-        node = node.next;
+        source = source.next;
+        
     }
+
+    // build source
+    // while (sourceTargetPair.next) {}
+    //     const src = sourceTargetPair.source;
+    // }
+
     return cloneHead;
 }
 

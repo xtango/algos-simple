@@ -1,5 +1,5 @@
 /**
-*                  #131 [Medium] CLONE A LINKED LIST WITH RANDOM POINTER
+*         #131 [Medium] CLONE A LINKED LIST CONTAINING RANDOM POINTER
 *
 * This question was asked by Snapchat.
 * 

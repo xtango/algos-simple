@@ -56,7 +56,36 @@ const onlyOnceB = (arr: number[]): number[] => {
 }
 
 /**
+ * Approach C: XOR since we are given that there are exacly 2 elems in occur only once.
+ * 
+ * @see javascript XOR: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_XOR
+ *      const a = 5;        // 00000000000000000000000000000101     32 bit representation
+ *      const b = 3;        // 00000000000000000000000000000011     32 bit representation
+ *      console.log(a ^ b); // 00000000000000000000000000000110     32 bit representation   ->  Output: 6
+ */
+const onlyOnceC = (arr: number[]): number[] => {
+    let xored = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        xored ^= arr[i];
+    }
+    const rightmostSetBit = xored & ~(xored - 1);
+
+    let [a, b] = [0, 0];
+    arr.forEach(num => {
+        if (num & rightmostSetBit) {
+            a ^= num;
+        } else {
+            b ^= num
+        }
+    });
+
+    return [a, b]
+}
+
+/**
  * ASSERTIONS
  */
-console.log(onlyOnceA([2, 4, 6, 8, 10, 2, 6, 10]).join(' ') === '4 8');
-console.log(onlyOnceB([2, 4, 6, 8, 10, 2, 6, 10]).join(' ')  === '4 8');
+const ELEMS = [2, 4, 6, 8, 10, 2, 6, 10]);
+console.log(onlyOnceA(ELEMS).join(' ') === '4 8');
+console.log(onlyOnceB(ELEMS).join(' ') === '4 8');
+console.log(onlyOnceC(ELEMS).join(' ') === '4 8';

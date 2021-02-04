@@ -62,6 +62,8 @@ const onlyOnceB = (arr: number[]): number[] => {
  *      const a = 5;        // 00000000000000000000000000000101     32 bit representation
  *      const b = 3;        // 00000000000000000000000000000011     32 bit representation
  *      console.log(a ^ b); // 00000000000000000000000000000110     32 bit representation   ->  Output: 6
+ *
+ * For this problem, it is important to note that XORing a number with itself will give 0.
  */
 const onlyOnceC = (arr: number[]): number[] => {
     let xored = arr[0];

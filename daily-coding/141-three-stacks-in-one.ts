@@ -1,4 +1,3 @@
-
 /**
  *              #141 [Hard] - 3 STACKS USING SINGLE list
  * 
@@ -13,72 +12,137 @@
  *        pass
  */
 
+interface StackIdx { top: number; bottom: number };
+
+/**
+ * In-place update of list.
+ */
+const update = (list: number[], stackIndices: StackIdx[], stackNum: number, item: number) => {
+    const incr = stackNum === 2 ? -1 : 1;
+    list[stackIndices[stackNum].top + incr] = item;
+    stackIndices[stackNum].top += incr;
+}
+
 /**                     
- *                    mid
+ *                    third
  * ---------------------------------------------------
  * |  STACK 0 -->      | STACK 1 -->     <-- STACK 2 |
  * ---------------------------------------------------
  * ^            ^      ^           ^     ^           ^
- * b0          t0      b1         t1     t2         b2
+ * bottom0    top0    bottom1    top1  top2      bottom2
  */
 class Stack {
     list: number[];
-    stack: { top: number; bottom: number }[];
+    indices: StackIdx[]; // The indices b0, t0, b1, t1 pictured above
 
     constructor(readonly initSize = 20) {
         this.list = new Array(this.initSize);
-        this.stack = this.nextState(this.list.length);
+        this.indices = this.nextIndices(this.list.length);
     }
 
-    nextState(len: number) {
-        const mid = Math.floor(len / 2);
+    nextIndices(len: number) {
+        const third = Math.floor((len - 1) / 3);
         return [
             { top: -1, bottom: -1 }, // one past to the left
-            { top: mid, bottom: mid },
+            { top: third, bottom: third },
             { top: len, bottom: len }] // one past to the right
-
     }
 
-    pop(stackNum: number): number {
-
+    pop(stackNum: number): number | undefined {
+        if (!this.isEmpty(stackNum)) {
+            const topIdx = this.indices[stackNum].top;
+            const item = this.list[topIdx];
+            const incr = stackNum < 2 ? -1 : 1;
+            this.indices[stackNum].top += incr;
+            return item;
+        } else {
+            return undefined;
+        }
     }
 
     canPush(stackNum: number): boolean {
         if (stackNum === 0) {
-            return this.stack[0].top < this.stack[1].bottom - 1;
+            return this.indices[0].top < this.indices[1].bottom - 1;
         } else {
-            return this.stack[1].top < this.stack[2].top - 1;
+            return this.indices[1].top < this.indices[2].top - 1;
         }
     }
 
     push(item: number, stackNum: number): Stack {
-        const add = () => {
-            const incr = stackNum === 2 ? -1 : 1;
-            this.list[this.stack[stackNum].top + incr] = item;
-            this.stack[stackNum].top += incr;
-        }
-
-        console.log('push stackNum, item', stackNum, item);
+        // console.log('push stackNum, item', stackNum, item);
         if (!this.canPush(stackNum)) {
-            this.resize();
+            console.log('resizing');
+            const cloned = this.cloneList(this.list.length + this.initSize);
+            this.list = cloned.newList;
+            this.indices = cloned.newIndices;
+            console.log('after resize', this.list);
         }
-        add();
+        update(this.list, this.indices, stackNum, item);
         return this;
     }
 
-    resize() {
-        console.log('resize under construction');
+    isEmpty(stackNum: number): boolean {
+        return this.indices[stackNum].top === this.indices[stackNum].bottom
     }
+
+    /**
+     * Clones the list to a new size
+     */
+    cloneList(size: number): { newList: number[], newIndices: StackIdx[] } {
+        console.log('clone to new list of size', size);
+        const newList = new Array(size);
+        const newIndices = this.nextIndices(size);
+
+        // // Copy to new list
+        // [0, 1, 2].forEach(stackNum => {
+        //     while (hasMore(stackNum)) {
+        //         const incr = stackNum < 2 ? 1 : -1;
+        //         const val = this.list[newIndices[stackNum].top + incr];
+        //         update(newList, newIndices, stackNum, val);
+        //     }
+        // });
+
+        return { newList, newIndices };
+    }
+
+    prettyList = () => this.list.join(' ');
 }
 
 /**
  * ASSERTIONS
  */
-const st = new Stack();
-st.push(1, 0).push(2, 0).push(3, 0);
-st.push(1, 1).push(2, 1).push(3, 1);
-for (let i = 1; i < 7; i++) {
-    st.push(i, 2);
+const STACK_RANGE = [0, 1, 2];
+const st = new Stack(15);
+
+// Test correct initialization
+console.log(st.prettyList() === ' '.repeat(15 - 1));
+// Assert all empty
+STACK_RANGE.forEach(stackNum => console.log('should be empty', st.isEmpty(stackNum)));
+
+// Test push (without resize)
+for (let i = 0; i < 4; i++) {
+    STACK_RANGE.forEach(stackNum => st.push(i, stackNum));
 }
-st.push(7, 2); // test resize
-console.log(st.list, st.stack);
+console.log(st.prettyList() === "0 1 2 3  0 1 2 3   3 2 1 0");
+
+// Test pop
+STACK_RANGE.forEach(stckNum => {
+    const arr = [];
+    while(!st.isEmpty(stckNum)) {
+        arr.push(st.pop(stckNum));
+    }
+    console.log(arr.join(' ') === '3 2 1 0');
+});
+// Assert all empty
+STACK_RANGE.forEach(stackNum => console.log('should be empty', st.isEmpty(stackNum)));
+
+// Test push (with resize)
+const stackForResize = new Stack(10);
+for (let i = 0; i < 7; i++) {
+    STACK_RANGE.forEach(stackNum => stackForResize.push(i, stackNum));
+}
+console.log(stackForResize.prettyList());
+
+//console.log(st.list, st.indices);
+
+// st.push(7, 2); // test resize

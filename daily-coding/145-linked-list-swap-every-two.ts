@@ -12,7 +12,7 @@ interface SLLNode { val: number; next?: SLLNode; }
  * @example swapPair(a->b->c) returns b->a->c
  */
 const swapPair = (head: SLLNode): SLLNode => {
-    if (head.next === undefined) {
+    if (head === undefined || head.next === undefined) {
         return head;
     } else {
         const c = head?.next?.next;

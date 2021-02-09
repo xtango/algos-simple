@@ -9,7 +9,7 @@ interface SLLNode { val: number; next?: SLLNode; }
 
 /**
  * In place swap of the fist 2 nodes a and b.
- * a->b->c returns b->a->c
+ * @example swapPair(a->b->c) returns b->a->c
  */
 const swapPair = (head: SLLNode): SLLNode => {
     if (head.next === undefined) {

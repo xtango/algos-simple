@@ -1,5 +1,5 @@
 /**
- *                          #146 [Medium] PRUNE BIN TREE   **** WIP ****
+ *                                          #146 [Medium] PRUNE BIN TREE
  * 
  * This question was asked by BufferBox.
  * 

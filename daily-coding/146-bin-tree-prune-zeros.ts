@@ -26,15 +26,15 @@
 interface BinTreeNode { val: number; left?: BinTreeNode; right?: BinTreeNode }
 
 /**
- * Returns a binary tree with subtrees containing all 0s removed
+ * Returns a binary tree with subtrees containing all 0s removed.
  */
 const prune = (head: BinTreeNode): BinTreeNode => {
     MAX_DEPTH = 10;
-    
+
     /**
-     * Depth first traversal return the sum of descentants.
+     * Return the sum of descentants using a recursive Depth First Traversal.
      */
-    const dfs = (node: BinTreeNode, depth: number = 0): number => {
+    const dft = (node: BinTreeNode, depth: number = 0): number => {
         // console.log(`[depth ${depth}] val: ${node.val}, left: ${node.left?.val}, right: ${node.right?.val}`);
         if (!node || depth > MAX_DEPTH) {
             return 0;
@@ -42,7 +42,7 @@ const prune = (head: BinTreeNode): BinTreeNode => {
 
         let [leftSubtreeSum, rightSubtreeSum] = [0, 0];
         if (node.left) {
-            leftSubtreeSum = dfs(node.left, depth + 1);
+            leftSubtreeSum = dft(node.left, depth + 1);
             if (leftSubtreeSum === 0) {
                 // console.log(`\tnode ${node.val} pruning left`);
                 node.left = undefined;
@@ -50,7 +50,7 @@ const prune = (head: BinTreeNode): BinTreeNode => {
         }
 
         if (node.right) {
-            rightSubtreeSum = dfs(node.right, depth + 1);
+            rightSubtreeSum = dft(node.right, depth + 1);
             if (rightSubtreeSum === 0) {
                 // console.log(`\tnode ${node.val} pruning right`);
                 node.right = undefined;
@@ -60,9 +60,7 @@ const prune = (head: BinTreeNode): BinTreeNode => {
         return node.val + leftSubtreeSum + rightSubtreeSum;
     }
 
-    dfs(head);
-
-    //console.log(head);
+    dft(head);
     return head;
 }
 

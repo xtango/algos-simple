@@ -10,6 +10,8 @@
  * the central point (1, 2), and k = 2, return [(0, 0), (3, 1)].
  */
 
+type Point = number[];
+
 /**
  *              ^
  *              |   o (x, y) = (1,2)
@@ -18,15 +20,13 @@
  *         ------------------>
  *              |            
  */
-const distance = (from: number[], to: number[]): number =>
-    Math.sqrt(
-        Math.pow(from[0] - to[0], 2) + Math.pow(from[1] - to[1], 2)
-    );
+const distance = (from: Point, to: Point): number => Math.sqrt(
+    Math.pow(from[0] - to[0], 2) + Math.pow(from[1] - to[1], 2));
 
 /**
- * Sorts the distances and returns the nearest k ponts from central.
+ * Sorts the distances and returns the nearest k points from central.
  */
-const nearest = (list: number[][], central: number[], k: number): number[][] => {
+const nearest = (list: Point[], central: Point, k: number): Point[] => {
     const distances = list.map(p => {
         return { point: p, dist: distance(central, p) };
     });
@@ -42,5 +42,5 @@ console.log(JSON.stringify(
     nearest(
         [[0, 0], [5, 4], [3, 1]],
         [1, 2],
-        2)) === '[[0,0],[3,1]]'
-);
+        2)
+) === '[[0,0],[3,1]]');

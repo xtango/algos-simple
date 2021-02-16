@@ -74,7 +74,7 @@ const replaceColor = (image: ImageMatrix, pixelYX: RowCol, toColor: string): Ima
         `(${row},${col}): ${color}${color === fromColor ? ` replaced with ${toColor}` : ''}`;
 
     /**
-     * Helper func that is called recurrsively. Mutates the image matrix in-place, replacing
+     * Helper func for recursion. Mutates the image matrix in-place, replacing
      * adjacent pixels whose color is fromColor.
      */
     const replaceHelper = (y: number, x: number, depth: number) => {

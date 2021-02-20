@@ -1,9 +1,10 @@
 /**
- *              #155 [Medium] - MAJORITY ELEMENT
+ *                          #155 [Medium] - MAJORITY ELEMENT
  *
  * This problem was asked by MongoDB.
  * 
- * Given a list of elements, find the majority element, which appears more than half the time (> floor(len(lst) / 2.0)).
+ * Given a list of elements, find the majority element, which appears more
+ * than half the time (> floor(len(lst) / 2.0)).
  * You can assume that such element exists.
  * For example, given [1, 2, 1, 1, 3, 4, 0], return 1.
  */
@@ -32,7 +33,9 @@ const majorityElem = (lst: number[]): Elem => {
 /**
  * ASSERTIONS
  */
-console.log(majorityElem([1, 2, 1, 1, 3, 4, 0]) === undefined); // Note the problem statement is wrong
+// Note: the problem statement example is wrong
+console.log(majorityElem([1, 2, 1, 1, 3, 4, 0]) === undefined);
+
 console.log(majorityElem([1, 2, 1, 1, 3, 4, 1]) === 1);
 console.log(majorityElem([]) === undefined);
 console.log(majorityElem([8, 9, 9]) === 9);

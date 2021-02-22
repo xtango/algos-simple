@@ -69,6 +69,11 @@ const numPaths = (matrix: Matrix, MAX_DEPTH = 10): number => {
  */
 console.log(numPaths([
     [0, 0, 1],
+    [0, 0, 0],
+    [1, 0, 0]]) === 4);
+
+console.log(numPaths([
+    [0, 0, 1],
     [0, 0, 1],
     [1, 0, 0]]) === 2);
 

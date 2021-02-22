@@ -7,20 +7,14 @@
  * [[0, 0, 1],
  * [0, 0, 1],
  * [1, 0, 0]]
-* Return two, as there are only two ways to get to the bottom right:
-* 
-* Right, down, down, right
-* Down, right, down, right
-* The top left corner and bottom right corner will always be 0.
-*/
-
-const OFFSETS = [
-    { y: 1, x: 0 }, // down
-    { y: 0, x: 1 } // right
-];
+ * Return two, as there are only two ways to get to the bottom right:
+ * 
+ * Right, down, down, right
+ * Down, right, down, right
+ * The top left corner and bottom right corner will always be 0.
+ */
 
 type Matrix = number[][];
-
 interface Position { y: number, x: number }
 
 const canMove = (matrix: Matrix, pos: Position): boolean =>
@@ -28,31 +22,60 @@ const canMove = (matrix: Matrix, pos: Position): boolean =>
     pos.x >= 0 && pos.y < matrix[0].length &&
     matrix[pos.y][pos.x] === 0;
 
+const OFFSETS = [
+    { y: 1, x: 0 }, // down
+    { y: 0, x: 1 } // right
+];
+
 /**
- * Ways to move to the bottom right starting from top left.
+ * Returns the numbe of ways to move to the bottom right starting from top left.
  */
-const paths = (matrix: Matrix, MAX_DEPTH = 10) => {
+const numPaths = (matrix: Matrix, MAX_DEPTH = 10): number => {
+    let numPaths = 0;
+
     /**
-     * Depth first traversal
+     * Helper for depth first recursion
      */
     const move = (pos: Position, depth: number = 0) => {
+        //console.log(`[depth ${depth}] pos (${pos.y}, ${pos.x})`);
         if (depth > MAX_DEPTH) {
             console.log('aborting');
             return;
         }
-        // Reach bottom right?
+
+        // Reached bottom right?
         if (pos.y === matrix.length - 1 && pos.x === matrix[0].length - 1) {
-            console.log('Bottom right');
+            //console.log('Reached');
+            numPaths++;
             return;
         }
 
-        // Move right, move down
         OFFSETS.forEach(offset => {
             const newPos = { y: pos.y + offset.y, x: pos.x + offset.x };
             if (canMove(matrix, newPos)) {
-                move(newPos);
+                move(newPos, depth + 1);
             }
         })
     }
+
+    move({ y: 0, x: 0 })
+    return numPaths;
 }
 
+/**
+ * ASSERTIONS
+ */
+console.log(numPaths([
+    [0, 0, 1],
+    [0, 0, 1],
+    [1, 0, 0]]) === 2);
+
+console.log(numPaths([
+    [0, 1, 1],
+    [0, 0, 1],
+    [1, 0, 0]]) === 1);
+
+console.log(numPaths([
+    [0, 0, 1],
+    [0, 0, 1],
+    [1, 0, 1]]) === 0);

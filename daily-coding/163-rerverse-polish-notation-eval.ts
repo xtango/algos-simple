@@ -45,6 +45,7 @@ const rpnExprEval = (rpnExpression: Elem[]): number => {
     });
     return stack[0];
 }
+
 /**
  *  ASSERTIONS
  */

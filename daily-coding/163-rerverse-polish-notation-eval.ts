@@ -14,9 +14,9 @@ type Operator =  '+' | '-' | '*' | '/';
 type Elem = number | Operator;
 
 /**
- * Evaluates <left number> OPERATOR <right number>.
+ * Evaluates <left number> <operator> <right number>.
  * If op is not recognized returns NEGATIVE_INFINITY.
- * @example evalExpr(-5, '*', 10) returns -50
+ * @example evalExpr(-5, '*', 10) returns -50 since  -5 * 10 = -50.
  */
 const evalExpr = (left: number, op: Operator, right: number): number => {
     if (op === '+') {

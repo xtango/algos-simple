@@ -14,7 +14,7 @@ type Operator =  '+' | '-' | '*' | '/';
 type Elem = number | Operator;
 
 /**
- * Evaluates <left number> OPERATOR <right number>
+ * Evaluates <left number> OPERATOR <right number>.
  * If op is not recognized returns NEGATIVE_INFINITY.
  * @example evalExpr(-5, '*', 10) returns -50
  */

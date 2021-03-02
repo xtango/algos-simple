@@ -48,7 +48,7 @@ const getRandIdx = (sourceNodeToIndex: NodeToIndex, node: SLLNode): number => {
 
 
 /**
- * Clone keeping and array of the cloned nodes.
+ * Clone. Keeps an array of the cloned nodes.
  * Then traverse the cloned list and set the randomPtr.
  */
 const deepClone = (root: SLLNode): SLLNode => {

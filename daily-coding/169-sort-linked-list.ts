@@ -55,6 +55,44 @@ const merge = (left: LLNode, right: LLNode): LLNode | undefined => {
     return mergedHead;
 }
 
+const findMid = (head: LLNode): LLNode => {
+    let len = 0;
+    let node = head;
+    while (node) {
+        node = node.next;
+        len++;
+    }
+    const midLen = len >> 1;
+    let mid = head;
+    for (let i = 0; i < midLen - 1; i++) {
+        mid = mid.next;
+    }
+    return mid;
+}
+
+/** 
+ * Thi recursive implementation  does take stack space. todo: We can improve
+ * this by using an iterative solution.
+ */
+const mergeSort = (head: LLNode, depth: number = 0): LLNode => {
+    //console.log(`[depth: ${depth}]`, pretty(head));
+    if (depth > 10) {
+        console.log('max depth reached - aborting');
+        throw Error('max depth');
+    }
+    if (head.next === undefined) {
+        return head;
+    }
+
+    const mid = findMid(head);
+    const rightHead = mid.next;
+    mid.next = undefined; // Important: split into 2 lists
+
+    const left = mergeSort(head, depth + 1);
+    const right = mergeSort(rightHead, depth + 1);
+    return merge(left, right);
+}
+
 const pretty = (head: LLNode | undefined) => {
     let [str, node] = ['', head];
     while (node) {
@@ -72,3 +110,16 @@ console.log(pretty(copyList({ val: 8, next: { val: 99 } })) === '8 -> 99');
 console.log(pretty(merge(
     { val: 1, next: { val: 8 } },
     { val: 5, next: { val: 6 } })) === '1 -> 5 -> 6 -> 8');
+console.log(pretty(mergeSort(
+    {
+        val: 4,
+        next: {
+            val: 1,
+            next: {
+                val: -3,
+                next: {
+                    val: 99
+                }
+            }
+        }
+    })) === '-3 -> 1 -> 4 -> 99');

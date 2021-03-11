@@ -1,62 +1,88 @@
 /**
  *          #168 [Medium] - ROTATE MATRIX
+ * 
  * Given an N by N matrix, rotate it by 90 degrees clockwise.
-
-For example, given the following matrix:
-
-[[1, 2, 3],
- [4, 5, 6],
- [7, 8, 9]]
-you should return:
-[[7, 4, 1],
- [8, 5, 2],
- [9, 6, 3]]
-
-Follow-up: What if you couldn't use any extra space?
+ * For example, given the following matrix:
+ * [[1, 2, 3],
+ * [4, 5, 6],
+ * [7, 8, 9]]
+ * you should return:
+ * [[7, 4, 1],
+ * [8, 5, 2],
+ * [9, 6, 3]]
+ *
+ * Follow-up: What if you couldn't use any extra space?
  */
 
 /**
  *        tmp ----
- *        /       | e      Move 4 at a time:
- *     a /        v         step a: top left to temp
- *    (0, 0)    (0, 2)      step b: move bottom left to top
- *       ^         |        step c: move bottom right to bottom left
- *     b |         | d      step d: move top right to bottom right
- *       |         v        step e: copy temp to top right
+ *        /       | e      Move 4 at a time.
+ *     a /        v        
+ *    (0, 0)    (0, 2)     
+ *       ^         |    
+ *     b |         | d  
+ *       |         v    
  *    (2, 0)<----(2, 2)
  *            c
  */
 
 const pretty = (mat: number[][]): string => '\n' + mat.map(r => r.join(' ')).join('\n');
 
-const rotateInPlace = (mat: number[][]): number[][] {
-    console.log(pretty(mat));
+/**
+ * In-place rotate by 90 degrees, moving 4 cells at a time.
+ */
+const rotateInPlace = (mat: number[][]): number[][] => {
+    //console.log('ROTATE', pretty(mat));
 
-    // i is the outer 
     // ----------------
     // | 1   2  3   4 |
     // |   --------   |<---- track
     // | 5 | 6  7 | 8 | 
     // | ...      |<------------- track
 
-    // i is the track
+    const N = mat.length;
     const tracks = mat.length >> 1;
-    for (let i = 0; i < tracks; i++) {
-        const jMax = mat.length - 1 - (i * 2);
-        for (let j = 0; j < jMax; j++) {
-            console.log({ i, j, jMax });
-            const tmp = mat[i][j];          // step a
-            mat[i][j] = mat[jMax][i];       // step b
-            mat[jMax][i] = mat[jMax][jMax]; // step c
-            mat[jMax][jMax] = mat[i][jMax]; // step d
-            mat[i][jMax] = tmp;
-            console.log(pretty(mat));
+    for (let r = 0; r < tracks; r++) {
+        for (let c = r; c < N - r - 1; c++) {
+            const tmp = mat[r][c];          // step a
+            // step b: Top left from bottom left
+            mat[r][c] = mat[N - c - 1][r];
+
+            // step c: Bottom left from bottom right
+            mat[N - c - 1][r] = mat[N - r - 1][N - c - 1];
+
+            // step d: Bottom right from top right
+            mat[N - r - 1][N - c - 1] = mat[c][N - r - 1];
+
+            // step e: Top right from temp
+            mat[c][N - r - 1] = tmp;
         }
+        //console.log('r', r, pretty(mat));
     }
     return mat;
 }
+/**
+ * ASSERTIONS
+ */
+console.log(
+    pretty(rotateInPlace([
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]]))
+    == pretty([
+        [7, 4, 1],
+        [8, 5, 2],
+        [9, 6, 3]]));
 
-console.log(pretty(rotateInPlace(
-    [[1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]])));
+console.log(
+    pretty(rotateInPlace([
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 15, 16]]))
+    == pretty([
+        [13, 9, 5, 1],
+        [14, 10, 6, 2],
+        [15, 11, 7, 3],
+        [16, 12, 8, 4]
+    ]));

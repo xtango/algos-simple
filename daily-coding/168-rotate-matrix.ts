@@ -44,16 +44,14 @@ const rotateInPlace = (mat: number[][]): number[][] => {
     const tracks = mat.length >> 1;
     for (let r = 0; r < tracks; r++) {
         for (let c = r; c < N - r - 1; c++) {
-            const tmp = mat[r][c];          // step a
+            // step a
+            const tmp = mat[r][c];
             // step b: Top left from bottom left
             mat[r][c] = mat[N - c - 1][r];
-
             // step c: Bottom left from bottom right
             mat[N - c - 1][r] = mat[N - r - 1][N - c - 1];
-
             // step d: Bottom right from top right
             mat[N - r - 1][N - c - 1] = mat[c][N - r - 1];
-
             // step e: Top right from temp
             mat[c][N - r - 1] = tmp;
         }

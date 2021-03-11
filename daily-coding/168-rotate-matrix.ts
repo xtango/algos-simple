@@ -14,7 +14,10 @@
  * Follow-up: What if you couldn't use any extra space?
  */
 
+const pretty = (mat: number[][]): string => '\n' + mat.map(r => r.join(' ')).join('\n');
+
 /**
+ * Rotate by 90 degrees. By moving 4 cells at a time in place we use no extra space.
  *        tmp ----
  *        /       | e      Move 4 at a time.
  *     a /        v        
@@ -24,12 +27,6 @@
  *       |         v    
  *    (2, 0)<----(2, 2)
  *            c
- */
-
-const pretty = (mat: number[][]): string => '\n' + mat.map(r => r.join(' ')).join('\n');
-
-/**
- * Rotate by 90 degrees. By moving 4 cells at a time in place we use no extra space.
  */
 const rotateInPlace = (mat: number[][]): number[][] => {
     //console.log('ROTATE', pretty(mat));

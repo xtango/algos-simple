@@ -29,7 +29,7 @@
 const pretty = (mat: number[][]): string => '\n' + mat.map(r => r.join(' ')).join('\n');
 
 /**
- * In-place rotate by 90 degrees, moving 4 cells at a time.
+ * Rotate by 90 degrees. By moving 4 cells at a time in place we use no extra space.
  */
 const rotateInPlace = (mat: number[][]): number[][] => {
     //console.log('ROTATE', pretty(mat));
@@ -46,12 +46,16 @@ const rotateInPlace = (mat: number[][]): number[][] => {
         for (let c = r; c < N - r - 1; c++) {
             // step a
             const tmp = mat[r][c];
+            
             // step b: Top left from bottom left
             mat[r][c] = mat[N - c - 1][r];
+            
             // step c: Bottom left from bottom right
             mat[N - c - 1][r] = mat[N - r - 1][N - c - 1];
+            
             // step d: Bottom right from top right
             mat[N - r - 1][N - c - 1] = mat[c][N - r - 1];
+            
             // step e: Top right from temp
             mat[c][N - r - 1] = tmp;
         }

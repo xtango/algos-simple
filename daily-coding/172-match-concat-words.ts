@@ -1,5 +1,5 @@
 /**
- *                              #172 [Medium] - CONCAT OF WORDS MATCHER
+ *                              #172 [Medium] - MATCH CONCATENATED WORDS
  * 
  * This problem was asked by Dropbox.
  * 

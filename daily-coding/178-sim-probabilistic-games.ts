@@ -24,6 +24,8 @@ const roll = () => Math.floor(Math.random() * 6 + 1);
 /**
  * Rolls until first target is hit, and immediately following, the second target is hit.
  * Returns the number of rolls (i.e. the dollar amount).
+ *
+ * @param maxTries Stops searching if maxTries is reached.
  */
 const pay = (targets: number[], maxTries: number) => {
     let i = 0;
@@ -36,12 +38,12 @@ const pay = (targets: number[], maxTries: number) => {
     return i;
 }
 
-const simAvgPayout = (targets: number[], repitions: number = 10000) => {
+const simAvgPayout = (targets: number[], repititions: number = 10000) => {
     let dollars = 0;
-    for (let i = 0; i < repitions; i++) {
+    for (let i = 0; i < repititions; i++) {
         dollars += pay(targets, 1000000)
     }
-    return dollars / repitions; // returns the avg payout
+    return dollars / repititions; // returns the avg payout
 }
 
 /**

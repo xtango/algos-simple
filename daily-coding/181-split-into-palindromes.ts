@@ -9,7 +9,7 @@
  */
 
 const isPalindrome = (word: string) => {
-    for (let i = 0; i < word.length >> 1; i ++) {
+    for (let i = 0; i < word.length >> 1; i++) {
         if (word[i] !== word[word.length - 1 - i]) {
             return false;
         }
@@ -17,33 +17,54 @@ const isPalindrome = (word: string) => {
     return true;
 }
 
-const splitIntoPalindromes = (str: string): string[] => {
-    console.log('---split---', str )
-    if (str.length === 0) {
-        return [];
-    }
-    if (str.length === 1) {
-        return [str]
-    }
+const splitIntoPalindromes = (strInput: string): string[] => {
+    let output: string[] = [];
 
-    const palindromes = [];
-    for (let i = 0; i < str.length; i++) {
-        for (let j = str.length; j > i ; j--) {
-            const word = str.substring(i, j + 1)
-            console.log('word', word);
-            if (isPalindrome(word)) {
-                console.log('   -> palin');
-                palindromes.push(word);
-                const left = str.substring(0, i); 
-                const leftPalins = splitIntoPalindromes(left);
-                const right  = str.substring(j + 1)
-                const rightPalins =  splitIntoPalindromes(right);
-                console.log({left, right, leftPalins, rightPalins});
-                break;
+    /**
+     * Helper for recursion
+     */
+    const split = (str: string, depth: number = 0): string[] => {
+        let palinSets: string[][] = [];
+        console.log(`[depth: ${depth}] ${strInput}`);
+        if (depth > 1) {
+            return [];
+        }
+
+        if (strInput.length === 0) {
+            return [];
+        }
+        if (strInput.length === 1) {
+            return [strInput]
+        }
+
+
+        for (let i = 0; i < strInput.length; i++) {
+            for (let j = strInput.length; j > i; j--) {
+                const word = strInput.substring(i, j + 1);
+                const left = strInput.substring(0, i);
+                const right = strInput.substring(j + 1)
+                console.log({ left, word, right });
+                if (isPalindrome(word)) {
+                    console.log('   -> palin');
+                    const leftPalins = left.length > 0 ? splitIntoPalindromes(left, depth + 1) : [];
+                    const rightPalins = right.length > 0 ? splitIntoPalindromes(right, depth + 1) : [];
+                    console.log({ left, leftPalins, wordPalins: word, right, rightPalins });
+                    palinSets.push(leftPalins.concat(word, rightPalins));
+                    break;
+                }
             }
         }
+
+        console.log({palinSets});
+        // return the smallest of the sets
+        const freqs = palinSets.map(x=> { return { len: x.length, val: x}});
+        freqs.sort( (a, b) => a.len - b.len);
+        console.log('freqs', freqs)
+        return freqs[0].val;
     }
-    return palindromes;
+
+    split(strInput);
+    return output;
 }
 
 /**
@@ -52,4 +73,5 @@ const splitIntoPalindromes = (str: string): string[] => {
 // console.log(isPalindrome('a') === true);
 // console.log(isPalindrome('racecar') === true);
 // console.log(isPalindrome('racecarx') === false);
-console.log(splitIntoPalindromes('racecaranna'));
+// console.log(splitIntoPalindromes('racecaranna'));
+console.log(splitIntoPalindromes('puppy'));

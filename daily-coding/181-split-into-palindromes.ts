@@ -1,4 +1,3 @@
-
 /**
  *                      #181 [Hard] - SPLIT INTO PALINDROMES
  *
@@ -10,7 +9,12 @@
  */
 
 const isPalindrome = (word: string): boolean => {
-    for (let i = 0; i < word.length >> 1; i++) {
+    if (word.length === 1) {
+        return true;
+    }
+
+    const halfWay = word.length >> 1;
+    for (let i = 0; i < halfWay; i++) {
         if (word[i] !== word[word.length - 1 - i]) {
             return false;
         }
@@ -18,51 +22,70 @@ const isPalindrome = (word: string): boolean => {
     return true;
 }
 
-/**
- * Helper for recursion
- */
-const split = (str: string, depth: number = 0): string[] => {
-    // let palinSets: string[][] = [];
-    let splitsFewest = str.split('');
-    console.log(`SPLIT [depth: ${depth}] ${str}`);
-    if (depth > 1) {
-        return [];
-    }
+const splitIntoPalindromes = (strInput: string, MAX_DEPTH = 20): string[] => {
+    const splitsMemo: { [word: string]: string[] } = {};
 
-    if (str.length === 0) {
-        return [];
-    }
-    if (str.length === 1) {
-        return [str]
-    }
-
-    for (let i = 0; i < str.length; i++) {
-        for (let j = str.length; j > i; j--) {
-            const word = str.substring(i, j );
-            const left = str.substring(0, i);
-            const right = str.substring(j)
-            console.log({ i, j, left, word, right });
-            if (isPalindrome(word)) {
-                console.log(`-> ${word} IS A PALINDROME`);
-                const leftPalins = left.length === 0 ? [] : left.length === 1 ? [left] :  split(left, depth + 1);
-                const rightPalins = right.length === 0 ? [] : right.length === 1 ? [right] :  split(right, depth + 1);
-                const palins = leftPalins.concat(word, rightPalins)
-                console.log('palins:', palins);
-                if (palins.length < splitsFewest.length) {
-                    console.log('\tSetting fewest to', palins);
-                    splitsFewest = palins;
-                }
-                console.log({ left, leftPalins, wordPalins: word, right, rightPalins, splitsFewest });
-                break;
+    /**
+     * Helper for recursion. Get all possible palindrom splits of str and
+     * select the fewest splits.
+     */
+    const split = (str: string, depth: number = 0): string[] => {
+        const getSplitWithMemo = (key: string): string[] => {
+            if (key.length === 0) {
+                return [];
+            } else if (key.length === 1) {
+                return [key];
             }
+
+            if (splitsMemo[key] === undefined) {
+                const splits = split(key, depth + 1);
+                console.log(`[depth: ${depth}]`, { splitsMemo })
+                if (splits.length > 0) {
+                    splitsMemo[key] = splits;
+                }
+            }
+            return splitsMemo[key];
         }
+
+        let fewestSplits = str.split(''); // Initialize to array of single chars
+        console.log(`[depth: ${depth}] split('${str}')`);
+        if (str === undefined ||
+            str.length === 0 ||
+            depth > MAX_DEPTH// Stop runaway recursion
+        ) {
+            return [];
+        }
+
+        if (isPalindrome(str)) {
+            console.log(`-> ${str} IS A PALINDROME`);
+            return [str]
+        }
+
+        for (let i = 0; i < str.length; i++) {
+            // Example str = 'abc' 
+            // i: 0 -> ['', 'abc']
+            // i: 1 -> ['a', 'bc'] 
+            // i: 2 -> ['ab', 'c']
+            const [left, word] = [str.substring(0, i), str.substring(i)];
+            console.log(`[depth: ${depth}]`, { i, left, word });
+
+            const leftPalins = getSplitWithMemo(left);
+            const wordPalins = getSplitWithMemo(word);
+            const palins = leftPalins.concat(wordPalins);
+            console.log(`[depth: ${depth}]`, { leftPalins, wordPalins, palins });
+            if (palins.length > 0 && palins.length < fewestSplits.length) {
+                console.log(`[depth: ${depth}] ${word} Setting fewest to`, palins);
+                fewestSplits = palins;
+            }
+            console.log({ left, leftPalins, word, wordPalins, fewestSplits });
+        }
+
+        return fewestSplits;
     }
 
-    return splitsFewest;
-}
-    
-const splitIntoPalindromes = (strInput: string): string[] => {
-    return split(strInput, 0);
+    const output = split(strInput, 0);
+    console.log('output', output);
+    return output;
 }
 
 /**
@@ -73,4 +96,5 @@ const splitIntoPalindromes = (strInput: string): string[] => {
 // console.log(isPalindrome('racecarx') === false);
 // console.log(splitIntoPalindromes('racecaranna'));
 // console.log(splitIntoPalindromes('py'));
+//console.log(splitIntoPalindromes('pup'));
 console.log(splitIntoPalindromes('puppy'));

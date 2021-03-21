@@ -8,13 +8,11 @@
  * Given the input string abc, return ["a", "b", "c"].
  */
 
+/**
+ * Returns true when word is a palindrome by checking if head matches last and proceeding to the middle.
+ */
 const isPalindrome = (word: string): boolean => {
-    if (word.length === 1) {
-        return true;
-    }
-
-    const halfWay = word.length >> 1;
-    for (let i = 0; i < halfWay; i++) {
+    for (let i = 0; i < word.length >> 1; i++) {
         if (word[i] !== word[word.length - 1 - i]) {
             return false;
         }
@@ -22,79 +20,75 @@ const isPalindrome = (word: string): boolean => {
     return true;
 }
 
+/**
+ * Recursive function to get all possible palindrome splits of strInput. 
+ * Returns the one with fewest splits.
+ */
 const splitIntoPalindromes = (strInput: string, MAX_DEPTH = 20): string[] => {
     const splitsMemo: { [word: string]: string[] } = {};
 
     /**
-     * Helper for recursion. Get all possible palindrom splits of str and
-     * select the fewest splits.
+     * Helper function for recursion.
      */
     const split = (str: string, depth: number = 0): string[] => {
-        const getSplitWithMemo = (key: string): string[] => {
-            if (key.length === 0) {
-                return [];
-            } else if (key.length === 1) {
-                return [key];
-            }
-
+        /**
+         * Returns the splits for key by first looking it up in memo.
+         */
+        const getSplitsWithMemo = (key: string): string[] => {
             if (splitsMemo[key] === undefined) {
-                const splits = split(key, depth + 1);
-                console.log(`[depth: ${depth}]`, { splitsMemo })
-                if (splits.length > 0) {
-                    splitsMemo[key] = splits;
+                if (key.length === 0) {
+                    splitsMemo[key] = [];
+                } else if (key.length === 1) {
+                    splitsMemo[key] = [key];
+                } else {
+                    splitsMemo[key] = split(key, depth + 1);
                 }
             }
             return splitsMemo[key];
         }
 
         let fewestSplits = str.split(''); // Initialize to array of single chars
-        console.log(`[depth: ${depth}] split('${str}')`);
+        //console.log(`[depth: ${depth}] split('${str}')`);
         if (str === undefined ||
             str.length === 0 ||
-            depth > MAX_DEPTH// Stop runaway recursion
+            depth > MAX_DEPTH // Stop runaway recursion
         ) {
             return [];
         }
 
         if (isPalindrome(str)) {
-            console.log(`-> ${str} IS A PALINDROME`);
             return [str]
         }
 
-        for (let i = 0; i < str.length; i++) {
-            // Example str = 'abc' 
-            // i: 0 -> ['', 'abc']
+        for (let i = 1; i < str.length; i++) {
+            // Example when str is 'abc' 
             // i: 1 -> ['a', 'bc'] 
             // i: 2 -> ['ab', 'c']
             const [left, word] = [str.substring(0, i), str.substring(i)];
-            console.log(`[depth: ${depth}]`, { i, left, word });
-
-            const leftPalins = getSplitWithMemo(left);
-            const wordPalins = getSplitWithMemo(word);
+            // console.log(`[depth: ${depth}]`, { i, left, word });
+            const leftPalins = getSplitsWithMemo(left);
+            const wordPalins = getSplitsWithMemo(word);
             const palins = leftPalins.concat(wordPalins);
-            console.log(`[depth: ${depth}]`, { leftPalins, wordPalins, palins });
+            // console.log(`[depth: ${depth}]`, { leftPalins, wordPalins, palins });
             if (palins.length > 0 && palins.length < fewestSplits.length) {
-                console.log(`[depth: ${depth}] ${word} Setting fewest to`, palins);
                 fewestSplits = palins;
             }
-            console.log({ left, leftPalins, word, wordPalins, fewestSplits });
         }
 
         return fewestSplits;
     }
 
-    const output = split(strInput, 0);
-    console.log('output', output);
-    return output;
+    return split(strInput, 0);
 }
 
 /**
  * ASSERTIONS
  */
-// console.log(isPalindrome('a') === true);
-// console.log(isPalindrome('racecar') === true);
-// console.log(isPalindrome('racecarx') === false);
-// console.log(splitIntoPalindromes('racecaranna'));
-// console.log(splitIntoPalindromes('py'));
-//console.log(splitIntoPalindromes('pup'));
-console.log(splitIntoPalindromes('puppy'));
+console.log(isPalindrome('a') === true);
+console.log(isPalindrome('racecar') === true);
+console.log(isPalindrome('racecarx') === false);
+console.log(splitIntoPalindromes('py').join('|') === 'p|y');
+console.log(splitIntoPalindromes('pup').join('|') === 'pup');
+console.log(splitIntoPalindromes('puppy').join('|') === 'pup|p|y');
+console.log(splitIntoPalindromes('racecaranna').join('|') === 'racecar|anna');
+console.log(splitIntoPalindromes('racecarannakayak').join('|') === 'racecar|anna|kayak');

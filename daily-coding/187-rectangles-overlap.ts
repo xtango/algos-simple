@@ -21,7 +21,9 @@
  *  "top_left": (0, 5),
  *  "dimensions": (4, 3)
  * }
+ * return true as the first and third rectangle overlap each other.
  */
+
 interface Rect { top_left: number[], dimensions: number[] }
 
 /**
@@ -69,10 +71,9 @@ const rect3 = {
 
 console.log(isOverlapping(rect1, rect2) === false);
 console.log(isOverlapping(rect2, rect1) === false);
-//
-// Important: The problem description is wrong.
-//            The first and third do not overlap.
-//
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// The problem description is wrong. The first and third do not overlap.
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 console.log(isOverlapping(rect1, rect3) === false);
 console.log(isOverlapping(rect3, rect1) === false);
 console.log(hasOverlappingRectangles([rect1, rect2, rect3]) === false);

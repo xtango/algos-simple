@@ -11,23 +11,23 @@
  * which is the smallest possible difference.
  */
 
-const partition = (arr: number[]): number => {
+const minSumDiff = (arr: number[]): number => {
     const arrSum = arr.reduce((accum, x) => accum + x, 0);
-
-    const minDiffsMemo: { [i: number]: number } = {};
+    const minDiffsMemo: { [key: string]: number } = {};
 
     /**
-     * Returns the absolute value of the min diff
+     * Returns the absolute value of the min diffs of 2 partitions of arr
      */
-    const partitionHelper = (i: number, sum: number, depth: number = 0): number => {
-        console.log(`[depth: ${depth}] part`, { arrSum, i, val: arr[i], sum });
-        const memoVal = minDiffsMemo[i]
+    const minSumDiffHelper = (i: number, sum: number, depth: number = 0): number => {
+        const key = `${i}_${sum}`;
+        const memoVal = minDiffsMemo[key];
         if (memoVal !== undefined) {
             return memoVal;
         }
 
         if (i < 0) {
-            return Math.abs(arrSum - sum);
+            // (this subset's sum) - (other subset's sum)
+            return Math.abs(sum - (arrSum - sum));
         }
 
         if (depth > 5) {
@@ -35,18 +35,21 @@ const partition = (arr: number[]): number => {
         }
 
         // Including and excluding the i'th elem
-        const diffInclude = partitionHelper(i - 1, sum + arr[i], depth + 1);
-        const diffExclude = partitionHelper(i - 1, sum, depth + 1);
+        const diffInclude = minSumDiffHelper(i - 1, sum + arr[i], depth + 1);
+        const diffExclude = minSumDiffHelper(i - 1, sum, depth + 1);
         const diffMin = Math.min(diffInclude, diffExclude);
-        
-        minDiffsMemo[i] = diffMin;
-        
-        console.log(`[depth: ${depth}]`, { i, diffInclude, diffExclude, diffMin });
-        console.log(minDiffsMemo);
+        minDiffsMemo[key] = diffMin;
+        // console.log(`[depth: ${depth}]`, { i, sum, diffInclude, diffExclude, diffMin });
+        // console.log(minDiffsMemo);
         return diffMin;
     }
 
-    return partitionHelper(arr.length - 1, 0);
+    return minSumDiffHelper(arr.length - 1, 0);
 }
 
-console.log(partition([2, 4, 1]))
+/**
+ * ASSERTIONS
+ */
+console.log(minSumDiff([1, 3, 6]) === 2);
+console.log(minSumDiff([3, 1, 3, 3, 1]) === 1);
+console.log(minSumDiff([5, 10, 15, 20, 25]) === 5);

@@ -13,8 +13,9 @@
 /**
  * We keep an start index pointing to the sub array start.
  * In addtion we use a dictionary to keep the val->index mapping
- * When we find a duplicate withing the subarray we move the start pointer to dict[val] + 1
+ * When we find a duplicate within the last subarray, we move the start pointer to dict[val] + 1
  *
+ * Example:
  * Idx  0  1  2  3
  *      -----------
  * Val  5  1  3  1

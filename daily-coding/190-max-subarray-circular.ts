@@ -9,58 +9,71 @@
  * 
  * For example, given [8, -1, 3, 4], return 15 as we choose the numbers 3, 4,
  * and 8 where the 8 is obtained from wrapping around.
- * 
  * Given [-4, 5, 1, 0], return 6 as we choose the numbers 5 and 1.
  */
 
+type SubArrayState = { start: number; end: number; sum: number }
+
+const newSubarray = () => { return { start: 0, end: 0, sum: 0 } };
+
 /**
- * The key idea of Kadane's algo is that the i'th max (or min is either:
- *  a. The previousPeakSum, (see val -1 in the example below)
- *  or 
- *  b. The previousPeakSum combined with the current val (3 in the example below)
+ * Implementation of Kadane's algo to find a contiguous subarray with the largest sum. 
+ * The salient idea is that the i'th max is either:
+ *  a. The current sum when val is negative (-1 in the example below)
+ *  b. Or, the current sum combined with the current elem (3 in the example below)
  * 
- * Example:
- *          8               -1          3                  4
- * local    8       max(8, 8-1)=8   max(8, 8+3)=11     max(11, 11+4)=15
- * global   8               8           11                  15
+ * @see https://en.wikipedia.org/wiki/Maximum_subarray_problem
+ * 
+ * @example:
+ *      numbers            8               -1          3                  4
+ *      current (Local)    8       max(8, 8-1)=8   max(8, 8+3)=11     max(11, 11+4)=15
+ *      best (Global)      8               8           11                  15
  */
-const subArrayKadane = (arr: number[], extremeFunc: (a: number, b: number) => number): number[] => {
-    const localPeakAtI: number[] = [arr[0]];
+const maxSubarrayKadane = (nums: number[]): SubArrayState => {
+    let [current, best] = [newSubarray(), newSubarray()];
 
-    for (let i = 1; i < arr.length; i++) {
-        const prev = localPeakAtI[i - 1];
-        const local = arr[i] >= 0 
-        ? extremeFunc(prev, prev+ arr[i]) 
-        : arr[i]; // reset for neg
-        localPeakAtI.push(local);
-    }
-    return localPeakAtI;
-}
-
-const maxSubArray = (arr: number[]) => Math.max(...subArrayKadane(arr, Math.max));
-
-const maxSubArrayCircular = (arr: number[]): number => {
-    const localMaxes = subArrayKadane(arr, Math.max);
-    let remaining = localMaxes[0];
-    let globalMax = localMaxes[0];
-
-    for (let i = 0; i < localMaxes.length; i++) {
-        globalMax = Math.max(globalMax, localMaxes[i]);
-
-        if (localMaxes[0] < 0 || i > 0 && localMaxes[i] < localMaxes[i - 1]) {
-            break;
+    nums.forEach(elem => {
+        if (current.sum <= 0) {
+            // Start a new subarray at the current elem
+            current.start = current.end;
+            current.sum = elem;
+        } else {
+            // Extend the existing subarray with the current elem
+            current.sum += elem;
         }
 
-        remaining = Math.max(remaining, globalMax);
-    }
+        if (current.sum > best.sum) {
+            // Set global peak
+            best.sum = current.sum;
+            best.start = current.start;
+            best.end = current.end + 1; //  the +1 is to make the best end exclusive
+        }
+    });
 
-    console.log({globalMax, remaining});
-
-    return Math.max(globalMax, remaining + localMaxes[localMaxes.length - 1]);
-
+    return best;
 }
-console.log(JSON.stringify(subArrayKadane([8, -1, 3, 4], Math.max)) === '[8,-1,2,6]');
-console.log(subArrayKadane([-1, -1, 3, 4], Math.max));
-// console.log(maxSubArray([8, -1, 3, 4]) === 15); // 3 + 4  + 8
-//console.log(minSubArray([8, -1, 3, 4]));
-//console.log(maxSubArrayCircular([8, -1, 3, 4]));
+
+/**
+ * Given nums, a circular array, returns the max sum in O(N) time and O(N) space.
+ */
+const maxCircularSubarray = (nums: number[]): number => {
+    const max = maxSubarrayKadane(nums);
+    let maxWrap = 0;
+    const numsClone = [...nums];
+    numsClone.forEach((x, i) => {
+        maxWrap += x;
+        numsClone[i] = -numsClone[i];
+    });
+    maxWrap += maxSubarrayKadane(numsClone).sum
+    return Math.max(maxWrap, max.sum)
+}
+
+/**
+ * ASSERTIONS
+ */
+console.log(maxSubarrayKadane([]).sum === 0);
+console.log(maxCircularSubarray([]) === 0);
+console.log(maxSubarrayKadane([8, -1, 3, 4]).sum === 14); // 8 -1 + 3 + 4
+console.log(maxCircularSubarray([8, -1, 3, 4]) === 15); // 3 + 4 + 8
+console.log(maxSubarrayKadane([-4, 5, 1, 0]).sum === 6); // 5 + 1
+console.log(maxCircularSubarray([-4, 5, 1, 0]) === 6); // 5 + 1

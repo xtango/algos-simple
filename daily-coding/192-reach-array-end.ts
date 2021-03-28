@@ -16,7 +16,7 @@ const range = (start: number, len: number): number[] => Array.from(new Array(len
 const canReachEnd = (arr: number[]): boolean => {
     const traverse = (idx: number): boolean => {
         if (idx >= arr.length - 1) {
-            return true; // reachedA
+            return true; // reached
         }
         const reachables = range(idx + 1, arr[idx]);
         //console.log('traverse', {idx, val: arr[idx], indices: indices.join(',')});

@@ -1,5 +1,5 @@
 /**
- *                      #192 [Medium] - CAN REACH END OF ARRAY
+ *                      #192 [Medium] - CAN REACH END
  * 
  * This problem was asked by Google.
  * 
@@ -16,15 +16,17 @@ const range = (start: number, len: number): number[] => Array.from(new Array(len
 const canReachEnd = (arr: number[]): boolean => {
     const traverse = (idx: number): boolean => {
         if (idx >= arr.length - 1) {
-            return true;  // reached!
+            return true; // reachedA
         }
-        const indices = range(idx + 1, arr[idx]);
+        const reachables = range(idx + 1, arr[idx]);
         //console.log('traverse', {idx, val: arr[idx], indices: indices.join(',')});
-        for (let i = 0; i < indices.length; i++) {
-            if (traverse(indices[i])) {
-                return true;  // reached
+        while (reachables.length) {
+            const i = reachables.pop();
+            if (i !== undefined && traverse(i)) {
+                return true;
             }
         }
+
         return false;
     }
 
@@ -34,5 +36,5 @@ const canReachEnd = (arr: number[]): boolean => {
 /**
  * ASSERTIONS
  */
-console.log(canReachEnd([1, 3, 1, 2, 0, 1]) === true);
-console.log(canReachEnd([1, 2, 1, 0, 0]) === false);
+console.log(canReachEnd([1, 3, 1, 2, 0, 1]));
+console.log(!canReachEnd([1, 2, 1, 0, 0]));

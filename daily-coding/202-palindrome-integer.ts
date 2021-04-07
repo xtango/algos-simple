@@ -19,7 +19,7 @@ const reverse = (num: number): number => {
 
         reversedNum = reversedNum * 10 + lastDigit;
 
-        // Strip off the lastDigit if more than 1 digit.
+        // When x is more than 1 digit long, strip off the lastDigit.
         // When x is a single digit, set to 0.
         x = Math.floor(x / 10);
     }

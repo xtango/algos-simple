@@ -1,5 +1,5 @@
 /**
-   *                  #202 [Easy] - INTEGER IS A PALINDROME
+ *                  #202 [Easy] - INTEGER IS A PALINDROME
  * 
  * This problem was asked by Palantir.
  * 
@@ -23,7 +23,6 @@ const reverse = (num: number): number => {
         // When x is a single digit, set to 0.
         x = Math.floor(x / 10);
     }
-
     return reversedNum;
 }
 

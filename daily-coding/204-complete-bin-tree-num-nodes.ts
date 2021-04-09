@@ -1,5 +1,5 @@
 /**
- *                   #204 [Easy] - NUM NODES IN COMPLETE BINARY tree
+ *                   #204 [Easy] - NUM NODES IN COMPLETE BINARY TREE (under construction - returns last level only)
  * 
  * This problem was asked by Amazon.
  * 
@@ -13,26 +13,52 @@
  * From wikipedia: In a complete binary tree every level, except possibly the last,
  * is completely filled, and all nodes in the last level are as far left as possible.
  *
- * Max number of nodes of heigh h is 2h 
  * 
- *                   2       h=0
+ *                                  Max nodes at h = 2^h
+ *                   2       h=0            1
  *                  / \
- *                 7   5     h=1
+ *                 7   5     h=1            2
  *                / \
- *               2   6
+ *               2   6       h=2            4
  *                  
  */
 interface BinTreeNode { val: number, left?: BinTreeNode, right?: BinTreeNode }
+enum Side { Left, Right }
 
-const numNodes = (root: BinTreeNode): number => {
-    let h = 0;
-    let node = root;
-    while (node) {
-        node = node.left;
+/**
+ * Returns the height h (index from 0 as in the diagram above).
+ */
+const height = (root: BinTreeNode, side: Side): number => {
+    const child = (node: BinTreeNode) => side === Side.Left ? node.left : node.right
+    let [h, node] = [0, root];
+    while (child(node)) {
+        node = child(node);
         h++;
     }
     return h;
 }
+
+const countNodes = (root: BinTreeNode): number {
+    if (!root) {
+        return 0;
+    }
+    const [heightLeft, heightRight] = [height(root, Side.Left), height(root, Side.Right)];
+    console.log({ rootVal: root.val, heightLeft, heightRight });
+    return heightLeft === heightRight
+        ? Math.pow(2, heightLeft) - 1
+        // Recurse
+        : countNodes(root.left) + countNodes(root.right) + 1;
+}
+
+/**
+ * ASSERTIONS
+ */
+const tree0 = {
+    val: 1,
+    left: { val: 1 },
+    right: { val: 1 }
+}
+console.log(countNodes(tree0));
 
 const tree1 = {
     val: 2,
@@ -45,5 +71,6 @@ const tree1 = {
         val: 5
     }
 }
-
-console.log(numNodes(tree1));
+console.log(height(tree1, Side.Left) === 2);
+console.log(height(tree1, Side.Right) === 1);
+console.log(countNodes(tree1));

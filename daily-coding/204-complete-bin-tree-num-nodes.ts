@@ -1,5 +1,5 @@
 /**
- *                   #204 [Easy] - NUM NODES IN COMPLETE BINARY TREE (under construction - returns last level only)
+ *                   #204 [Easy] - NUM NODES IN COMPLETE BINARY TREE
  * 
  * This problem was asked by Amazon.
  * 
@@ -8,19 +8,16 @@
  * the nodes in the last level are filled starting from the left.
  */
 
-
 /** 
  * From wikipedia: In a complete binary tree every level, except possibly the last,
  * is completely filled, and all nodes in the last level are as far left as possible.
- *
  * 
- *                                  Max nodes at h = 2^h
- *                   2       h=0            1
- *                  / \
- *                 7   5     h=1            2
- *                / \
- *               2   6       h=2            4
- *                  
+ *                        Nodes at h = 2^h       Total nodes when full = 2^(h+1)-1
+ *         2       h=0           1                               1
+ *        / \
+ *       7   5     h=1           2                               3
+ *      / \
+ *     2   6       h=2           2                            Not applicable
  */
 interface BinTreeNode { val: number, left?: BinTreeNode, right?: BinTreeNode }
 enum Side { Left, Right }
@@ -38,16 +35,18 @@ const height = (root: BinTreeNode, side: Side): number => {
     return h;
 }
 
-const countNodes = (root: BinTreeNode): number {
+const countCompleteBinTreeNodes = (root: BinTreeNode): number => {
     if (!root) {
         return 0;
     }
     const [heightLeft, heightRight] = [height(root, Side.Left), height(root, Side.Right)];
-    console.log({ rootVal: root.val, heightLeft, heightRight });
+    //console.log({ rootVal: root.val, heightLeft, heightRight });
+
     return heightLeft === heightRight
-        ? Math.pow(2, heightLeft) - 1
-        // Recurse
-        : countNodes(root.left) + countNodes(root.right) + 1;
+        // Total num nodes of full bin subtree = 2^(h+1) -1 
+        ? Math.pow(2, heightLeft + 1) - 1 
+        // Not a full subtree, so recurse
+        : countCompleteBinTreeNodes(root.left) + countCompleteBinTreeNodes(root.right) + 1;
 }
 
 /**
@@ -55,16 +54,16 @@ const countNodes = (root: BinTreeNode): number {
  */
 const tree0 = {
     val: 1,
-    left: { val: 1 },
-    right: { val: 1 }
+    left: { val: 2 },
+    right: { val: 3 }
 }
-console.log(countNodes(tree0));
+console.log(countCompleteBinTreeNodes(tree0));
 
 const tree1 = {
     val: 2,
-    left: {
+    left: {a
         val: 7,
-        left: { val: 2 },
+        left: { val: 2 },ac
         right: { val: 6 }
     },
     right: {
@@ -73,4 +72,4 @@ const tree1 = {
 }
 console.log(height(tree1, Side.Left) === 2);
 console.log(height(tree1, Side.Right) === 1);
-console.log(countNodes(tree1));
+console.log(countCompleteBinTreeNodes(tree1) === 5);

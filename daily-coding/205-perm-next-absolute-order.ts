@@ -1,5 +1,5 @@
 /**
- *                   #205 [Easy] - NEX PERMUTATION IN ABSOLUTE ORDER
+ *                   #205 [Easy] - NEX PERMUTATION IN ABSOLUTE ORDER **** Work in progress ****
  *
  * Good morning! Here's your coding interview problem for today.
  * 
@@ -63,3 +63,4 @@ const nextLargerPerm = (num: number): number => {
 console.log(findStartIndex('4321') === 0);
 console.log(findStartIndex('4312') === 3);
 console.log(nextLargerPerm(43120) === 43201);
+console.log(nextLargerPerm(48975) === 49578);

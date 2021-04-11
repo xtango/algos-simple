@@ -10,7 +10,7 @@
 
 /**
  * From right to left we find the digit that's not descending-sorted. This 
- * is the index of the candidate digit to replace to possibly make the perm larger.
+ * is the index of the candidate digit to replace making the num larger.
  * 
  * @example findTailIndex(4321) -> 0 as there's no larger perm
  * @example findTailIndex(4312) -> 3 as the number 2 is a replacement candidate. Replacing 2 with 1 gives 4321

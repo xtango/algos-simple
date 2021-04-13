@@ -12,15 +12,14 @@
  * return ["c", "b", "a"].
  */
 
-const applyPermToArray = (arr: string[], perms: number[]) => {
-    const res = [];
-    for (let i = 0; i < arr.length; i++) {
-        res.push(arr[perms[i]])
-    }
-    return res;
-}
+/**
+ * Trivial solution returning a new array (the problem statement does not specify in-place / 
+ * memory limitations).
+ */
+const applyPermToArray = (arr: string[], perms: number[]) => perms.map(x => arr[x]);
 
 /**
  * ASSERTIONS
  */
-console.log(applyPermToArray(["a", "b", "c"], [2, 1, 0]));
+console.log(applyPermToArray(['a', 'b', 'c'], [2, 1, 0]).join(' ') === 'c b a')
+console.log(applyPermToArray(['a', 'b', 'c', 'd'], [2, 1, 0, 3]).join(' ') === 'c b a d');

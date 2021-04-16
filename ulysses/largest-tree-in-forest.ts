@@ -4,16 +4,14 @@
 
 type ChildToParent = number[];
 interface TreeNode { id: number, children: TreeNode[] }
-
 type ParentToChildDict = { [key: number]: number[] };
-
 interface Forest {
     parentToChildDict: ParentToChildDict;
     roots: number[]; // indices of root nodes
 }
 
 /**
- * Conversts child-parent pairs to parent-children.
+ * Converts [child, parent] pairs to parent-children-dictionary.
  */
 const toForest = (childToParentList: ChildToParent[]): Forest => {
     const parentToChildDict: ParentToChildDict = {};
@@ -89,8 +87,6 @@ const CHILD_PARENT_2 = [
     [2, 1],
     [3, 2],
     [5, 4]]
-console.log(toForest(CHILD_PARENT_2)
-    .roots
-    .length === 2);
+console.log(toForest(CHILD_PARENT_2).roots.length === 2);
 console.log(treeSize(toForest(CHILD_PARENT_2), 4) === 2);
 console.log(largestIdx(CHILD_PARENT_2) === 1);

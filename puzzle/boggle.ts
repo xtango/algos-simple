@@ -2,60 +2,74 @@
  *                            BOGGLE
  * 
  */
-const isWord = (dict: string[], str: string): boolean => dict.includes(str);
+const withinBounds = (boardLen: RowCol, cell: RowCol): boolean =>
+    cell[0] >= 0 && cell[0] < boardLen[0] &&
+    cell[1] >= 0 && cell[1] < boardLen[1];
 
-const OFFSETS = [
-    [-1, -1], // top-left
-    [-1, 0], // top
-    [-1, 1], // top-right
-    [0, 1], // right
-    [1, 1], // bottom-right
-    [1, 0], // bottom
-    [1, -1], // bottom -left
-    [0, -1], // left
-];
+const adjacentCells = (boardLen: RowCol, cell: RowCol): number[][] => {
+    const adjCells = [];
+    for (let r = -1; r <= 1; r++) {
+        for (let c = -1; c <= 1; c++) {
+            const neighbor = [cell[0] + r, cell[1] + c];
+            if (!(r == 0 && c === 0) && withinBounds(boardLen, neighbor)) {
+                adjCells.push(neighbor);
+            }
+        }
+    }
+    return adjCells;
+}
 
 type RowCol = number[];
 
 const visitedKey = (yx: RowCol) => `${yx[0]},${yx[1]}`;
 
-const findWords = (dict: string[], board: string[][]): string[] => {
-    const MAX_DEPTH = 20;
+const solve = (dict: string[], board: string[][]): string[] => {
+    const MAX_DEPTH = 10;
     const found: string[] = [];
     const len: RowCol = [board.length, board[0].length];
     const visited: { [yx: string]: number } = {};
+    const dictMap: { [word: string]: number } = {};
 
-    const withinBounds = (cell: RowCol): boolean =>
-        cell[0] >= 0 && cell[0] < len[0] &&
-        cell[1] >= 0 && cell[1] < len[1];
-
-    const traverse = (cell: RowCol, depth: number) => {
+    const traverse = (cell: RowCol, depth: number, word: string) => {
         const key = visitedKey(cell);
-        console.log(`[depth: ${depth}] visit`, key, board[cell[0]][cell[1]]);
         visited[key] = 1;
+        word = word + board[cell[0]][cell[1]];
+
+        // Linear seach through Dict array
+        if (dictMap[word]) {
+            found.push(word);
+        }
+        console.log(`[depth: ${depth}] visit`, key, board[cell[0]][cell[1]], word);
+
         if (depth > MAX_DEPTH) {
             return;
         }
-
-        OFFSETS.forEach(offset => {
-            const adjacent = [cell[0] + offset[0], cell[1] + offset[1]];
-            if (withinBounds(adjacent) && !visited[visitedKey(adjacent)]) {
-                traverse(adjacent, depth + 1);
-            }
-        })
+        adjacentCells(len, cell)
+            .forEach(adj => {
+                if (!visited[visitedKey(adj)]) {
+                    traverse(adj, depth + 1, word);
+                }
+            });
+        // reset vistited for the cell and trim word
+        visited[key] = 0;
+        word = word.substring(0, word.length - 2);
     }
 
-    traverse([0, 0], 0);
+    // Build dictMap for faster lookups
+    dict.forEach(word => { dictMap[word] = 1; })
+    traverse([0, 0], 0, '');
     return found;
 }
 
 /**
  * ASSERTIONS
  */
-const DICTIONARY = ['are', 'tar', 'aero', 'opal'];
+const DICTIONARY = ['are', 'tad', 'tar', 'aero', 'opal', 'tape', 'tread'];
 
 const BOARD_1 = [
     ['t', 'a', 'e'],
-    ['l', 'r', 'p'],
+    ['d', 'r', 'p'],
     ['u', 'b', 'o']];
-findWords(DICTIONARY, BOARD_1);
+
+console.log(adjacentCells([3, 3], [0, 0]));
+console.log(solve(DICTIONARY, BOARD_1));

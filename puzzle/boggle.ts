@@ -1,12 +1,12 @@
 /**
- *                            BOGGLE
- * 
+ *                            BOGGLE https://en.wikipedia.org/wiki/Boggle
  */
-
 type BoardCells = string[][];
 type RowCol = number[];
-const visitedKey = (yx: RowCol) => `${yx[0]},${yx[1]}`;
 
+/**
+ * Models a NxM Boggle board.
+ */
 class BoggleBoard {
     cells: BoardCells;
     boardLen: RowCol;
@@ -17,10 +17,7 @@ class BoggleBoard {
     }
 
     withinBounds(cell: RowCol): boolean {
-        return cell[0] >= 0 &&
-            cell[0] < this.boardLen[0] &&
-            cell[1] >= 0 &&
-            cell[1] < this.boardLen[1];
+        return cell[0] >= 0 && cell[0] < this.boardLen[0] && cell[1] >= 0 && cell[1] < this.boardLen[1];
     }
 
     adjacentCells(cell: RowCol): number[][] {
@@ -49,6 +46,7 @@ class BoggleBoard {
             }
         }
 
+        // Create board from letters array
         let i = 0;
         const cells = []
         for (let r = 0; r < nRows; r++) {
@@ -61,50 +59,40 @@ class BoggleBoard {
         }
         return new BoggleBoard(cells);
     }
-}
 
-class DictionaryHashmap {
-    dictMap: { [word: string]: number } = {};
-
-    constructor(arr: string[]) {
-        arr.forEach(word => { this.dictMap[word] = 1; })
+    pretty(): string {
+        return '\nBOARD\n' + this.cells.map(r => r.join(' ')).join('\n');
     }
 
-    exists(word: string): boolean {
-        return this.dictMap[word] > 0;
-    }
 }
 
 /**
- * TRIE representation of dictionary. This can be faster than Dicitonary Hashmap/
- * @example trie for 'to', 'tea' and 'it'
+ * TRIE representation of dictionary words. This can be faster than using
+ * @example A TRIE for the words 'to', 'tea' and 'it'.
  * 
- *                    ROOT
- *               /           \
- *          char: t           char: i  
- *         /        \                \ t
- *   char: o        char: e          char: t
-  *  word: "to"     /    \           word: "it"
- *            val: t      val: n
- *           word: "tea"  word: "ten"
+ *                      ROOT
+ *                /            \
+ *          char: t            char: i  
+ *         /        \                 \ t
+ *   char: o        char: e            char: t
+  *  word: "to"     /    \             word: "it"
+ *            char: t      val: n
+ *           word: "tea"   word: "ten"
  */
 class TrieNode {
-    // Hashmap of char -> Node holding immediate children.
-    children: { [char: string]: TrieNode };
-
-    // True when last node
-    isLeaf: boolean = false;
-
-    constructor(readonly char: string) {
-        this.children = {};
-    }
+    children: { [char: string]: TrieNode } = {}; // Hashmap of char -> Node holding immediate children.
+    isLeaf: boolean = false; // True when last node. Represents a complete word.
+    constructor(readonly char: string) { }
 }
 
+/**
+ * Stores dictionary words in a TRIE for fast lookup.
+ */
 class DictionaryTrie {
     root: TrieNode;
     maxWordLength: number = 0;
 
-    constructor(arr: string[]) {
+    constructor(readonly arr: string[]) {
         this.root = new TrieNode('');
         arr.forEach(word => this.insert(word))
     }
@@ -127,30 +115,35 @@ class DictionaryTrie {
         }
     }
 
-    contains(word: string): boolean {
-        let node = this.root;
+    /**
+     * Returns the node if found or undefined if not found.
+     */
+    findNode(word: string, startNode?: TrieNode): TrieNode | undefined {
+        let node = startNode ? startNode : this.root;
         for (let char of word) {
             const child = node.children[char];
             if (!child) {
-                return false;
+                return undefined;
             }
             node = child;
         }
-        // It's a word if leaf
-        return node.isLeaf;
+        return node
     }
 }
 
 /**
  * Depth first recursive approach to finding dictionary words on the board.
  */
-const solveDepthFirst = (dictionayArr: string[], board: BoggleBoard): string[] => {
+const solve = (dict: DictionaryTrie, board: BoggleBoard): string[] => {
     const MAX_DEPTH = 20; // Circuit breaker
-    const found: string[] = [];
+    const foundWords: string[] = [];
     const visited: { [yx: string]: number } = {};
-    const dict = new DictionaryTrie(dictionayArr);
+    const visitedKey = (yx: RowCol) => `${yx[0]},${yx[1]}`;
 
-    const traverse = (cell: RowCol, word: string, depth: number) => {
+    /** 
+     * Helper func for recursion
+     */
+    const traverse = (cell: RowCol, word: string, searchRoot: TrieNode, depth: number = 0) => {
         if (
             depth > MAX_DEPTH // Abort when max recursion depth reached
             || word.length > dict.maxWordLength // Stop when > longest dictionary word
@@ -160,66 +153,98 @@ const solveDepthFirst = (dictionayArr: string[], board: BoggleBoard): string[] =
 
         const key = visitedKey(cell);
         visited[key] = 1;
-        word = word + board.cells[cell[0]][cell[1]];
+        const char = board.cells[cell[0]][cell[1]];
+        word = word + char;
         console.log(`[depth: ${depth}] visit`, key, board.cells[cell[0]][cell[1]], word);
 
-        if (dict.contains(word)) {
-            found.push(word);
-            console.log('found', word);
+        const foundNode = dict.findNode(char, searchRoot); // word);
+        if (foundNode?.isLeaf) { // When leaf, we've hit a word
+            foundWords.push(word);
+            console.log('Found!', word);
         }
 
         board.adjacentCells(cell).forEach(adj => {
-            if (!visited[visitedKey(adj)]) {
-                traverse(adj, word, depth + 1);
+            if (!visited[visitedKey(adj)] && foundNode) {
+                traverse(adj, word, foundNode, depth + 1);
             }
         });
-        // reset vistited for the cell and trim last char
+        // Reset vistited for the cell and trim last char
         visited[key] = 0;
         word = word.substring(0, word.length - 1);
     }
 
-    // Call traverse() for  every cell(r, c) whose first char is in the dict's root children.
-    // @example for a dictionary = ['aero', 'are', 'opal', 'tad'],
+    // Driver: Call traverse() for every cell(r, c) 
+    //         whose 1st char is in dict root children.
+    //          @example For dict = ['aero', 'are', 'opal', 'tad'],
     //          the root's children are ['a', 'o', 't']
     for (let r = 0; r < board.boardLen[0]; r++) {
         for (let c = 0; c < board.boardLen[1]; c++) {
             const val = board.cells[r][c];
             if (dict.root.children[val]) {
-                traverse([r, c], '', 0);
-            } else {
-                console.log('Skip', val);
+                traverse([r, c], '', dict.root);
             }
         }
     }
-    return found;
+
+    console.log('Words in', board.pretty(), foundWords);
+    return foundWords;
 }
 
+/**
+ * Randomly creates boards and returns the board that produces the largest num of words.
+ */
+const findBestBoard = (numRows: number, numCols: number, maxIter = 5): { cells: BoardCells, words: string[] } => {
+    console.log('BEST BOARD FINDER')
+    let i = 0;
+    let bestBoard;
+    let maxWords: string[] = [];
+    while (i < maxIter) {
+        const board = BoggleBoard.createRandom(numRows, numCols);
+        const words = solve(DICT_TRIE, board);
+        console.log(board.pretty(), '->', words);
+        if (maxWords.length < words.length) {
+            bestBoard = board;
+            maxWords = words;
+        }
+        i++
+        
+    }
+    return { cells: bestBoard?.cells || [], words: maxWords };
+}
 
 /**
  * ASSERTIONS
  */
-// Test Dictionary
-const DICTIONARY = ['aero', 'are', 'dare', 'opal', 'rope', 'tad', 'tar', 'trope', 'tape', 'tread'];
-const trie = new DictionaryTrie(DICTIONARY);
-console.log(DICTIONARY.every(word => trie.contains(word)));
-console.log(!new DictionaryTrie(DICTIONARY).contains('tens'));
-console.log(!new DictionaryTrie(DICTIONARY).contains('te'));
+const DICT_TRIE = new DictionaryTrie(
+    ['at', 'aero', 'are', 'dare', 'it', 'opal', 'rope', 'rap', 'tad', 'tar', 'trope', 'tape', 'tread']
+);
 
-// Test randomizer
-console.log(BoggleBoard.createRandom(2, 2).cells.length === 2);
+// // Test in dictionary
+// console.log(DICT_TRIE.arr.every(word => DICT_TRIE.findNode(word)));
 
-// // Test solver
-const BOARD_0 = new BoggleBoard([
-    ['a', 'e'],
-    ['r', 'p'],
-    ['b', 'o']]);
-console.log(solveDepthFirst(DICTIONARY, BOARD_0));
+// // Test abscence
+// console.log(['tens', 'te'].every(word => !DICT_TRIE.findNode(word)));
 
+// const node = DICT_TRIE.findNode('ta');
+// console.log(DICT_TRIE.findNode('r', node));
 
-// // Test solver
-// const BOARD_1 = new BoggleBoard([
+// // Test solver: 2x2
+// const BOARD_2x2 = new BoggleBoard([
+//     ['a', 'e'],
+//     ['r', 'p']]);
+// console.log(solve(DICT_TRIE, BOARD_2x2)
+//     .length > 1); // ['are', 'rap']
+
+// // Test randomizer
+// console.log(BoggleBoard.createRandom(2, 2).cells.length === 2);
+
+// // Test solver: 3x3
+// const BOARD_3x3 = new BoggleBoard([
 //     ['t', 'a', 'e'],
 //     ['d', 'r', 'p'],
 //     ['u', 'b', 'o']]);
-// console.log(solveDepthFirst(DICTIONARY, BOARD_1));
+// console.log(solve(DICT_TRIE, BOARD_3x3)
+//     .length > 9); // ["tad", "tar", "tape", "tread", "trope", "aero", "are", "dare", "rap", "rope"]
 
+// Test Random Best Board
+console.log(findBestBoard(2, 2, 10));

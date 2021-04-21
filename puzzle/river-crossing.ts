@@ -1,5 +1,5 @@
 /**
- * River Crossing Puzzle
+ *                          River Crossing Puzzle
  * 
  * From https://en.wikipedia.org/wiki/Wolf,_goat_and_cabbage_problem
  * 

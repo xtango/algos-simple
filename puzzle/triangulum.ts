@@ -1,19 +1,16 @@
-
 /**
- *          TRIANGULUM
+ *                        TRIANGULUM
+ *
+ *                         (0,0)              Circle Row 0
+ *                         /   \
+ *    Triangle Row 0      /     \       
+ *                       / t:0,0 \
+ *                    (1,0)-------(1,1)       Circle Row 1
+ *                     /  \t:1,1 /  \
+ *    Triangle Row 1  /    \    /    \
+ *                   / t:1,0\  /t:1,2 \
+ *               (2,0)-----(2,1)------(2,1)   Circle Row 2
  */
-
-/**
-*                         (0,0)              Circle Row 0
-*                         /   \
-*    Triangle Row 0      /     \       
-*                       / t:0,0 \
-*                    (1,0)-------(1,1)       Circle Row 1
-*                     /  \t:1,1 /  \
-*    Triangle Row 1  /    \    /    \
-*                   / t:1,0\  /t:1,2 \
-*               (2,0)-----(2,1)------(2,1)   Circle Row 2
-*/
 
 interface Coordinate { row: number, col: number }
 

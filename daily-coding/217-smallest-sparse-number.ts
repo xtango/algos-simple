@@ -21,7 +21,7 @@ const isSparse = (str: string): boolean => !str.includes('11');
  * Non optimal, O(N log N) solution
  */
 const nextSparse = (n: number): number => {
-    let smallest = n + 1;
+    let smallest = n; // Problem specifies >= N
     while (!isSparse(decimalToBin(smallest))) {
         smallest++;
     }

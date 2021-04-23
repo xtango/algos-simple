@@ -13,10 +13,10 @@
 /**
  * A HashMap containing: { node: visitNumber, ... } 
  * used to compute the cycle length.
- *  e.g. { 0: 1, 4: 2, 10: 3 } means
- *       Node 0 was visited 1st
- *       Node 4 was visited 2nd
- *       Node 10 was visited 3rd.
+ * @example { 0: 1, 4: 2, 10: 3 } means
+ *            Node 0 was visited 1st
+ *                  Node 4 was visited 2nd
+ *                         Node 10 was visited 3rd.
  */
 type VisitMap = { [nodeNum: number]: number };
 

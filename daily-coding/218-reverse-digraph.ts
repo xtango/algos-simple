@@ -8,13 +8,17 @@
  */
 type IncidentMatrix = number[][];
 
-const newMatrix = (len: number): IncidentMatrix => [...Array(len).keys()].map(x => new Array(len));
+const newMatrix = (len: number): IncidentMatrix =>
+    [...Array(len).keys()] // Equivalent to range(0, len)
+        .map(x => new Array(len));
 
+/**
+ * @see https://en.wikipedia.org/wiki/Transpose_graph
+ */
 const reverseDigraph = (M: IncidentMatrix): IncidentMatrix => {
-    const len = M.length;
-    const reversed = newMatrix(len);
-    for (let r = 0; r < len; r++) {
-        for (let c = 0; c < len; c++) {
+    const reversed = newMatrix(M.length);
+    for (let r = 0; r < M.length; r++) {
+        for (let c = 0; c < M.length; c++) {
             reversed[r][c] = M[c][r];
         }
     }
@@ -24,13 +28,27 @@ const reverseDigraph = (M: IncidentMatrix): IncidentMatrix => {
 /**
  * ASSERTIONS
  */
-
 // A -> B -> C should become A <- B <- C.
-const DIGRAPH_1: IncidentMatrix = [
+console.log(JSON.stringify(
+    reverseDigraph(
+        [
     /*                    Reversed */
     /*      A  B  C       A  B  C  */
     /* A */[0, 1, 0], // [0, 0, 0]
     /* B */[0, 0, 1], // [1, 0, 0]
-    /* C */[0, 0, 0] //  [0, 1, 0]
-];
-console.log(JSON.stringify(reverseDigraph(DIGRAPH_1)) === '[[0,0,0],[1,0,0],[0,1,0]]');
+    /* C */[0, 0, 0]] // [0, 1, 0]
+    )
+) === '[[0,0,0],[1,0,0],[0,1,0]]');
+
+// Example in Wikipedia @see https://en.wikipedia.org/wiki/Transpose_graph
+console.log(JSON.stringify(
+    reverseDigraph(
+        [
+    /*                            Reversed    */
+    /*      A  B  C  D  E       A  B  C  D  E */
+    /* A */[0, 1, 0, 0, 0], // [0, 0, 1, 0, 0]
+    /* B */[0, 0, 1, 0, 0], // [1, 0, 0, 0, 0]
+    /* C */[1, 0, 0, 0, 1], // [0, 1, 0, 0, 0]
+    /* D */[0, 0, 0, 0, 1], // [0, 0, 0, 0, 1]
+    /* E */[0, 0, 0, 1, 0]] // [0, 0, 1, 1, 0] 
+    )) === '[[0,0,1,0,0],[1,0,0,0,0],[0,1,0,0,0],[0,0,0,0,1],[0,0,1,1,0]]');

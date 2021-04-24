@@ -1,0 +1,19 @@
+/**
+ *              CCI: 1.9 STRING ROTATION
+ * Check if s2 is a rotation of s1 using just 1 call is isSubstring.
+ */
+const isSubstring = (s1: string, s2: string): boolean => s1.indexOf(s2) > -1
+
+/**
+ * @example isRotation('waterbottle', 'erbottlewat')
+ * s1 + s1:  waterbottlewatterbottle
+ *      s2:     erbottlewat
+ */
+const isRotation = (s1: string, s2: string): boolean => s1.length === s2.length && isSubstring(s1 + s1, s2)
+
+/**
+ * ASSERTIONS
+ */
+console.log(isRotation('waterbottle', 'erbottlewat'));
+console.log(!isRotation('apple', 'bannana'));
+console.log(!isRotation('apple', 'pears'));

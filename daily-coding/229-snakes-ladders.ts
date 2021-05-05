@@ -19,7 +19,7 @@ type Outcomes = { [square: number]: number }
 interface SnLNode { square: number, turns: number }
 
 /** 
- * Breadth first search for to reach or exceed square #100.
+ * Breadth first traversal to reach or exceed square #100.
  */
 const minTurns = (snakes: Outcomes, ladders: Outcomes): number {
     const nextSquare = (current: number, roll: number): number {
@@ -31,12 +31,12 @@ const minTurns = (snakes: Outcomes, ladders: Outcomes): number {
                 : newSquare;
     }
 
-    const q: SnLNode[] = [{ square: 0, turns: 0 }];
+    const q: SnLNode[] = [{ square: 0, turns: 0 }]; // Start from Square 0
     const visited: { [square: number]: boolean } = {};
 
     while (q.length > 0) {
         const node = q.shift(); // pop front
-        console.log(node);
+        // console.log(node);
         for (let roll = 6; roll > 0; roll--) {
             const newNum = nextSquare(node.square, roll)
             if (newNum >= 100) {

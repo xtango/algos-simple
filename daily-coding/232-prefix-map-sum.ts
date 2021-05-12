@@ -69,9 +69,9 @@ class PrefixMapSum {
  */
 const mapsum = new PrefixMapSum()
 mapsum.insert("columnar", 3)
-console.log(mapsum.sum("col") == 3);
+console.log(mapsum.sum("col") === 3);
 mapsum.insert("column", 2)
-console.log(mapsum.sum("col") == 5);
+console.log(mapsum.sum("col") === 5);
 
 const mapsum2 = new PrefixMapSum()
 mapsum2.insert('co', 3);

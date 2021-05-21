@@ -37,7 +37,7 @@ const fractionalPart = (numerator: number, denominator: number): string => {
     while (rem !== 0 && i < MAX_ITER) {             // i:  0        1           2
         let x = rem * 10;                           // 40        -> 50       -> 10 
         const divisor = x / Math.abs(denominator);  // 40/7=5    -> 50/7=7   -> 10/7=1
-        rem = x % denominator;                      // 40%7=5    -> 50%7=1   -> '10%7'=3
+        rem = x % denominator;                      // 40%7=5    -> 50%7=1   -> 10%7=3
 
         // Hit a repeating decimal pattern when the carry has already occurred
         if (carries[rem]) {

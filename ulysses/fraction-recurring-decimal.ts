@@ -5,7 +5,7 @@
  *
  * @example 1/2 returns '1.5', no repeating
  *                                           _
- * @example 1/3 returns 1.(3) to represent 1.3
+ * @example 1/3 returns 1.(3) representing 1.3
  *                                                  ______ 
  * @example 4/7 returns '0.(571428)' representing 0.571428
  *             
@@ -18,7 +18,7 @@
  */
 
 /**
- * @example (-3 > 0) ^ (7 > 0) = 0 xor 1 = 1, which return true
+ * @example isNeg(-3, 7) = (-3 > 0) ^ (7 > 0) = 0 xor 1 = 1, which return true
  */
 const isNeg = (numerator: number, denominator: number): boolean =>
     ((numerator > 0 ? 1 : 0) ^ (denominator > 0 ? 1 : 0)) === 1;

@@ -39,8 +39,7 @@ const fractionalPart = (numerator: number, denominator: number): string => {
         const divisor = x / Math.abs(denominator);  // 40/7=5    -> 50/7=7   -> 10/7=1
         rem = x % denominator;                      // 40%7=5    -> 50%7=1   -> '10%7'=3
 
-        // Hit a repeating decimal pattern when the carry has alredy occurred
-        // the carry over has already occured
+        // Hit a repeating decimal pattern when the carry has already occurred
         if (carries[rem]) {
             return '.(' + str + ')';
         } else {

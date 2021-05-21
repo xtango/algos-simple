@@ -1,8 +1,9 @@
 /**
- *              RECURRING DECIMAL
+ *              FRACTION RECURRING DECIMAL
  * 
- * Retuns the string represenation of a fratction.
- * @example 1/2 returns '1.5'
+ * Returns the string represenation of a fraction with recurring decimals in parentheses.
+ *
+ * @example 1/2 returns '1.5', no repeating
  *                                           _
  * @example 1/3 returns 1.(3) to represent 1.3
  *                                                  ______ 
@@ -16,24 +17,32 @@
  * 7               7
  */
 
-const integralPart = (numerator: number, denominator: number): string => 
-  Math.floor(numerator / denominator).toString();
+/**
+ * @example (-3 > 0) ^ (7 > 0) = 0 xor 1 = 1, which return true
+ */
+const isNeg = (numerator: number, denominator: number): boolean =>
+    ((numerator > 0 ? 1 : 0) ^ (denominator > 0 ? 1 : 0)) === 1;
+
+const integralPart = (numerator: number, denominator: number): string =>
+    isNeg(numerator, denominator) 
+      ? '-' 
+      : '' + Math.floor(numerator / denominator).toString();
 
 const fractionalPart = (numerator: number, denominator: number): string => {
     const MAX_ITER = 10; // Circuit breaker
     let str = '';
     let i = 0;
     const carries: { [key: number]: boolean } = [];
-    let rem = numerator % denominator;
-    while (rem !== 0 && i < MAX_ITER) {    // i:  0        1           2
-        let x = rem * 10;                  // 40        -> 50       -> 10 
-        const divisor = x / denominator;   // 40/7=5    -> 50/7=7   -> 10/7=1
-        rem = x % denominator;             // 40%7=5    -> 50%7=1   -> '10%7'=3
+    let rem = Math.abs(numerator) % Math.abs(denominator);
+    while (rem !== 0 && i < MAX_ITER) {             // i:  0        1           2
+        let x = rem * 10;                           // 40        -> 50       -> 10 
+        const divisor = x / Math.abs(denominator);  // 40/7=5    -> 50/7=7   -> 10/7=1
+        rem = x % denominator;                      // 40%7=5    -> 50%7=1   -> '10%7'=3
 
         // Hit a repeating decimal pattern when the carry has alredy occurred
         // the carry over has already occured
         if (carries[rem]) {
-            return '(' + str + ')';
+            return '.(' + str + ')';
         } else {
             str += Math.floor(divisor);     // '.5'      -> '.57'    -> '.571'
             carries[rem] = true;
@@ -49,4 +58,8 @@ const recurringDecFraction = (numerator: number, denominator: number) => {
     return (numerator % denominator === 0) ? integral : integral + fractionalPart(numerator, denominator);
 }
 
-console.log(recurringDecFraction(4, 7));
+/**
+ * ASSERTIONS
+ */
+console.log(recurringDecFraction(4, 7) === '0.(571428)');
+console.log(recurringDecFraction(4, -7) === '-.(571428)');

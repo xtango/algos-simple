@@ -3,9 +3,9 @@
  * 
  * Returns the string represenation of a fraction with recurring decimals in parentheses.
  *
- * @example 1/2 returns '1.5', no repeating
+ * @example 1/2 returns '1.5', no repeating decimals
  *                                           _
- * @example 1/3 returns 1.(3) representing 1.3
+ * @example 1/3 returns '1.(3)' representing 1.3
  *                                                  ______ 
  * @example 4/7 returns '0.(571428)' representing 0.571428
  *             
@@ -39,7 +39,7 @@ const fractionalPart = (numerator: number, denominator: number): string => {
         const divisor = x / Math.abs(denominator);  // 40/7=5    -> 50/7=7   -> 10/7=1
         rem = x % denominator;                      // 40%7=5    -> 50%7=1   -> 10%7=3
 
-        // Hit a repeating decimal pattern when the carry has already occurred
+        // Hit a repeating decimal pattern when the carry has been seen before.
         if (carries[rem]) {
             return '.(' + str + ')';
         } else {

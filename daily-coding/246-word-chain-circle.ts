@@ -15,7 +15,6 @@
 const neighbors = (list: string[], word: string): string[] =>
     list.filter(x => x[0] === word[word.length - 1])
 
-
 const canFormChainCircle = (wordList: string[]): boolean => {
     const MAX_DEPTH = 10;
 
@@ -31,7 +30,8 @@ const canFormChainCircle = (wordList: string[]): boolean => {
         console.log('word:', word);
 
         const adjList = neighbors(wordList, word); // adjs=[racket]    -> [touch, tunic]   ->  [height]
-        q.concat(adjList);
+        q = q.concat(adjList);
+        console.log('word, adjList', word, adjList);
         return bfs(q, depth + 1);
     }
 

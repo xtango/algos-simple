@@ -10,15 +10,25 @@
  * where a < b, into an Egyptian fraction.
  */
 
-interface Fraction {
-    numer: number;
-    denom: number;
-}
 
-const fractionMinus = (a: Fraction, b: Fraction):Fraction => {
-        
-}
+/**
+ * Returns a list of integers representing the denominators of the Egption fraction of frac.
+ * 3/4 = 1/2 + 1/4
+ */
 
-const egyptianFraction =(frac: Fraction): number[] => {
-    return [];
+const MAX_ITER = 5;
+
+const egyptianFraction = (numerator: number, denominator: number): number[] => {
+    const egyptianDenoms: number[] = [];
+    let [numer, denom] = [numerator, denominator];
+    let i = 0;
+    while (numer !== 0 && i < MAX_ITER) {
+        const ceil = Math.ceil(numer / denom);
+        egyptianDenoms.push(ceil);
+        numer = (ceil * numer) - denominator;
+        denom *= ceil;
+        i++;
+    }
+    return egyptianDenoms;
 }
+console.log(egyptianFraction(3, 4));

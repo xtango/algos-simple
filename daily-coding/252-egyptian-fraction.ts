@@ -10,25 +10,27 @@
  * where a < b, into an Egyptian fraction.
  */
 
-
 /**
- * Returns a list of integers representing the denominators of the Egption fraction of frac.
- * 3/4 = 1/2 + 1/4
+ * Returns a list of integers representing the denominators of the Egyption fraction
+ * represnation of numeration/denominator.
+ * 
+ * @example 3/4 returns [2, 4] since 3/4 = 1/2 + 1/4
  */
-
-const MAX_ITER = 5;
-
 const egyptianFraction = (numerator: number, denominator: number): number[] => {
     const egyptianDenoms: number[] = [];
-    let [numer, denom] = [numerator, denominator];
-    let i = 0;
-    while (numer !== 0 && i < MAX_ITER) {
-        const ceil = Math.ceil(numer / denom);
-        egyptianDenoms.push(ceil);
-        numer = (ceil * numer) - denominator;
-        denom *= ceil;
-        i++;
+    let [n, d] = [numerator, denominator];  // [3,4]  
+
+    while (n !== 0) {                       // n/d: 3/4     2/8         0/32
+        const ceil = Math.ceil(d / n);      // 4/3=>2       8/2=>4
+        egyptianDenoms.push(ceil);          // [2]          [2,4] 
+        // Set n/d to the remainder
+        [n, d] = [ceil * n - d, ceil * d];  // [2, 8]       [0,32]
     }
     return egyptianDenoms;
 }
-console.log(egyptianFraction(3, 4));
+
+/**
+ * ASSERTIONS
+ */
+console.log(JSON.stringify(egyptianFraction(3, 4)) === '[2,4]');
+console.log(JSON.stringify(egyptianFraction(4, 13)) === '[4,18,468]');

@@ -11,10 +11,9 @@
  */
 
 /**
- * Returns a list of integers representing the denominators of the Egyption fraction
- * represnation of numeration/denominator.
+ * Returns a integers representing the denominators of the Egyption fraction of numeration/denominator.
  * 
- * @example 3/4 returns [2, 4] since 3/4 = 1/2 + 1/4
+ * @example 3/4 returns [2, 4], since 3/4 = 1/2 + 1/4
  */
 const egyptianFraction = (numerator: number, denominator: number): number[] => {
     const egyptianDenoms: number[] = [];

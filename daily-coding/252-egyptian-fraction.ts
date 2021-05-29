@@ -10,6 +10,15 @@
  * where a < b, into an Egyptian fraction.
  */
 
-const egyptianFraction =(numerator: number, denominator: number): number[] => {
+interface Fraction {
+    numer: number;
+    denom: number;
+}
+
+const fractionMinus = (a: Fraction, b: Fraction):Fraction => {
+        
+}
+
+const egyptianFraction =(frac: Fraction): number[] => {
     return [];
 }

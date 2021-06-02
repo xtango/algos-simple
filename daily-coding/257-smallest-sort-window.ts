@@ -7,9 +7,12 @@
  * of the smallest window that must be sorted in order for the
  * entire array to be sorted.
  * For example, given [3, 7, 5, 6, 9], you should return (1, 3).
-*/
+ */
 
-const sortWindow = (arr: number[]): number[] => {
+/**
+ * Naive version that sorts the array.
+ */
+const sortWindowNaive = (arr: number[]): number[] => {
     const sorted = [...arr].sort((a, b) => a - b);
     let [left, right] = [0, arr.length - 1];
 
@@ -27,12 +30,15 @@ const sortWindow = (arr: number[]): number[] => {
 /**
  * ASSERTIONS
  */
-// Already sorted case
-console.log(JSON.stringify(sortWindow([1, 2, 3, 5, 7])) == '[4,4]');
+const EXPECTATIONS = [
+    // Already sorted case
+    [[1, 2, 3, 5, 7], '[4,4]'],
 
-// Unsorted cases
-console.log(JSON.stringify(sortWindow([3, 7, 5, 6, 9])) === '[1,3]');
-console.log(JSON.stringify(sortWindow([9, 7, 5, 10, 12])) === '[0,2]');
-
-// Descending sort case
-console.log(JSON.stringify(sortWindow([12, 10, 9, 7, 5])) === '[0,4]');
+    // Unsorted cases    
+    [[3, 7, 5, 6, 9], '[1,3]'],
+    [[9, 7, 5, 10, 12], '[0,2]'],
+    [[12, 10, 9, 7, 5], '[0,4]'] // desc sorted case
+];
+console.log(
+    EXPECTATIONS.map(x => JSON.stringify(sortWindowNaive(x[0])) === x[1])
+);

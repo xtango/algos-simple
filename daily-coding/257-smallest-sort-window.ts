@@ -10,35 +10,56 @@
  */
 
 /**
- * Naive version that sorts the array.
+ * Naive version using a sorted array.
  */
 const sortWindowNaive = (arr: number[]): number[] => {
     const sorted = [...arr].sort((a, b) => a - b);
-    let [left, right] = [0, arr.length - 1];
+    let [start, end] = [0, arr.length - 1];
 
-    while (left < right && arr[left] === sorted[left]) {
-        left++;
+    while (start < end && arr[start] === sorted[start]) {
+        start++;
     }
-
-    while (right > left && arr[right] === sorted[right]) {
-        right--;
+    while (end > start && arr[end] === sorted[end]) {
+        end--;
     }
+    return [start, end];
+}
 
-    return [left, right];
+/**
+ * A solution in linear time.
+ */
+const sortWindow = (arr: number[]): number[] => {
+    let [minFound, maxFound] = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
+    let [start, end] = [0, arr.length - 1];
+
+    for (let i = 0; i < arr.length; i++) {
+        // Set end
+        if (arr[i] > maxFound) {
+            maxFound = arr[i];
+        }
+        if (arr[i] < maxFound) {
+            end = i;
+        }
+
+        // Set start
+        let j = arr.length - 1 - i;
+        if (arr[j] < minFound) {
+            minFound = arr[j];
+        }
+        if (arr[j] > minFound) {
+            start = j;
+        }
+    }
+    return [start, end];
 }
 
 /**
  * ASSERTIONS
  */
 const EXPECTATIONS = [
-    // Already sorted case
-    [[1, 2, 3, 5, 7], '[4,4]'],
-
-    // Unsorted cases    
     [[3, 7, 5, 6, 9], '[1,3]'],
     [[9, 7, 5, 10, 12], '[0,2]'],
     [[12, 10, 9, 7, 5], '[0,4]'] // desc sorted case
 ];
-console.log(
-    EXPECTATIONS.map(x => JSON.stringify(sortWindowNaive(x[0])) === x[1])
-);
+console.log(EXPECTATIONS.every(x => JSON.stringify(sortWindowNaive(x[0])) === x[1]));
+console.log(EXPECTATIONS.every(x => JSON.stringify(sortWindow(x[0])) === x[1]));

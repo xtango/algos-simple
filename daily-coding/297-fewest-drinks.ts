@@ -27,23 +27,33 @@ const getCustIds = (prefs: Preferences) => Object.keys(prefs).map(x => Number(x)
 
 const minus = (a: number[], b: number[]) => a.filter(x => !b.includes(x))
 
+const pretty = ({customers, drinks}) => `REMAINING Drink: ${customers.join(',')}; Cust: ${drinks.join(',')}`
+
 const fewest = (prefs: Preferences) => {
     const drinkDict = toDrinkDict(prefs);
 
-    const fewestHelper = (remainingCustIds: number[]) => {
-        console.log('remaining: ', remainingCustIds.join(','));
-        if (remainingCustIds.length === 0) {
-            console.log('--> Satisfies all')
+    const fewestHelper = (remaining: { customers: number[], drinks: number[] }, depth: number = 0) => {
+        console.log('depth', depth, pretty(remaining));
+        if (depth > 3) {
+            console.log('Aborting, reached max depth');
+            return;
         }
-        getDrinkIds(drinkDict)
-            .forEach(did => {
-                const custIds = drinkDict[did];
-                const remainder = minus(remainingCustIds, custIds)
-                fewestHelper(remainder);
-            })
+
+        if (remaining.customers.length === 0) {
+            console.log('--> Satisfies all')
+            return;
+        }
+
+        remaining.drinks.forEach(did => {
+            const rem = {
+                customers: minus(remaining.customers, drinkDict[did]),
+                drinks: minus(remaining.drinks, [did])
+            };
+            fewestHelper(rem, depth + 1);
+        })
     }
 
-   fewestHelper(getCustIds(prefs));
+    fewestHelper({ customers: getCustIds(prefs), drinks: getDrinkIds(toDrinkDict(prefs))});
 
 }
 
@@ -78,4 +88,4 @@ const PREFS: Preferences = {
 };
 console.log(toDrinkDict(PREFS)[8][0] === 4);
 console.log(minus([1, 2, 8, 12], [3, 8]).join(',') === '1,2,12')
-
+fewest(PREFS)

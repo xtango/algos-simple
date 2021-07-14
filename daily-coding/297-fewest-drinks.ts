@@ -18,30 +18,31 @@ Given a dictionary input such as the one above, return the fewest number of drin
 For the input above, the answer would be 2, as drinks 1 and 5 will satisfy everyone.
 */
 type Preferences = { [custId: number]: number[] }
-
 type DrinkToCustDict = { [drinkId: number]: number[] }
+type RemaingIds = { customers: number[], drinks: number[] }
 
-const getDrinkIds = (dict: DrinkToCustDict) => Object.keys(dict).map(x => Number(x));
-
-const getCustIds = (prefs: Preferences) => Object.keys(prefs).map(x => Number(x));
-
+const getDrinkIds = (dict: DrinkToCustDict): number[] => Object.keys(dict).map(x => Number(x));
+const getCustIds = (prefs: Preferences): number[] => Object.keys(prefs).map(x => Number(x));
 const minus = (a: number[], b: number[]) => a.filter(x => !b.includes(x))
-
-const pretty = ({customers, drinks}) => `REMAINING Drink: ${customers.join(',')}; Cust: ${drinks.join(',')}`
+const pretty = ({ customers, drinks }: RemaingIds ): string => `REMAINING Drink: ${customers.join(',')}; Cust: ${drinks.join(',')}`
 
 const fewest = (prefs: Preferences) => {
     const drinkDict = toDrinkDict(prefs);
+    const allCusts = getCustIds(prefs);
+    const allDrinks = getDrinkIds(drinkDict);
+    const bestDrinks = [...allDrinks];
 
-    const fewestHelper = (remaining: { customers: number[], drinks: number[] }, depth: number = 0) => {
+    const fewestHelper = (remaining: , depth: number = 0): number[] => {
         console.log('depth', depth, pretty(remaining));
         if (depth > 3) {
             console.log('Aborting, reached max depth');
-            return;
+            return [];
         }
 
+        // When satisfied, return the used drinks
         if (remaining.customers.length === 0) {
             console.log('--> Satisfies all')
-            return;
+            return minus(allDrinks, remaining.drinks);
         }
 
         remaining.drinks.forEach(did => {
@@ -49,12 +50,15 @@ const fewest = (prefs: Preferences) => {
                 customers: minus(remaining.customers, drinkDict[did]),
                 drinks: minus(remaining.drinks, [did])
             };
-            fewestHelper(rem, depth + 1);
+            const selection = fewestHelper(rem, depth + 1);
+            if (selection.length < bestDrinks.length) {
+                bestDrinks = selection;
+            }
         })
+        return bestDrinks;
     }
 
-    fewestHelper({ customers: getCustIds(prefs), drinks: getDrinkIds(toDrinkDict(prefs))});
-
+    fewestHelper({ customers: allCusts, drinks: allDrinks });
 }
 
 /**

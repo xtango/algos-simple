@@ -19,20 +19,20 @@ For the input above, the answer would be 2, as drinks 1 and 5 will satisfy every
 */
 type Preferences = { [custId: number]: number[] }
 type DrinkToCustDict = { [drinkId: number]: number[] }
-type RemaingIds = { customers: number[], drinks: number[] }
+type RemainingIds = { customers: number[], drinks: number[] }
 
 const getDrinkIds = (dict: DrinkToCustDict): number[] => Object.keys(dict).map(x => Number(x));
 const getCustIds = (prefs: Preferences): number[] => Object.keys(prefs).map(x => Number(x));
 const minus = (a: number[], b: number[]) => a.filter(x => !b.includes(x))
-const pretty = ({ customers, drinks }: RemaingIds ): string => `REMAINING Drink: ${customers.join(',')}; Cust: ${drinks.join(',')}`
+const pretty = ({ customers, drinks }: RemainingIds ): string => `REMAINING Drink: ${customers.join(',')}; Cust: ${drinks.join(',')}`
 
 const fewest = (prefs: Preferences) => {
     const drinkDict = toDrinkDict(prefs);
     const allCusts = getCustIds(prefs);
     const allDrinks = getDrinkIds(drinkDict);
-    const bestDrinks = [...allDrinks];
+    let bestDrinks = [...allDrinks];
 
-    const fewestHelper = (remaining: , depth: number = 0): number[] => {
+    const fewestHelper = (remaining: RemainingIds, depth: number = 0): number[] => {
         console.log('depth', depth, pretty(remaining));
         if (depth > 3) {
             console.log('Aborting, reached max depth');
@@ -78,7 +78,6 @@ const toDrinkDict = (prefs: Preferences): DrinkToCustDict => {
     })
     return dict;
 }
-
 
 /**
  * ASSERTIONS

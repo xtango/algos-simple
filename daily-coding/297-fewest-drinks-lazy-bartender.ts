@@ -1,5 +1,6 @@
 /**
  *                          Problem #297 [Medium] - FEWEST DRINKS - LAZY BARTENDER *** WIP ***
+ * 
  * This problem was asked by Amazon.
  * 
  * At a popular bar, each customer has a set of favorite drinks, and will happily accept any
@@ -28,14 +29,14 @@ const pretty = ({ customers, drinks }: Remaining): string => `REMAINING Drink: $
 
 /**
  * Create boolean matrix:
- *   			Drinks
- *	 0	1	2	3	4	5	6	7	8		Count
- *	 ---------------------------------		-----
- * 0: 1	1		1			1				4
- * 1:	1			1			1			3
- * 2:		1		1	1		1			4
- * 3:		1	1		1					3
- * 4:					1			1		2
+ *              Drinks
+ *   0  1   2   3   4   5   6   7   8       Count
+ *   ---------------------------------      -----
+ * 0: 1 1       1           1               4
+ * 1:   1           1           1           3
+ * 2:       1       1   1       1           4
+ * 3:       1   1       1                   3
+ * 4:                   1           1       2
  * 
  * Pseudocode:
  * while (remaining.lengh > 0):
@@ -44,19 +45,19 @@ const pretty = ({ customers, drinks }: Remaining): string => `REMAINING Drink: $
  *     Remove columns where row values are 1s
  * 
  * After 1st iteration: (row 0 removed; cols 0, 1, 3, 6 removed)
- *	  2	 4	5	7	8		Count
- *	  -----------------		-----
- * 1:	 1		1			2
- * 2: 1	 1	1				3
- * 3: 1  	1				2
- * 4:  		1		1		2	
+ *    2  4  5   7   8       Count
+ *    -----------------     -----
+ * 1:    1      1           2
+ * 2: 1  1  1               3
+ * 3: 1     1               2
+ * 4:       1       1       2   
  * 
  * After 2nd iteration (row 2 removed; cols 2,4,5 removed)
- *	  7 8 	Count
- *	  --- 	-----
+ *    7 8   Count
+ *    ---   -----
  * 1: 1     1
- * 3:     	0
- * 4: 	1 	1
+ * 3:       0
+ * 4:   1   1
  * etc.
  */
 const fewest = (prefs: Preferences) => {

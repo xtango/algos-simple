@@ -24,8 +24,41 @@ type Remaining = { customers: number[], drinks: number[] }
 const getDrinkIds = (dict: DrinkToCustDict): number[] => Object.keys(dict).map(x => Number(x));
 const getCustIds = (prefs: Preferences): number[] => Object.keys(prefs).map(x => Number(x));
 const minus = (a: number[], b: number[]) => a.filter(x => !b.includes(x))
-const pretty = ({ customers, drinks }: Remaining ): string => `REMAINING Drink: ${customers.join(',')}; Cust: ${drinks.join(',')}`
+const pretty = ({ customers, drinks }: Remaining): string => `REMAINING Drink: ${customers.join(',')}; Cust: ${drinks.join(',')}`
 
+/**
+ * Create boolean matrix:
+ *   			Drinks
+ *	 0	1	2	3	4	5	6	7	8		Count
+ *	 ---------------------------------		-----
+ * 0: 1	1		1			1				4
+ * 1:	1			1			1			3
+ * 2:		1		1	1		1			4
+ * 3:		1	1		1					3
+ * 4:					1			1		2
+ * 
+ * Pseudocode:
+ * while (remaining.lengh > 0):
+ *     Select largest count row // When tied, pick the first
+ *     Remove row
+ *     Remove columns where row values are 1s
+ * 
+ * After 1st iteration: (row 0 removed; cols 0, 1, 3, 6 removed)
+ *	 2	4	5	7	8		Count
+ *	 -----------------		-----
+ * 1:	1		1			2
+ * 2: 1	1	1				3
+ * 3: 1  	1				2
+ * 4:  		1		1		2	
+ * 
+ * After 2nd iteration (row 2 removed; cols 2,4,5 removed)
+ *	 7	8	 	Count
+ *	 ------ 	-----
+ * 1: 1    		1
+ * 3:     		0
+ * 4: 	1 		1
+ * etc.
+ */
 const fewest = (prefs: Preferences) => {
     const drinkDict = toDrinkDict(prefs);
     const allCusts = getCustIds(prefs);

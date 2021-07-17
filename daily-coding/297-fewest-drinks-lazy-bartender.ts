@@ -1,5 +1,5 @@
 /**
- *                          Problem #297 [Medium] - FEWEST DRINKS  *** WIP ***
+ *                          Problem #297 [Medium] - FEWEST DRINKS - LAZY BARTENDER *** WIP ***
  * This problem was asked by Amazon.
  * 
  * At a popular bar, each customer has a set of favorite drinks, and will happily accept any

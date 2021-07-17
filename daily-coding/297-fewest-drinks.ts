@@ -44,19 +44,19 @@ const pretty = ({ customers, drinks }: Remaining): string => `REMAINING Drink: $
  *     Remove columns where row values are 1s
  * 
  * After 1st iteration: (row 0 removed; cols 0, 1, 3, 6 removed)
- *	 2	4	5	7	8		Count
- *	 -----------------		-----
- * 1:	1		1			2
- * 2: 1	1	1				3
+ *	  2	 4	5	7	8		Count
+ *	  -----------------		-----
+ * 1:	 1		1			2
+ * 2: 1	 1	1				3
  * 3: 1  	1				2
  * 4:  		1		1		2	
  * 
  * After 2nd iteration (row 2 removed; cols 2,4,5 removed)
- *	 7	8	 	Count
- *	 ------ 	-----
- * 1: 1    		1
- * 3:     		0
- * 4: 	1 		1
+ *	  7 8 	Count
+ *	  --- 	-----
+ * 1: 1     1
+ * 3:     	0
+ * 4: 	1 	1
  * etc.
  */
 const fewest = (prefs: Preferences) => {

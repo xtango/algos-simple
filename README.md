@@ -2,7 +2,7 @@
 
 You can run your code in Tryit Editor here: http://www.w3schools.com/html/tryit.asp?filename=tryhtml_script
 
-Copy the following code snippet (which sources lodash.js from the lodash CDN).
+Copy the following code snippet (which sources lodash.js from the lodash CDN):
 
 ```javascript
 <!DOCTYPE html>

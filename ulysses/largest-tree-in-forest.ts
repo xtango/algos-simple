@@ -1,5 +1,5 @@
 /**
- * Index of largest tree in forest
+ * Index of largest tree in forest. The forest contains one or more disconnected trees.
  */
 
 type ChildToParent = number[];
@@ -37,7 +37,12 @@ const toForest = (childToParentList: ChildToParent[]): Forest => {
     ///console.log(forest);
     return forest;
 }
-
+/**
+ * Returns the number of nodes in a tree specificed by forest and rootindex.
+ * @example For the forest illustrated below and rootIndex of 1 treeSize() returns 3.
+ *          1
+ *         2  3
+ */
 const treeSize = (forest: Forest, rootIndex: number): number {
     //console.log('treesize forst', forest);
     let count = 1;
@@ -75,7 +80,7 @@ const CHILD_PARENT_1 = [
     [2, 1],
     [3, 1]]
 console.log(toForest(CHILD_PARENT_1).roots.length === 1);
-console.log(treeSize(toForest(CHILD_PARENT_1), 1) == 3);
+console.log(treeSize(toForest(CHILD_PARENT_1), 1) === 3);
 console.log(largestIdx(CHILD_PARENT_1) === 1);
 
 /**

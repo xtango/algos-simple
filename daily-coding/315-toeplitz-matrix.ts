@@ -16,14 +16,13 @@
  */
 
 /**
- * Return true when diagonal-constant, i.e. A(i,j) = A(i+1,j+1) = a(i-j)
+ * Return true when diagonal-constant, i.e. A(r,c) = A(r+1,c+1) = a(r-c)
  * 
- * We check 1=1, 5=5, 4=4 etc
+ * In the problem statement's example, we check 1=1, 5=5, 4=4 etc
  * 
- *      iter1   iter2   iter3 .... etc
- *      1 2     5 1     4 5
- *      5 1     4 5     7 4
- * 
+ *      iter1 -> iter2 -> iter3 .... etc
+ *      1 2      5 1      4 5
+ *      5 1      4 5      7 4
  */
 const isToeplitz = (A: number[][]): boolean => {
     const [rowLen, colLen] = [A.length, A[0].length];

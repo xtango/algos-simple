@@ -1,0 +1,39 @@
+/**
+ *                           Problem #315 [Easy] - IS TOEPLITZ MATRIX
+ * 
+ * This problem was asked by Google.
+ * 
+ * In linear algebra, a Toeplitz matrix is one in which the elements on any
+ * given diagonal from top left to bottom right are identical.
+ * 
+ * Here is an example:
+ * 1 2 3 4 8
+ * 5 1 2 3 4
+ * 4 5 1 2 3
+ * 7 4 5 1 2
+ * 
+ * Write a program to determine whether a given input is a Toeplitz matrix.
+ */
+
+/**
+ * Return true when diagnol-constant, i.e. A(i,j) = A(i+1,j+1) = a(i-j)
+ */
+const isToeplitz = (A: number[][]): boolean => {
+    const [rowLen, colLen] = [A.length, A[0].length];
+    for (let r = 0; r < rowLen; r++) {
+        for (let c = 0; c < colLen - r; c++) {
+            console.log(r, c, A[r][c] );
+        }
+    }
+    return false;
+}
+
+/**
+ * ASSERTIONS
+ */
+const M1 = [
+    [1, 2, 3, 4, 8],
+    [5, 1, 2, 3, 4],
+    [4, 5, 1, 2, 3],
+    [7, 4, 5, 1, 2]];
+

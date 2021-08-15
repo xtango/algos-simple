@@ -11,17 +11,29 @@ In the preceding example, it suffices to flip the second and sixth characters, s
 /*
 part(xyxxxyxyy, 1)	-> x (0 flips) | yxxxyxyy (4 flips) 	-> x | yyyyyyyy		Flips: 4
 part(xyxxxyxyy, 2)  -> xy (1 flip) | xxxyxyy (4 flips) 	-> xx | yyyyyyy 	FLips: 5
-part(xyxxxyxyy, 3)      -> xyx (1 flip) | xxyxyy (3 flips)      -> xxx | yyyyyy		Flips: 4
+part(xyxxxyxyy, 3)  -> xyx (1 flip) | xxyxyy (3 flips)      -> xxx | yyyyyy		Flips: 4
 part(xyxxxyxyy, 4)	-> xyxx (1 flip) | xyxyy (2 flips)      -> xxxx | yyyyy		Flips: 3
 */
 
-const countChar  = (str: string, char :string ): number => {
-    const matches=  str.match(new RegExp(char, 'g'));
+const countChar = (str: string, char: string): number => {
+    const matches = str.match(new RegExp(char, 'g'));
     return (matches || []).length;
 }
 
 const part = (input: string, idx: number): string[] => {
-    const [left, right] = [input.substring(0, idx), input.substring(idx)];
+    return [input.substring(0, idx), input.substring(idx)];
+}
+
+const minFlips = (input: string): number => {
+    let minFlips = input.length;
+    for (let i = 1; i < input.length; i++) {
+        const parts = part(input, i);
+        const flipsNeeded = countChar(parts[0], 'y') + countChar(parts[1], 'x')
+        if (flipsNeeded < minFlips) {
+            minFlips = flipsNeeded
+        }
+    }
+    return minFlips
 }
 
 console.log(countChar('xyxxxyxyy', 'x') === 5)

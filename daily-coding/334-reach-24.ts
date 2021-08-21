@@ -26,32 +26,39 @@ The total number of possible "24 equations" for a given selection of four random
  */
 
 /**
- * abc => abc, acb, 
+ * abc => abc, acb, aaa ....
  */
-const permutationsWithRepeats = (input: string) => {
+const permutationsWithRepeats = (input: string): string[] => {
     const out: string[] = [];
 
-    // Fix the index char and recurse the subsequent chars
-    const recurHelper = (index: number) => {
-        let arr: string[] = new Array(input.length);
+    // Fix the index char and recurse for the subsequent chars
+    const recurHelper = (index: number, depth: number = 0) => {
+        console.log('recurHelper', index, depth);
+       
+        if (depth > 5) return;
+
         for (let i = 0; i < input.length; i++) {
             // Fix the char at index
-            arr[index]=input[i];
+            out[index] = input[i];
             // Reached end when last char. Otherwise recurse.
-            if (i === input.length- 1) {
-                out.push(arr.join('')); // convert to str
+            if (index === input.length - 1) {
+                const ele out.join(''); // convert to string
+                out.push(elem);
             } else {
-                recurHelper(index + 1);
+                recurHelper(index + 1, depth + 1);
             }
         }
     }
     recurHelper(0);
+    return out;
 }
 
 const canReach24 = (input: number[]): boolean => {
-    const dfs = (nums: number[]) => {
-        
-    }
-    return dfs(input)
+    return false;
 }
+
+/**
+ * ASSERTIONS
+ */
+console.log(permutationsWithRepeats('abc'))
 

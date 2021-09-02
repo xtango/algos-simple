@@ -1,6 +1,6 @@
 /**
- * Converts a flat structure [{id, parentId}, ..] to the 
- * tree structure { id : { children: [{ id}, {}...]}}
+ * Converts a FLAT structure [{id, parentId}, ..] to the 
+ * recursive TREE structure { id : { children: [{ id}, {}...]}}
  */
 const flatToTree = (flat, rootId = -1) => {
     const recurHelper = (node) => {

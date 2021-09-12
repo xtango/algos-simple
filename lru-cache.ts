@@ -1,21 +1,19 @@
 /**
- *          LEAST RECENTLY USED CACHE  *** Work in progress ***
+ *                          LEAST RECENTLY USED (LRU) CACHE
  * 
- * To get O(1) performance for both lookups and insertions we use
- * 2 data structures, 
- * doubly-linked list: stored in access order
- * hashmap: For O(1) lookup to the list
+ * To get O(1) performance for both lookups and insertions we use 2 data structures:
+ * 1. A Doubly-linked list with nodes stored in access order
+ * 2. A hashmap for O(1) lookup (rather than traversing the list)
  * 
- * LOOKUP (hashmap)                     RECENCY LIST (doubly-linked holds data)
+ * LOOKUP (hashmap)                     RECENCY LIST (doubly-linked-list with data, in access order)
  *  ------------                         ---------------------
  * | 'a': node  |  hashmap values       | 'h' <-> 'x' <-> 'a' |
- * | 'x': node  |  point recency  ==>    ---------------------
- * | 'h': node  |  nodes                   ^               ^
- *  ------------                           |               (Tail points to LRU) 
- *                                         |
- *                                         (Head points to most recent)
+ * | 'x': node  |  point to the ==>      ---------------------
+ * | 'h': node  |  DLL nodes               ^               ^
+ *  ------------                           |               |
+ *                                         |               Tail points to LRU
+ *                                         Head points to most recent
  */
-
 type Key = string;
 interface DLLNode<T> {
     prev: DLLNode<T> | undefined,
@@ -24,20 +22,30 @@ interface DLLNode<T> {
     next: DLLNode<T> | undefined
 }
 type DLLNodeNullable<T> = DLLNode<T> | undefined;
-type HashmapLookup<T> = Map<string, DLLNode<T>>;
+type HashmapLookup<T> = Map<Key, DLLNode<T>>;
 
+/**
+ * Doubly Linked List
+ */
 class DLL<T> {
     head: DLLNodeNullable<T>;
     tail: DLLNodeNullable<T>;
 
-    insertAtHead(node: DLLNodeNullable<T>) {
-        if (!this.head) {
+    moveToHead(node: DLLNodeNullable<T>) {
+        if (!this.head) { // Empty list
             this.head = node;
             this.tail = node;
-        } else {
+        } if (this.head !== node) {
+            if (node.prev) {
+                node.prev.next = undefined;
+            }
+            if (node.next) {
+                node.next.prev = node.prev;
+            }
             this.head.prev = node;
             node.next = this.head;
             this.head = node;
+            this.head.prev = undefined;
         }
         return this;
     }
@@ -54,32 +62,41 @@ class DLL<T> {
     }
 }
 
+/**
+ * Least Recently Used cache
+ */
 class LRUCache<T> {
     // For fast lookup of nodes by key
     hmapLookup: HashmapLookup<T> = new Map<string, DLLNode<T>>();
 
-    // Stores nodes in most-recently-used to least-recently-used order.*/
+    // Stores nodes in most-recently-used to least-recently-used order.
     recencyList: DLL<T> = new DLL<T>();
 
     constructor(readonly capacity: number) { }
 
     /**
-     * Sets key in cache and data in list
+     * Sets key in cache and data in list.
      * When n items reached, evicts the least recently used node.
      */
-    setNew(key: string, data: T) {
+    setKeyValue(key: string, data: T) {
         const newNode = this.recencyList.newNode(key, data);
-        this.recencyList.insertAtHead(newNode);
-        this.hmapLookup.set(key, newNode);
-        this.trim();
-        return this;
+        return this.setNode(newNode);
     }
 
-    get(key: string) {
+    /**
+     * Sets node at head and trims
+     */
+    setNode(newNode: DLLNode<T>) {
+        this.recencyList.moveToHead(newNode);
+        console.log('after move', this.pretty());
+        this.hmapLookup.set(newNode.key, newNode);
+        return this.trim();
+    }
+
+    get(key: Key): DLLNode<T> | undefined {
         const node = this.hmapLookup.get(key)
-        console.log('get', node);
         if (node) {
-            this.recencyList.insertAtHead(node);
+            this.setNode(node);
         }
         return node;
     }
@@ -92,20 +109,20 @@ class LRUCache<T> {
             const last = this.recencyList.tail;
             if (last) {
                 this.hmapLookup.delete(last.key);
+                this.recencyList.removeTail();
             }
         }
+        return this;
     }
 
     hasKey(key: string): boolean {
         return this.hmapLookup.has(key)
     }
 
-
     pretty(): string {
-        console.log('list', this.recencyList);
         let node = this.recencyList.head;
         const arr = []
-        while (node) {
+        while (node && arr.length < this.capacity) {
             arr.push(node);
             node = node.next;
         }
@@ -117,7 +134,15 @@ class LRUCache<T> {
  * ASSERTIONS
  */
 const lru = new LRUCache<string>(3);
-lru.setNew('a', 'data1').setNew('x', 'data2').setNew('h', 'data3');
+// Test SET
+lru.setKeyValue('a', 'data1').setKeyValue('x', 'data2').setKeyValue('h', 'data3');
 console.log(lru.pretty() === 'h-x-a');
+
+// Test GET
 lru.get('a')
-//console.log(lru.pretty() === 'a-h-x');
+console.log(lru.pretty() === 'a-h-x');
+
+// Test EVICTION
+lru.setKeyValue('c', 'data4');
+lru.get('c');
+console.log(lru.pretty() === 'c-a-h');

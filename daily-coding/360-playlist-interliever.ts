@@ -14,7 +14,7 @@ class SimplePriorityQ {
     }
 }
 
-const interleave = (prefs): number[] {
+const interleave = (prefs: number[][]): number[] => {
     return []
 }
 
@@ -30,4 +30,7 @@ const PREFERENCES = [
     [3, 9, 5]
 ];
 
-interleave(PREFERENCES).joing(',') === '[2,1,3,7,9,6,5]`
+console.log(interleave(PREFERENCES).join(',') === '[2,1,3,7,9,6,5]');
+
+
+

@@ -2,8 +2,8 @@
  *                          LEAST RECENTLY USED (LRU) CACHE
  * 
  * To get O(1) performance for both lookups and insertions we use 2 data structures:
- * 1. A Doubly-linked list with nodes stored in access order
- * 2. A hashmap for O(1) lookup (rather than traversing the list)
+ * 1. A doubly-linked list with nodes stored in access order
+ * 2. A hashmap for O(1) lookup into the list (rather than traversing the list)
  * 
  * LOOKUP (hashmap)                     RECENCY LIST (doubly-linked-list with data, in access order)
  *  ------------                         ---------------------

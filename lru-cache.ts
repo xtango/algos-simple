@@ -17,9 +17,11 @@
  *                                         Head points to most recent
  * 
  * THE USE OF MAP AND SOME POSSIBLE REFINEMENTS
+ *
  * Typically, hash tables do not provide any order guarantees for iteration, 
  * while ES6 spec requires implementations to keep the insertion order while iterating over a Map.
- * V8 uses the so-called deterministic hash tables algorithm. The bottom line is that it approximates O(1).
+ * V8 uses the so-called deterministic hash tables algorithm. The bottom line is that it approximates O(1) 
+ * and the insertion order is preserved.
  * 
  * Given that the order is preserved (as mandated by the ES6 spec), we could simplify the below implementation
  * by getting rid of the Doubly-Linked list: when we do a GET operation simply delete from the map and insert.

@@ -3,9 +3,11 @@
  * 
  * To get O(1) performance for both lookups and insertions we use 2 data structures:
  * 1. A doubly-linked list with nodes stored in access order
- * 2. A hashmap for O(1) lookup into the list (rather than traversing the list)
+ *
+ * 2. A Map for O(1) lookup into the list (rather than traversing the list)
+ *    @see https://v8.dev/blog/hash-code 
  * 
- * LOOKUP (hashmap)                     RECENCY LIST (doubly-linked-list with data, in access order)
+ * LOOKUP (Map)                         RECENCY LIST (doubly-linked-list with data, in access order)
  *  ------------                         ---------------------
  * | 'a': node  |  hashmap values       | 'h' <-> 'x' <-> 'a' |
  * | 'x': node  |  point to the ==>      ---------------------
@@ -13,6 +15,14 @@
  *  ------------                           |               |
  *                                         |               Tail points to LRU
  *                                         Head points to most recent
+ * 
+ * THE USE OF MAP AND SOME POSSIBLE REFINEMENTS
+ * Typically, hash tables do not provide any order guarantees for iteration, 
+ * while ES6 spec requires implementations to keep the insertion order while iterating over a Map.
+ * V8 uses the so-called deterministic hash tables algorithm. The bottom line is that it approximates O(1).
+ * 
+ * Given that the order is preserved (as mandated by the ES6 spec), we could simplify the below implementation
+ * by getting rid of the Doubly-Linked list: when we do a GET operation simply delete from the map and insert.
  */
 type Key = string;
 interface DLLNode<T> {
@@ -66,7 +76,7 @@ class DLL<T> {
  * Least Recently Used cache
  */
 class LRUCache<T> {
-    // For fast lookup of nodes by key
+    // Map for fast lookup of nodes by key. See above discussion.
     hmapLookup: HashmapLookup<T> = new Map<string, DLLNode<T>>();
 
     // Stores nodes in most-recently-used to least-recently-used order.

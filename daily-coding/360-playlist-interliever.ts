@@ -13,50 +13,54 @@
  *      {[1, 7, 3], [2, 1, 6, 7, 9], [3, 9, 5]}.
  * In this case a satisfactory playlist could be [2, 1, 6, 7, 3, 9, 5].
  */
-interface SongNode { songId: number, priority: number }
+interface PriorityQNode { id: number, priority: number }
 type SongPreference = number[];
 
-class SimplePriorityQ {
-    q: SongNode[] = [];
+/**
+ * Simple, non-performant data structure to manage a list of (id, priority)
+ * Gives priority to the element with minimum priority value; 
+ */
+class MinPriorityQ {
+    q: PriorityQNode[] = [];
 
-    push(songId: number, priority: number) {
-        this.q.push({ songId, priority });
-        this.q.sort((a, b) => b.priority - a.priority);
+    insert(id: number, priority: number): MinPriorityQ {
+        this.q.push({ id, priority });
+        this.q.sort((a, b) => a.priority - b.priority); // ascending
         return this;
     }
 
-    find(songId: number) {
-        return this.q.find(node => node.songId === songId)
+    find(id: number): PriorityQNode | undefined {
+        return this.q.find(node => node.id === id)
     }
 
-    remove(songId: number) {
-        const idx = this.q.findIndex(node => node.songId = songId);
+    remove(songId: number): MinPriorityQ {
+        const idx = this.q.findIndex(node => node.id = songId);
         if (idx > -1) {
             this.q.splice(idx, 1);
         }
         return this;
     }
 
-    setPriority(songId: number, priority: number) {
-        this.remove(songId).push(songId, priority);
+    setPriority(id: number, priority: number): MinPriorityQ {
+        return this.remove(id).insert(id, priority);
     }
 }
 
 const interleave = (prefs: SongPreference[]): number[] => {
-    const q = new SimplePriorityQ();
+    const q = new MinPriorityQ();
     prefs.forEach((prefList) => {
         let offset = 0
         prefList.forEach((songId, idx) => {
             const found = q.find(songId)
             if (!found) {
-                q.push(songId, idx + offset);
+                q.insert(songId, idx + offset);
             } else {
-                const oldPriority = found.priority;
-                offset += Math.max(idx, oldPriority)
+                offset += Math.max(idx, found.priority)
                 q.setPriority(songId, idx + offset)
             }
         })
     })
+    console.log(q);
 
     return []
 }
@@ -65,13 +69,12 @@ const interleave = (prefs: SongPreference[]): number[] => {
 /**
  * ASSERTIONS
  */
-const pq = new SimplePriorityQ().push(2,  1).push(1, 20)
-console.log(pq.q.map(n => n.songId).join(',') === '1,2');
+// Test priority queue
+const pq = new MinPriorityQ().insert(2, 1).insert(1, 20);
+console.log(pq.q.map(n => n.id).join(',') === '1,2');
 
-const PREFERENCES: SongPreference[] = [
+console.log(interleave([
     [1, 7, 3],
     [2, 1, 6, 7, 9],
     [3, 9, 5]
-];
-
-console.log(interleave(PREFERENCES).join(',') === '[2,1,3,7,9,6,5]');
+]).join(',') === '[2,1,3,7,9,6,5]');

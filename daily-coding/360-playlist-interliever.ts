@@ -1,15 +1,15 @@
 /**
- *              #360 - PLAYLIST INTERLIEVER *** WORK IN PROGRESS **
+ *          360 - PLAYLIST INTERLIEVER
  * 
  * You have access to ranked lists of songs for various users.
  * Each song is represented as an integer, and more preferred songs appear
- * earlier in each list.
- * 
- * For example, the list [4, 1, 7] indicates that a user likes
- * song 4 the best, followed by songs 1 and 7.
+ * earlier in each list. For example, the list [4, 1, 7] indicates that a 
+ * user likessong 4 the best, followed by songs 1 and 7.
  * 
  * Given a set of these ranked lists, interleave them to create a playlist
- * that satisfieseveryone's priorities. For example, suppose your input is
+ * that satisfieseveryone's priorities.
+ * 
+ * For example, suppose your input is
  *      {[1, 7, 3], [2, 1, 6, 7, 9], [3, 9, 5]}.
  * In this case a satisfactory playlist could be [2, 1, 6, 7, 3, 9, 5].
  */
@@ -17,7 +17,7 @@ interface PriorityQNode { id: number, priority: number }
 type SongPreference = number[];
 
 /**
- * Simple, non-performant data structure to manage a list of (id, priority)
+ * Simple, non-performant data structure to manage a list of (id, priority).
  * Gives priority to the element with minimum priority value; 
  */
 class MinPriorityQ {
@@ -35,7 +35,7 @@ class MinPriorityQ {
     }
 
     remove(id: number): MinPriorityQ {
-        const idx = this.q.findIndex(node => node.id = id);
+        const idx = this.q.findIndex(node => node.id === id);
         if (idx > -1) {
             this.q.splice(idx, 1);
         }
@@ -78,5 +78,5 @@ const interleave = (prefs: SongPreference[]): number[] => {
 console.log(interleave([
     [1, 7, 3],
     [2, 1, 6, 7, 9],
-    // [3, 9, 5]
+    [3, 9, 5]
 ]).join(',') === '[2,1,3,7,9,6,5]');

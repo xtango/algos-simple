@@ -1,5 +1,5 @@
 /**
- *          360 - PLAYLIST INTERLIEVER
+ *              #360 - PLAYLIST INTERLIEVER *** WORK IN PROGRESS **
  * 
  * You have access to ranked lists of songs for various users.
  * Each song is represented as an integer, and more preferred songs appear
@@ -26,6 +26,7 @@ class MinPriorityQ {
     insert(id: number, priority: number): MinPriorityQ {
         this.q.push({ id, priority });
         this.q.sort((a, b) => a.priority - b.priority); // ascending
+        console.log('after insert', id, priority, this.q.map(x=> x.id));
         return this;
     }
 
@@ -33,8 +34,8 @@ class MinPriorityQ {
         return this.q.find(node => node.id === id)
     }
 
-    remove(songId: number): MinPriorityQ {
-        const idx = this.q.findIndex(node => node.id = songId);
+    remove(id: number): MinPriorityQ {
+        const idx = this.q.findIndex(node => node.id = id);
         if (idx > -1) {
             this.q.splice(idx, 1);
         }
@@ -51,7 +52,8 @@ const interleave = (prefs: SongPreference[]): number[] => {
     prefs.forEach((prefList) => {
         let offset = 0
         prefList.forEach((songId, idx) => {
-            const found = q.find(songId)
+            const found = q.find(songId);
+            console.log('finding in q', songId, found);
             if (!found) {
                 q.insert(songId, idx + offset);
             } else {
@@ -70,11 +72,11 @@ const interleave = (prefs: SongPreference[]): number[] => {
  * ASSERTIONS
  */
 // Test priority queue
-const pq = new MinPriorityQ().insert(2, 1).insert(1, 20);
-console.log(pq.q.map(n => n.id).join(',') === '1,2');
+// const pq = new MinPriorityQ().insert(2, 1).insert(1, 20);
+// console.log(pq.q.map(n => n.id).join(',') === '1,2');
 
 console.log(interleave([
     [1, 7, 3],
     [2, 1, 6, 7, 9],
-    [3, 9, 5]
+    // [3, 9, 5]
 ]).join(',') === '[2,1,3,7,9,6,5]');

@@ -1,66 +1,61 @@
 /**
  *                              Problem #359 [Easy]
+ * 
+ * This problem was asked by Slack.
+ * 
+ * You are given a string formed by concatenating several words
+ * corresponding to the integers zero through nine and then anagramming.
+ * For example, the input could be 'niesevehrtfeev', which is an anagram of 'threefiveseven'. 
+ * Note that there can be multiple instances of each integer.
+ * Given this string, return the original integers in sorted order. 
+ * In the example above, this would be 357.
+ */
 
-This problem was asked by Slack.
-
-You are given a string formed by concatenating several words corresponding to the integers zero through nine and then anagramming.
-
-For example, the input could be 'niesevehrtfeev', which is an anagram of 'threefiveseven'. Note that there can be multiple instances of each integer.
-
-Given this string, return the original integers in sorted order. In the example above, this would be 357.
-*/
-
-type Frequencies = { [digit: string]: number };
-type SpeltDigitDict = { [digit: string]: { speltDigit: string, digitFreq: Frequencies } };
-
-const getCharFrequencies = (word: string): Frequencies => {
-    const dict: Frequencies = {};
-    word.split('').forEach(c => {
-        if (dict[c] === undefined) {
-            dict[c] = 0;
-        }
-        dict[c] = dict[c] + 1;
-    })
-    return dict;
+/**
+ * Returns a 26 element array represting a..z with frequency counts of the chars in word.
+ */
+const digitFreq = (word: string): number[] => {
+    const freq = new Array(26).fill(0);
+    const aCode = 'a'.charCodeAt(0);
+    for (let i = 0; i < word.length; i++) {
+        const c = word.charCodeAt(i) - aCode;
+        freq[c] = freq[c] + 1;
+    }
+    return freq;
 }
 
-const getSpeltDigitDict = () => {
-    const dict: SpeltDigitDict = {};
+const subtractFreq = (a: number[], b: number[]): number[] => {
+    const clone = [...a];
+    for (let i = 0; i < b.length; i++) {
+        clone[i] -= b[i];
+    }
+    return clone;
+}
+
+const allPositive = (a: number[]) => a.every(x => x >= 0);
+
+const originalIntegers = (input: string): string => {
+    let original: number[] = [];
+    let inputFreq = digitFreq(input);
+
     ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
-        .forEach((speltDigit, digit) => dict[digit] = {
-            speltDigit,
-            digitFreq: getCharFrequencies(speltDigit)
-        });
+        .forEach((speltDigit, idx) => {
+            const wordFreq = digitFreq(speltDigit)
+            let diff = subtractFreq(inputFreq, wordFreq);
 
-    return dict;
+            // Loop for multiple instances of the same digit
+            while (allPositive(diff)) { // There's a match. 
+                console.log(`${speltDigit} matches. After minus: `, diff);
+                original.push(idx)
+                inputFreq = diff;
+                diff = subtractFreq(inputFreq, wordFreq);
+            }
+        })
+    return original.join('');
 }
 
-const matchChars = (digitFreq: Frequencies, inputDigitFreq: Frequencies): number => {
-    console.log('match ', digitFreq);
-    const digits = Object.keys(digitFreq).map(digit => [digit, digitFreq[digit]]);
-    for (let i = 0; i < digits.length; i++) {
-        const [requiredChar, requiredCount] = [digits[i][0], digits[i][1]];
-        const actualCount = inputDigitFreq[requiredChar.toString()];
-        if (actualCount === undefined || requiredCount > actualCount) {
-            return 0
-        }
-    }
-    return 1;
-}
-const originalIntegers = (input: string) => {
-    const speltDigitDict = getSpeltDigitDict();
-    const inputDigitFreq = getCharFrequencies(input);
-    for (let digit = 0; digit < 10; digit++) {
-        const { digitFreq } = speltDigitDict[digit.toString()];
-        const matches = matchChars(digitFreq, inputDigitFreq);
-        console.log(`\t${speltDigitDict[digit].speltDigit} -> ${matches > 0 ? 'YES' : 'NO'}`);
-
-        // STOPPED HERE
-    }
-}
-
-
-console.log(getCharFrequencies('niesevehrtfeev'));
-originalIntegers('niesevehrtfeev');
-
-
+/**
+ * ASSERTIONS
+ */
+console.log(allPositive(subtractFreq(digitFreq('cats'), digitFreq('tac'))) === true);
+console.log(originalIntegers('niesevehrtfeev') === '357')

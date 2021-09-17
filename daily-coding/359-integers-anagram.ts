@@ -5,16 +5,18 @@
  * 
  * You are given a string formed by concatenating several words
  * corresponding to the integers zero through nine and then anagramming.
- * For example, the input could be 'niesevehrtfeev', which is an anagram of 'threefiveseven'. 
- * Note that there can be multiple instances of each integer.
+ * For example, the input could be 'niesevehrtfeev', which is an anagram
+ * of 'threefiveseven'. Note that there can be multiple instances of each integer.
  * Given this string, return the original integers in sorted order. 
  * In the example above, this would be 357.
  */
 
 /**
- * Returns a 26 element array represting a..z with frequency counts of the chars in word.
+ * Returns a 26 element array with a frequency count (a..z) of each char in word.
+ * @example digitFreq('abcaa') returns
+ *          [3, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
  */
-const digitFreq = (word: string): number[] => {
+const charFrequency = (word: string): number[] => {
     const freq = new Array(26).fill(0);
     const aCode = 'a'.charCodeAt(0);
     for (let i = 0; i < word.length; i++) {
@@ -24,7 +26,10 @@ const digitFreq = (word: string): number[] => {
     return freq;
 }
 
-const subtractFreq = (a: number[], b: number[]): number[] => {
+/**
+ * Returns a new array of a[i] - b[i]. Assumes a and b equal in length.
+ */
+const subtractFrequency = (a: number[], b: number[]): number[] => {
     const clone = [...a];
     for (let i = 0; i < b.length; i++) {
         clone[i] -= b[i];
@@ -32,23 +37,24 @@ const subtractFreq = (a: number[], b: number[]): number[] => {
     return clone;
 }
 
-const allPositive = (a: number[]) => a.every(x => x >= 0);
-
+/**
+ * Returns the string "digit" representation of input.
+ */
 const originalIntegers = (input: string): string => {
-    let original: number[] = [];
-    let inputFreq = digitFreq(input);
+    const original: number[] = [];
+    let inputFreq = charFrequency(input.toLowerCase());
 
     ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
         .forEach((speltDigit, idx) => {
-            const wordFreq = digitFreq(speltDigit)
-            let diff = subtractFreq(inputFreq, wordFreq);
+            const wordFreq = charFrequency(speltDigit)
+            let diff = subtractFrequency(inputFreq, wordFreq);
 
-            // Loop for multiple instances of the same digit
-            while (allPositive(diff)) { // There's a match. 
-                console.log(`${speltDigit} matches. After minus: `, diff);
+            // Check for an anagram match, looping for multiple occurences of the same word
+            while (diff.every(x => x >= 0)) { // An anagram match
+                // console.log(`${speltDigit} is a match. Counts after minus: `, diff);
                 original.push(idx)
                 inputFreq = diff;
-                diff = subtractFreq(inputFreq, wordFreq);
+                diff = subtractFrequency(inputFreq, wordFreq);
             }
         })
     return original.join('');
@@ -57,5 +63,17 @@ const originalIntegers = (input: string): string => {
 /**
  * ASSERTIONS
  */
-console.log(allPositive(subtractFreq(digitFreq('cats'), digitFreq('tac'))) === true);
-console.log(originalIntegers('niesevehrtfeev') === '357')
+// The result of subtraction should be zeros.
+console.log(
+    subtractFrequency(charFrequency('cats'), charFrequency('tacs'))
+        .every(x => x === 0));
+
+// Test single instance matches
+console.log(originalIntegers('niesevehrtfeev') === '357');
+console.log(originalIntegers('niesevehrtfeevzero') === '0357');
+
+// Test multiple instance matches
+console.log(originalIntegers('niesevehrtfeevthree') === '3357');
+
+// Test no matches
+console.log(originalIntegers('ninx') === '');

@@ -4,7 +4,7 @@
  * This problem was asked by Flexport.
  * 
  * Given a string s, rearrange the characters so that any two adjacent characters are 
- * not the same. If this is not possible, return null.\
+ * not the same. If this is not possible, return null.
  * 
  * For example, if s = yyz then return yzy. If s = yyy then return null.
  */
@@ -77,7 +77,7 @@ const rearrange = (input: string) => {
 /**
  * ASSERTIONS
  */
-console.log('freq', countFreq('aaaa')[0] == 4);
+console.log(countFreq('aaaa')[0] == 4);
 console.log(rearrange('aab') === 'aba');
 console.log(rearrange('abacc') === 'acbac');
-console.log(rearrange('yyy') === null); // No solution
+console.log(rearrange('yyy') === null);

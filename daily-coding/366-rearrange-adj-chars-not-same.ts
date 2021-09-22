@@ -28,8 +28,8 @@ const countFreq = (input: string): number[] => {
 const sortQ = (q, freq) => q.sort((a, b) => freq[charOffset(b, 0)] - freq[charOffset(a, 0)]);
 
 /**
- * Uses a prioritized Q (non-optimized array that is sorted, highest frequency first).
- * Pops the highest and requeus if the freq is non-zero.
+ * Uses a prioritized Q (non-optimized array we sort, highest frequency first).
+ * Pops the 1st and 2nd and re-queues if the freq is non-zero.
  */
 const rearrange = (input: string) => {
     let result: string = '';
@@ -40,30 +40,29 @@ const rearrange = (input: string) => {
     const freq = countFreq(input);
     let q: string[] = sortQ(Array.from(charSet), freq);
 
+    let prevChar = '';
+    // Pop 1st (head) and 2nd (next) char as a pair
     while (q.length) {
-        // Pop head
-        const headChar = q.shift(); // pop head
-        // console.log('-> ', headChar);
-        result += headChar;
-        const headFreqIdx = charOffset(headChar);
-        freq[headFreqIdx] -= 1;
-        if (freq[headFreqIdx] > 0) {
-            q.push(headChar);
-        }
+        const headChar = q.shift();
+        const nextChar = q.length ? q.shift() : undefined;
 
-        // Pop the next char
-        if (q.length) {
-            const nextChar = q.shift();
-            if (headChar === nextChar) {
-                // No solution
+        // Decrement freq and push back if non-zero frequencies.
+        // We will reprioritize the queue later.
+        const pair = nextChar ? [headChar, nextChar] : [headChar];
+        for (let i = 0; i < pair.length; i++) {
+            const char = pair[i];
+            // console.log('prev, current', prevChar, char);
+            if (char === prevChar) {
+                // No solution, since adjacent chars the same
                 return null;
             }
-            // console.log('-> ', nextChar);
-            result += nextChar;
-            const nextFreqIdx = charOffset(nextChar);
-            freq[nextFreqIdx] -= 1;
-            if (freq[nextFreqIdx] > 0) {
-                q.push(nextChar);
+
+            result += char;
+            prevChar = char;
+            const charFreqIdx = charOffset(char);
+            freq[charFreqIdx] -= 1;
+            if (freq[charFreqIdx] > 0) {
+                q.push(char);
             }
         }
 
@@ -80,4 +79,5 @@ const rearrange = (input: string) => {
 console.log(countFreq('aaaa')[0] == 4);
 console.log(rearrange('aab') === 'aba');
 console.log(rearrange('abacc') === 'acbac');
+console.log(rearrange('yyz') === 'yzy');
 console.log(rearrange('yyy') === null);

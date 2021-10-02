@@ -27,9 +27,9 @@ type Position = number[];
 
 /**
  *              0   1   2   3   4
- *              ---------------------       
+ *              _________________ 
  * 0                        o (y1,x1)
- * 1                        |               Manhattan Distance = |x1-x2| + |y1-y2|
+ * 1                        |            Manhattan Distance = |x1-x2| + |y1-y2|
  * 2   (y2,x2)  o<-----------
  * 
  */

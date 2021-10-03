@@ -9,7 +9,7 @@ const lcs = (A: string, B: string) => {
     let memo: number[][]; /
 
     /**
-     * Return the lenght of the longest subsequence at location (aIdx, bIdx)
+     * Return the length of the longest subsequence at location (aIdx, bIdx)
      * the indices into strings A and B respectively.
      */ 
     const lcsHelper = (aIdx: number, bIdx: number, depth: number): number => {

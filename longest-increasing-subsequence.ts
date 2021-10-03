@@ -1,5 +1,5 @@
 /**
- * LONGEST INCREASING SUB-SEQUENCE IN ARRAY
+ * LONGEST INCREASING SUBSEQUENCE IN ARRAY
  * 
  * A subsequence is a sequence that can be derived from another sequence by deleting some or
  * no elements without changing the order of the remaining elements.

@@ -18,6 +18,20 @@
 /**
  * APPROACH
  * This is similar to the Longest Common Substring problem, with words instead of characters.
- * Note: The Longest Common Subsequencem, which does not have to be contiguous, requires a 
- *       different solution.
+ * Important: The Longest Common Subsequence, which does not have to be contiguous, 
+ *            requires a different solution.
  */
+
+const lcContigSeq = (X: string[], Y: string[]): string[] => {
+    return [];
+}
+
+/**
+ * ASSERTIONS
+ */
+console.log(JSON.stringify(
+    lcContigSeq(
+        ['/home', '/register', '/login', '/user', '/one', '/two'],
+        ['/home', '/red', '/login', '/user', '/one', '/pink'])
+) === `['/login', '/user', '/one']`);
+

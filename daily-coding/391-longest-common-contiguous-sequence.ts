@@ -18,37 +18,40 @@
 /**
  * APPROACH
  * This is similar to the Longest Common Substring problem, with words instead of characters.
- * @see https://en.wikipedia.org/wiki/Longest_common_substring_problem
- * Time: O(nr)
- * Important: The Longest Common ***Subsequence***, which does not have to be contiguous,
- *            requires a different solution.
+ * @see         https://en.wikipedia.org/wiki/Longest_common_substring_problem
+ * Time:        O(nr)
+ * Important:   Substring vs subsequence: This problem is not the same as Longest Common ***Subsequence***, 
+ *              which does not have to be contiguous. They require different solutions.
  */
+
+type LongestMatrix = number[][];
 
 /**
  * Finds the longest contiguous sequence of words that appear on both S and T with dynamic programming.
+ * 
  * @see https://en.wikipedia.org/wiki/Longest_common_substring_problem
  */
 const lcContigSeq = (S: string[], T: string[]): string[] => {
-
     /**
-     * Prints the longest matrix
+     *  Longest memo: longest common subsequence of the prefixes S[0..i] and T[0..j] 
+     *  ending at position S[i], T[j], respectively.
+     *  In other words, the length of the longest found until (i, j).
+     * 
+     *  For the given example:
+     *         /home     /red      /login    /user     /one      /pink     
+     * /home     1         0         0         0         0         0         
+     * /register 0         0         0         0         0         0         
+     * /login    0         0         1         0         0         0         
+     * /user     0         0         0         2         0         0         
+     * /one      0         0         0         0         3         0         
+     * /two      0         0         0         0         0         0   
      */
-    const pretty = (L: number[][]) => L.map((r, i) => S[i].padEnd(10, ' ') + r.join(',')).join('\n')
-
-
-    // Longest Matrix: longest common subsequence of the prefixes S[0..i] and T[0..j] 
-    // ending at position S[i], T[j], respectively. 
-    // In other words, the length of the longest found until (i, j).
-    //              home    red     login   user    one
-    // home         1       0       0       0       0
-    // register     0       0       0       0       0
-    // login        0       0       1
-    // user ...
-    const L: number[][] = [...Array(S.length)].map(r => Array(T.length).fill(''));
+    const L: LongestMatrix = [...Array(S.length)].map(r => Array(T.length).fill(''));
 
     // Length of the longest common substring found so far.
     let longestFound: number = 0;
 
+    // TODO!
     // The set of strings which are of length z. 
     // The set ret can be saved efficiently by just storing the index i,
     // which is the last character of the longest common substring (of size z) 
@@ -80,11 +83,21 @@ const lcContigSeq = (S: string[], T: string[]): string[] => {
         }
     }
 
-    console.log(pretty(L));
+    console.log(pretty(S, T, L));
 
     return ret;
 }
 
+/**
+ * Formats the longest matrix for debugging
+ */
+const pretty = (S: string[], T: string[], lm: LongestMatrix) =>
+    // Col headings in the 1st row
+    '\t'.repeat(2) + T.map(x => x.padEnd(10)).join('') + '\n'
+    + lm.map((r, i) =>
+        S[i].padEnd(10, ' ')
+        + r.map(x => x.toString().padEnd(10, ' ')).join('')
+    ).join('\n')
 
 
 /**
@@ -95,4 +108,3 @@ console.log(JSON.stringify(
         ['/home', '/register', '/login', '/user', '/one', '/two'],
         ['/home', '/red', '/login', '/user', '/one', '/pink'])
 ) === `['/login', '/user', '/one']`);
-

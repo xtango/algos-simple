@@ -1,5 +1,5 @@
 /**
- *                      Problem #404 [Easy] - FEWEST ROOMS NEED
+ *                      Problem #404 [Easy] - FEWEST ROOMS
  * 
  * This problem was asked by Snapchat.
  * 
@@ -32,32 +32,27 @@ const priorityQPush = (q: number[][], interval: number[]) => {
  */
 const minRooms = (intervals: number[][]): number => {
     const startTimeSorted = sortByStartTime(intervals);
-    let roomsNeeded = 1;
-    // Priority Q of rooms that are currently in use, kept sorted by end time.
-    // i.e. the head is the room that will be freed up first
+
+    // Priority Q of rooms currently in use, kept sorted by end time.
+    // Its head is the room that will free up first.
     let roomsInUseQ: number[][] = [startTimeSorted[0]];
 
+    let roomsNeeded = 1;
     for (let i = 1; i < startTimeSorted.length; i++) {
-        let roomFound = false;
-        while (!roomFound) {
-            const earliestEnd = roomsInUseQ[0][1];
-            const current = startTimeSorted[i];
-            // Does current start overlap with the earliest-ending room in use?
-            if (current[0] < earliestEnd) {
-                roomsNeeded++;
-                priorityQPush(roomsInUseQ, current);
-            } else {
-                // No overlap. Use it.
-                const removed = roomsInUseQ.shift();  // pop head
-                // Push old start, new end
-                const newStart = removed ? removed[0] : current[0];
-                const newEnd = current[1];
-                priorityQPush(q, [newStart, newEnd]);
-            }
-        }
-        const [start, prevEnd] = [intervals[i][0], intervals[i - 1][1]]
-        if (start < prevEnd) { // is overlapping
+        const current = startTimeSorted[i];
+        const firstToBeFreed = roomsInUseQ[0];
+        // Does current start overlap with the earliest-ending room in use?
+        if (current[0] < firstToBeFreed[1]) {
+            // Overlap, so we'll need another room
             roomsNeeded++;
+            priorityQPush(roomsInUseQ, current);
+        } else {
+            // No overlap. Use it.
+            const removed = roomsInUseQ.shift();  // pop head
+            // Push old start, new end
+            const newStart = removed ? removed[0] : current[0];
+            const newEnd = current[1];
+            priorityQPush(roomsInUseQ, [newStart, newEnd]);
         }
     }
 

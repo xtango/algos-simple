@@ -20,9 +20,9 @@ const priorityQPush = (q: number[][], interval: number[]) => {
 }
 
 /**
- * Returns the min num of rooms needed. Apporach: first sorting by Start Time
- * and keeping a q sorted by earliest end time. If cannot overlap with the 
- * earliest end time, allocate another room.
+ * Returns the min num of rooms needed. Approach: sorts by Start Time
+ * and keeps a q of rooms in use, sorted by earliest end time. If overlaps with the 
+ * earliest room to free up, we allocate another room.
  * 
  * After sorting:
  *  [0, 50]     |=====                      Room 1

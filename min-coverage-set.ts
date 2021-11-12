@@ -61,7 +61,7 @@ const fewest = (prefs: string[]) => {
 console.log(combinations('rgb'))
 
 /**
- * Anita: [ White, Yellow] // which means Anita is good with White or Yellow* Maurice: [ Red, White, Blue],
+ * Anita: [ White, Yellow] // which means Anita is good with White or Yellow
  * Tina: [ Green],
  * Maurice: [ Red, White, Blue],
  */

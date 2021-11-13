@@ -10,7 +10,9 @@
 
 /**
  * Rather than checking each  positive number after incrementing by 1, 
- * optimize by incrementing by 9. Note the the arithmetic progression:
+ * optimize by incrementing by 9 (after the 1st num, 19).
+ *
+ * Note the the arithmetic progression:
  *                n           num
  *                ==          ===
  *      1st:      1:          19

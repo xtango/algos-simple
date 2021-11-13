@@ -19,7 +19,7 @@
  * 
  *      The rest: 2: 19 + 9 = 28
  *                3: 28 + 9 = 37
- *                4: 27 + 9 = 46 etc
+ *                4: 37 + 9 = 46 etc
  */
 const nthSumTo10 = (nth: number): number => {
     let [count, num] = [1, 19];
@@ -31,7 +31,7 @@ const nthSumTo10 = (nth: number): number => {
     }
     return num;
 }
-
+wq
 /**
  * Returns the sum of the digits in num.
  * @example sumDigit(91) returns 10

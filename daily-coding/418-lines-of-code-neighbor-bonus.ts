@@ -17,6 +17,7 @@
  */
 
 interface Band { direction: number, startIdx: number, endIdx: number};
+
 /**
  * Breaks up the series into rising 1, flat 0, and falling -1 segments.
  * Returns the start and end indices of each band.
@@ -57,8 +58,8 @@ const getBands = (linesOfCode: number[]): Band []  => {
  *          |--rising----|-falling-|
  *            
  *         $1   2   3    4    2    1
- * - Rising band: increment by 1 starting from $1.
- * - Falling band: decrement by 1 starting from $x, where x is the length of the band.
+ * - Rising band: Increment by 1 starting from $1.
+ * - Falling band: Decrement by 1 starting from $x, where x is the band's length.
  */
 const bonuses = (linesOfCode: number[]): number[] => {
     const payList: number[] = [];

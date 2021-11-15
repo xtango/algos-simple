@@ -56,8 +56,8 @@ const getBands = (linesOfCode: number[]): Band []  => {
  * 10  40 200 1000  60   30
  * 
  * |--rising----|-falling-|
- * For the rising band we start incrementing by 1 starting from $1.
- * For the falling band we start decrement by 1 starting from $x where x is the lengtgh of the falling band.
+ * - For the rising band we start incrementing by 1 starting from $1.
+ * - For the falling band we start decrement by 1 starting from $x where x is the length of the band.
  */
 const bonuses = (linesOfCode: number[]): number[] => {
     console.log('loc', linesOfCode);

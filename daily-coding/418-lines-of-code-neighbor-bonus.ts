@@ -18,8 +18,8 @@
 
 interface Band { direction: number, startIdx: number, endIdx: number};
 /**
- * Breaks up the series into rising and falling segments.
- * Returns the start and end indices of each band
+ * Breaks up the series into rising 1, flat 0, and falling -1 segments.
+ * Returns the start and end indices of each band.
  */
 const getBands = (linesOfCode: number[]): Band []  => {
     const bands: Band[] = []// list of start, end

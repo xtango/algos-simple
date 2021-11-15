@@ -49,18 +49,18 @@ const getBands = (linesOfCode: number[]): Band []  => {
 
 /**
  * Approach
- *              |
- *         |    |
- *     |   |    |    |
- *  |  |   |    |    |    |
- * 10  40 200 1000  60   30
- * 
- * |--rising----|-falling-|
- * - For the rising band we start incrementing by 1 starting from $1.
- * - For the falling band we start decrement by 1 starting from $x where x is the length of the band.
+ *                       |
+ *                  |    |
+ *              |   |    |    |
+ *           |  |   |    |    |    |
+ *          10  40 200 1000  60   30
+ *          |--rising----|-falling-|
+ *            
+ *         $1   2   3    4    2    1
+ * - Rising band: increment by 1 starting from $1.
+ * - Falling band: decrement by 1 starting from $x, where x is the length of the band.
  */
 const bonuses = (linesOfCode: number[]): number[] => {
-    console.log('loc', linesOfCode);
     const payList: number[] = [];
     const bands = getBands(linesOfCode);
     bands.forEach(band => {

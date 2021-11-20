@@ -56,5 +56,35 @@
  *           [3]
  *              \
  *                ---5----[4]------10---[0]         Len: 30
- * 
  */
+type PathDictionary = { [key: string]: number};
+
+type Place = {elevation: number, paths: {to: number, distance: number}};
+
+const toPlaceArray = (elevations: number[], paths: PathDictionary): Place[] => {
+    const places = elevations.map(elev => { return { elevation: elev, paths: []}});
+    Object.entries(paths).forEach(([k, distance]) => {
+        const parts = k.split('_');
+        const [from, to] = [parseInt(parts[0]), parts[1]];
+        places[from].paths.push({to, distance});
+    })
+    return places;
+}
+
+const shortestRoute = (elevations: number[], paths: PathDictionary) => {
+    const places = toPlaceArray(elevations, paths);
+}
+
+const ELEVATIONS = [5, 25, 15, 20, 10]
+const PATHS = {
+    '0_1': 10,
+    '0_2': 8,
+    '0_3': 15,
+    '1_3': 12,
+    '2_4': 10,
+    '3_4': 5,
+    '3_0': 17,
+    '4_0': 10
+}
+
+shortestRoute(ELEVATIONS, PATHS)

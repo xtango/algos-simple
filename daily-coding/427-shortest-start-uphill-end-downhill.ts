@@ -1,5 +1,5 @@
 /**
- *                  Problem #427 [Medium] - SHORTEST START UPHILL END DOWNHILL
+ *                  Problem #427 [Medium] - SHORTEST ROUTE, START UPHILL END DOWNHILL
  * 
  * This problem was asked by Square.
  * 

@@ -42,7 +42,19 @@
  *        ----------------17----------------
  * 
  * APPROACH:
- * This amounts to a shortest cycle problem constrained by the
- * start up and end down rule
+ * This a shortest path problem constrained by the "start uphill, end downhill, end at home" rules.
+ * We can solve in recursively. If encounter a path starting downhill or returning uphill we reject it.
+ * 
+ *           [1] ---12----[3]----17-----[0]     len: 39   
+ *          /    
+ *        10
+ *       /  
+ *     [0] --8---[2]--10----[4]---10----[0]     len:29 <--- SHORTEST
+ *        \ 
+ *         15      --------17-----------[0]    len:32 
+ *           \   /
+ *           [3]
+ *              \
+ *                ---5----[4]------10---[0]    len: 30
+ * 
  */
-

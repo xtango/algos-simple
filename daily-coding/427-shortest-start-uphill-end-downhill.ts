@@ -31,9 +31,9 @@
  *     ^          /                      |
  *     |         /                       |
  *     8        /                        |  
- *     |      10                         5       SHORTEST PATH
- *     |     /                           |       0->2->4->0
- *     |   v                             |       = 8 + 10 + 10 = 28 
+ *     |      10                         5          SHORTEST PATH
+ *     |     /                           |          0->2->4->0 = 8 + 10 + 10 = 28 
+ *     |   v                             |          
  * HOME[0:5]----10----->[1:25]---12---->[3:20]
  *       ^   |                           ^  |
  *       |   |                           |  | 
@@ -45,16 +45,16 @@
  * This a shortest path problem constrained by the "start uphill, end downhill, end at home" rules.
  * We can solve in recursively. If encounter a path starting downhill or returning uphill we reject it.
  * 
- *           [1] ---12----[3]----17-----[0]     len: 39   
+ *           [1] ---12----[3]----17-----[0]         Len: 39   
  *          /    
  *        10
  *       /  
- *     [0] --8---[2]--10----[4]---10----[0]     len:29 <--- SHORTEST
+ *     [0] --8---[2]--10----[4]---10----[0]         Len: 28 (SHORTEST)
  *        \ 
- *         15      --------17-----------[0]    len:32 
+ *         15      --------17-----------[0]         Len: 32 
  *           \   /
  *           [3]
  *              \
- *                ---5----[4]------10---[0]    len: 30
+ *                ---5----[4]------10---[0]         Len: 30
  * 
  */

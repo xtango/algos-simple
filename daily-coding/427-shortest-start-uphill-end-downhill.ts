@@ -64,6 +64,20 @@ type Place = { elevation: number, paths: { toPlaceId: number, distance: number }
 const shortestRoute = (elevations: number[], paths: PathDictionary) => {
     const places = toPlaceArray(elevations, paths);
     console.log(places)
+    
+    // Traverse depth first recursively
+    const helper = (placeId: number, placeStack: number[]) {
+        console.log(placeId);
+        if (placeId === 0) {
+            return;
+        }
+        
+        places[placeId].paths.forEach( path => placeStack.push(path.toPlaceId));
+        const head = placeStack.pop();
+        if (head !== undefined) {
+            helper(head, placeStack);
+        }
+    }
 }
 
 const toPlaceArray = (elevations: number[], paths: PathDictionary): Place[] => {

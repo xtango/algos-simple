@@ -66,18 +66,26 @@ const shortestRoute = (elevations: number[], paths: PathDictionary) => {
     console.log(places)
     
     // Traverse depth first recursively
-    const helper = (placeId: number, placeStack: number[]) {
-        console.log(placeId);
-        if (placeId === 0) {
+    const helper = (placeId: number, placeStack: number[], path: string) => {
+        console.log(`Visit Place ${placeId}, stack: [${placeStack.join(',')}]`);
+        if (placeId === 0 && path.length > 1) {
+            //const pathFound = `${path}->0`;
+            console.log('\tPath found', path);
+            path = '';
             return;
         }
         
         places[placeId].paths.forEach( path => placeStack.push(path.toPlaceId));
-        const head = placeStack.pop();
-        if (head !== undefined) {
-            helper(head, placeStack);
+        console.log(`\t After push, stack: [${placeStack.join(',')}]`);
+        while (placeStack.length) {
+            const head = placeStack.pop();
+            if (head !== undefined) {
+                helper(head, placeStack, `${path}->${head}`);
+            }
         }
     }
+
+    helper(0, [], '0');
 }
 
 const toPlaceArray = (elevations: number[], paths: PathDictionary): Place[] => {

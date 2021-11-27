@@ -27,11 +27,11 @@ interface BSTNode { val: number, left?: BSTNode, right?: BSTNode }
  *           8         -------------------- E X A M P L E S ------------------------------
  *        /    \                            N  FLOOR  CEIL
  *       3      10                         --  -----  ----
- *     /  \       \     Case 1: n = root    8      8     8   
- *   1     6       14   Case 2: n < root    5      4     6  Search left subtree
- *        / \      /            n < root    0     -1     1  Search left subtree, no floor
- *       4   7    13    Case 3: n > root   11     10    13  Search right subtree
- *                              n > root   15     14    -1  Search right, no ceil
+ *     /  \       \     Case 1: N = root    8      8     8   
+ *   1     6       14   Case 2: N < root    5      4     6  Search left subtree
+ *        / \      /            N < root    0     -1     1  Search left subtree, no floor
+ *       4   7    13    Case 3: N > root   11     10    13  Search right subtree
+ *                              N > root   15     14    -1  Search right, no ceil
  *                      ------------------------------------------------------------------
  */
 const bstFloorCeil = (root: BSTNode, n: number): number[] => {

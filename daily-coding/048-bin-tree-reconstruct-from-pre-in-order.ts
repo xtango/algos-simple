@@ -21,7 +21,7 @@
 /**
  * Preorder traverses Root, Left and Right, while Inorder traverses Left, Root and Right.
  * 
- * 1. Determine root. We know that Root = 'a', as the first elem of Preorder
+ * 1. Determine root. We know that Root = 'a', as it is the first elem of Preorder.
  * 2. Search for root=a in the inorder list: 
  *    [d, b, e, a, f, c, g]
  *              ^

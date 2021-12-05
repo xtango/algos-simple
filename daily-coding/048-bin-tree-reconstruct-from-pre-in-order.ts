@@ -19,7 +19,7 @@
  */
 
 /**
- * Since, Preorder traverses Root, Left and Right and Inorder traverses Left, Root and Right,
+ * Preorder traverses Root, Left and Right, while Inorder traverses Left, Root and Right.
  * 
  * 1. Determine root. We know that Root = 'a', as the first elem of Preorder
  * 2. Search for root=a in the inorder list: 
@@ -31,15 +31,12 @@
  *                 a
  *               /  \
  *         d b e     f c g
- * 3. Recursively get the root and subtrees for the left subtree sas we did in Steps 1 and 2.
- *      3.1: Let's first take the left subtree: d b e. Root = 'b' // From the Preorder list
- *      3.2: Search for 'b' in Inorder list. Item to the left is 'd;' to the right are 'e'
- *                  b
- *                /  \
- *              d      e
- *      3.3 Do the same for the right subtree, f c g, to get:
- *                                c
- *                              /  \
- *                             f    g
+ * 3. Recursively get the root and subtrees for the left and right subtree as we did in Steps 1 and 2.
+ *    Left Subtree: d b e                                     Right Subtree: f c g
+ *    Root = 'b' from Preorder list                           Root = 'c' from preorder list
+ *    Search for 'b' in Inorder list.                         Search for 'c' in Inorder list
+ *    Left of 'b' is 'd;' right is 'e'                        Left of 'c' is 'f'; right is 'g'
+ *                  b                                           c
+ *                /  \                                         /  \
+ *              d      e                                     f     g
  */
-

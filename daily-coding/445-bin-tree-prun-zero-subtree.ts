@@ -26,7 +26,10 @@
 interface BTNode { id: string, val: number, left?: BTNode, right?: BTNode }
 
 const pruneSubtreeZero = (bt: BTNode) => {
-    const subTree = (node: BTNode) => {
+    /**
+     * Helper function for recursion. Mutates node in-place.
+     */
+     const subTree = (node: BTNode) => {
         if (node === undefined) {
             return undefined;
         }

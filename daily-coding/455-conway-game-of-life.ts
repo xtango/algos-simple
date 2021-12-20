@@ -1,5 +1,5 @@
 /**
- *                      #455 [Medium] - CONWAYS' GAME OF LIFE
+ *                      #455 [Medium] - GAME OF LIFE
  * 
  * This problem was asked by Dropbox.
  * 
@@ -37,26 +37,20 @@ const NEIGHBOR_OFFSETS = [
 ];
 
 class Board {
-    minX: number;
-    minY: number;
-    maxX: number;
-    maxY: number;
-    alive: { [key: string]: number }
-
-    constructor() {
-        this.minX = Number.POSITIVE_INFINITY;
-        this.minY = Number.POSITIVE_INFINITY;
-        this.maxX = Number.NEGATIVE_INFINITY;
-        this.maxY = Number.NEGATIVE_INFINITY;
-        this.alive = {}
-    };
+    constructor(
+        public minX: number = Number.POSITIVE_INFINITY,
+        public minY: number = Number.POSITIVE_INFINITY,
+        public maxX: number = Number.NEGATIVE_INFINITY,
+        public maxY: number = Number.NEGATIVE_INFINITY,
+        public aliveCells: { [key: string]: number } = {},
+        public step: number = 0) { };
 
     makeKey(x: number, y: number): string {
         return `${x} ${y}`;
     }
 
     valAt(x: number, y: number): number {
-        return this.alive[this.makeKey(x, y)] || 0;
+        return this.aliveCells[this.makeKey(x, y)] || 0;
     }
 
     neighborCount(x: number, y: number): { live: number, dead: number } {
@@ -72,21 +66,50 @@ class Board {
     /**
      * In place update
      */
-    setAlive(x: number, y: number) {
-        this.alive[this.makeKey(x, y)] = 1;
-        this.minX = Math.min(this.minX, x);
-        this.minY = Math.min(this.minY, y);
-        this.maxX = Math.max(this.maxX, x);
-        this.maxY = Math.max(this.maxY, y);
+    static setCell(board: Board, x: number, y: number, value: number) {
+        board.aliveCells[board.makeKey(x, y)] = value;
+        board.minX = Math.min(board.minX, x);
+        board.minY = Math.min(board.minY, y);
+        board.maxX = Math.max(board.maxX, x);
+        board.maxY = Math.max(board.maxY, y);
     }
 
+    clone() {
+        return new Board(this.minX, this.minY, this.maxX, this.maxY, { ...this.aliveCells });
+    }
+
+    /**
+     * Changes the state in-place, applying the "Life" rules.
+     */
     next(): Board {
-        // todo: implement rules
-        return this; // todo
+        this.step += 1;
+        const originalBoard = this.clone();
+
+        for (let y = originalBoard.minY; y <= originalBoard.maxY; y++) {
+            for (let x = originalBoard.minX; x <= originalBoard.maxX; x++) {
+                const { live, dead } = originalBoard.neighborCount(x, y);
+                if (this.valAt(x, y) === 1) {
+                    // Any live cell with less than two live neighbours dies.
+                    // Any live cell with more than three live neighbours dies.
+                    if (live < 2 || live > 3) {
+                        Board.setCell(this, x, y, 0);
+                    }
+                    // Any live cell with two or three live neighbours remains living.
+                    // -> Do nothing
+                } else {
+                    // Any dead cell with exactly three live neighbours becomes a live cell.
+                    if (live === 3) {
+                        Board.setCell(this, x, y, 1);
+                    }
+                }
+            }
+        }
+
+        return this;
     }
 
     prettyPrint(): string {
-        let str = '';
+        let str = `Step ${this.step}\n`;
         for (let y = this.minY; y <= this.maxY; y++) {
             for (let x = this.minX; x <= this.maxX; x++) {
                 const val = this.valAt(x, y);
@@ -107,7 +130,7 @@ class GameOfLife {
             if (trimmed[0] !== '#') {
                 const tokens = trimmed.split(' ');
                 const [x, y] = [parseInt(tokens[0]), parseInt(tokens[1])];
-                board.setAlive(x, y);
+                Board.setCell(board, x, y, 1);
             }
         })
         return board;
@@ -115,10 +138,10 @@ class GameOfLife {
 
     static run(file: string, steps: number) {
         let board = GameOfLife.boardFromFile(file);
-        console.log(`Step: 0\n${board.prettyPrint()}\n`);
+        console.log(board.prettyPrint());
         for (let i = 1; i < steps; i++) {
             board = board.next();
-            console.log(`Step: ${i}\n${board.prettyPrint()}\n`);
+            console.log(board.prettyPrint());
         }
     }
 }

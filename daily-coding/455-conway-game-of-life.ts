@@ -30,6 +30,9 @@ const NEIGHBOR_OFFSETS = [
     [-1, 0], /* x, y */, [1, 0], // left, cell, right
     [-1, 1], [0, 1], [1, 1]]; // bottom left, bottom, bottom right
 
+/**
+ * Stores alive cells in a hashmap, allowing for an infinite board.
+ */
 class Board {
     constructor(
         public minX: number = Number.POSITIVE_INFINITY,
@@ -142,6 +145,8 @@ class GameOfLife {
         }
     }
 }
+
+
 
 /**
  * ASSERTIONS

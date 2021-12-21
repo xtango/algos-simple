@@ -26,15 +26,9 @@
  * (x, y) offsets of neighbours
  */
 const NEIGHBOR_OFFSETS = [
-    [-1, -1], // top left
-    [0, -1], // top
-    [1, -1], // top right
-    [1, 0], // right
-    [1, 1], // bottom right
-    [0, 1], // bottom
-    [-1, 1], // bottom left
-    [-1, 0], // left
-];
+    [-1, -1], [0, -1], [1, -1], // top left, top, top right
+    [-1, 0], /* x, y */, [1, 0], // left, cell, right
+    [-1, 1], [0, 1], [1, 1]]; // bottom left, bottom, bottom right
 
 class Board {
     constructor(
@@ -53,14 +47,14 @@ class Board {
         return this.aliveCells[this.makeKey(x, y)] || 0;
     }
 
-    neighborCount(x: number, y: number): { live: number, dead: number } {
+    aliveNeighborCount(x: number, y: number): number {
         let live = 0;
         NEIGHBOR_OFFSETS.forEach(offset => {
             const [neighborX, neighborY] = [x + offset[0], y + offset[1]];
             const val = this.valAt(neighborX, neighborY);
             live += val;
         })
-        return { live, dead: 8 - live }
+        return live;
     }
 
     /**
@@ -83,21 +77,23 @@ class Board {
      */
     next(): Board {
         this.step += 1;
-        const originalBoard = this.clone();
-
-        for (let y = originalBoard.minY; y <= originalBoard.maxY; y++) {
-            for (let x = originalBoard.minX; x <= originalBoard.maxX; x++) {
-                const { live, dead } = originalBoard.neighborCount(x, y);
+        const original = this.clone();
+        const [startX, endX, startY, endY] = [
+            original.minX - 1, original.maxX + 1,
+            original.minY - 1, original.maxY + 1];
+        for (let y = startY; y <= endY; y++) {
+            for (let x = startX; x <= endX; x++) {
+                const live = original.aliveNeighborCount(x, y);
                 if (this.valAt(x, y) === 1) {
-                    // Any live cell with less than two live neighbours dies.
-                    // Any live cell with more than three live neighbours dies.
+                    // Death: Any live cell with less than two live neighbours dies.
+                    //        Any live cell with more than three live neighbours dies.
                     if (live < 2 || live > 3) {
                         Board.setCell(this, x, y, 0);
                     }
-                    // Any live cell with two or three live neighbours remains living.
-                    // -> Do nothing
+                    // Survive: Any live cell with two or three live neighbours remains living.
+                    //          -> Do nothing
                 } else {
-                    // Any dead cell with exactly three live neighbours becomes a live cell.
+                    // Birth: Any dead cell with exactly three live neighbours becomes a live cell.
                     if (live === 3) {
                         Board.setCell(this, x, y, 1);
                     }
@@ -111,6 +107,7 @@ class Board {
     prettyPrint(): string {
         let str = `Step ${this.step}\n`;
         for (let y = this.minY; y <= this.maxY; y++) {
+            str += `${y.toString().padStart(4)} : `;
             for (let x = this.minX; x <= this.maxX; x++) {
                 const val = this.valAt(x, y);
                 str += (val === 1 ? '*' : '.') + ' ';
@@ -146,8 +143,6 @@ class GameOfLife {
     }
 }
 
-
-
 /**
  * ASSERTIONS
  */
@@ -158,4 +153,4 @@ const GLIDER = `#Life 1.06
 0 1
 1 1`;
 
-GameOfLife.run(GLIDER, 2);
+GameOfLife.run(GLIDER, 5);

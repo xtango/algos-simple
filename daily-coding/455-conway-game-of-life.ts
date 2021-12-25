@@ -23,11 +23,11 @@
  */
 
 /**
- * (x, y) offsets of neighbours
+ * (x, y) offsets of neighbors
  */
-const NEIGHBOR_OFFSETS = [
+const NEIGHBOR_OFFSETS: number[][] = [
     [-1, -1], [0, -1], [1, -1], // top left, top, top right
-    [-1, 0], /* x, y */, [1, 0], // left, cell, right
+    [-1, 0], /* [x, y] */, [1, 0], // left, Current Cell, right
     [-1, 1], [0, 1], [1, 1]]; // bottom left, bottom, bottom right
 
 /**
@@ -51,13 +51,10 @@ class Board {
     }
 
     aliveNeighborCount(x: number, y: number): number {
-        let live = 0;
-        NEIGHBOR_OFFSETS.forEach(offset => {
-            const [neighborX, neighborY] = [x + offset[0], y + offset[1]];
-            const val = this.valAt(neighborX, neighborY);
-            live += val;
-        })
-        return live;
+        return NEIGHBOR_OFFSETS.reduce((accum, offset) => {
+            accum += this.valAt(x + offset[0], y + offset[1]);
+            return accum;
+        }, 0)
     }
 
     /**

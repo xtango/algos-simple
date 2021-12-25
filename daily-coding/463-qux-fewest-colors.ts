@@ -22,7 +22,13 @@
 ['R']                     |
 *
 */
-
-const quxFewestRemaining = (input: string[]): string[] => {
-
+const quxMerge = (input: string[]): number => {
+    let shortest = input.length;
+ 
+    for (let i = 0; i < input.length; i++) {
+        if (input[i] !== input[i+1]) {   
+            shortest = quxMerge()
+        }
+    }
+    return shortest;
 }

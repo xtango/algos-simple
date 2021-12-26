@@ -22,13 +22,35 @@
 ['R']                     |
 *
 */
+const toNum = (color: string): number => color === 'R' ? 0 : color === 'G' ? 1 : 2;
+
+const mergePair = (creature1: number, creature2: number): number => 3 - creature1 - creature2;
+
 const quxMerge = (input: string[]): number => {
     let shortest = input.length;
- 
-    for (let i = 0; i < input.length; i++) {
-        if (input[i] !== input[i+1]) {   
-            shortest = quxMerge()
+
+    const mergeHelper = (creatures: number[]): number => {
+        for (let i = 0; i < creatures.length; i++) {
+            if (creatures[i] !== creatures[i + 1]) {
+                const left = creatures.slice(0, i); // '' -> 
+                const transformed = mergePair(creatures[i], creatures[i + 1]);
+                const right = creatures.slice(i + 2);
+                const len = mergeHelper([...left, transformed, ...right]);
+                if (len < shortest) {
+                    shortest = len;
+                }
+            }
         }
+        return shortest;
     }
-    return shortest;
+
+    return mergeHelper(
+        input.map(x => toNum(x)) // Version of input converted to numbers
+    );
 }
+
+/**
+ * ASSERTIONS
+ */
+
+console.log(quxMerge(['R', 'G', 'B', 'G', 'B']))

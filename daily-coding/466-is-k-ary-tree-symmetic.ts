@@ -23,7 +23,7 @@ const numChildren = (node: TreeNode) => (node.children || []).length
  * 
  */
 
-const isSymmetric = (head: TreeNode): boolean => {
+const isSymmetric = (root: TreeNode): boolean => {
 
     const isEqualPair = (node1: TreeNode, node2: TreeNode): boolean => {
         console.log('isEqualPair', node1.val, node2.val);
@@ -37,13 +37,15 @@ const isSymmetric = (head: TreeNode): boolean => {
         }
 
         for (let i = 0; i < childCount1/2; i++) {
-            if (!isEqualPair(node1.children[i], node2.children[childCount1 - i - 1]])} {
+            if (!isEqualPair(node1.children[i], node2.children[childCount1 - i - 1])) {
                 return false;
             }
-       
         }
+        
         return true;
     }
+
+    return isEqualPair(root, root);
 }
 
 const TERNARY_TREE: TreeNode = {
@@ -58,3 +60,5 @@ const TERNARY_TREE: TreeNode = {
         }
     ]
 }
+
+isSymmetric(TERNARY_TREE)

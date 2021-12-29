@@ -11,7 +11,7 @@
  *  /           \
  * 9              9
  * Given a k-ary tree, determine whether it is symmetric.
-*/
+ */
 
 interface TreeNode { val: number, children?: TreeNode[] }
 
@@ -26,7 +26,6 @@ const numChildren = (node: TreeNode | undefined) => ((node && node.children) || 
  *       each node has no more than m children. This implementation makes no assumptions
  *       on the num of children.
  */
-
 const isSymmetric = (root: TreeNode): boolean => {
     /**
      * Recursive helper function

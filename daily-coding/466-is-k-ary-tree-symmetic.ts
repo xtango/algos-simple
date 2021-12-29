@@ -2,6 +2,7 @@
  *  #466 [Easy] - K-ARY TREE SYMMETRIC
 
 This problem was asked by Amazon.
+
 A tree is symmetric if its data and shape remain unchanged when it is reflected about the root node. The following tree is 
 an example:
         4
@@ -19,7 +20,7 @@ const numChildren = (node: TreeNode) => (node.children || []).length
 /**
  * An m-ary tree (also known as k-ary or k-way tree) is a rooted tree in which each node has no more than m children.
  *  
- * APPROACH Check a pair of nodes starting from the outside towards the center
+ * APPROACH Check each pair of nodes starting from the outside towards the center
  * 
  */
 

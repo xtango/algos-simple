@@ -1,5 +1,7 @@
 /**
- * #87 RULES VALID? This problem was asked by Uber.
+ *                  #87 [Hard] RULES VALID? 
+ * 
+ * This problem was asked by Uber.
  * 
  * A rule looks like this:
  *      'A NE B' This means this means point A is located northeast of point B.

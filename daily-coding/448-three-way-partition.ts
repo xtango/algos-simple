@@ -1,5 +1,5 @@
 /**
- *                  Problem #448 [Hard] - THREE-WAY PART
+ *                  Problem #448 [Hard] - THREE-WAY PARTION
 
 This problem was asked by Google.
 

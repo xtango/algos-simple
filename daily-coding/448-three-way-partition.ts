@@ -21,11 +21,10 @@ For example, given the array ['G', 'B', 'R', 'R', 'B', 'R', 'G'], it should beco
  *                  2. Gs region: rg..i
  *                  3. Bs region: gb..len-1
  *                  4. Not processed yet region: i..gb
- * 
- * 
- *                  rg    i        gb   
- *                   v    v        v        
- *              |RRRR|GGGG|????????|BBBBBBBBB| 
+ *
+ *                  rg   i        gb   
+ *                   v   v        v        
+ *              |RRRRGGGG?????????BBBBBBBB| 
  */
 const partInto3 = (arr: string[]) => {
     let [i, rg, gb] = [

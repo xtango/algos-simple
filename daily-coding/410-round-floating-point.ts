@@ -52,8 +52,7 @@ const roundUpDownArray = (inputFloatArr: number[]): number[] => {
     ): SearchResult => {
         console.log(`[i: ${i}] path: ${roundedArrSubset.join(',')}`);
 
-        // Base case: when past last array elem,
-        //            check "The rounded sums of both arrays should be equal."
+        // Base case: when hit last, check "The rounded sums of both arrays should be equal."
         if (i >= inputFloatArr.length) {
             const roundedSumsEqual = cumulRoundedSum === inputFloatArrRoundedSum;
             console.log(`\tEnd. Rounded sums ${cumulRoundedSum} =? ${inputFloatArrRoundedSum} ${roundedSumsEqual}`);
@@ -74,12 +73,12 @@ const roundUpDownArray = (inputFloatArr: number[]): number[] => {
         // recurse
         const ceilResult = helper(
             i + 1,
-            [...roundedArrSubset, currCeil],
+            [currCeil, ...roundedArrSubset],
             cumulRoundedSum + currCeil,
             cumulDiff + Math.abs(curr - currCeil));
         const floorResult = helper(
             i + 1,
-            [...roundedArrSubset, currFloor],
+            [currFloor, ...roundedArrSubset],
             cumulRoundedSum + currFloor,
             cumulDiff + Math.abs(curr - currFloor));
         const minDiff = ceilResult.diff < floorResult.diff ? ceilResult : floorResult;
@@ -103,5 +102,6 @@ console.log(roundedSum([1.3, 2.3, 4.4]) === 7);
 // Note: The answer expected in the problem statement is [1, 2, 5], 
 //       which sums up to 8 instead of 7 and has an absolute difference of 
 //       |1.3 - 1| + |2.3 - 2| + |4.4 - 5| = 1.2
-//       The diff we get from the implemented above is Diff: 1.0000000000000002
-console.log(roundUpDownArray([1.3, 2.3, 4.4]).join(',') === '1,2,4')
+//       The diff we get from the implemented above is Diff: 1.0000000000000002,
+//       which is better than than the expected value.
+console.log(roundUpDownArray([1.3, 2.3, 4.4]).join(',') === '4,2,1')

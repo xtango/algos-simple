@@ -16,20 +16,54 @@ which has an absolute difference of |1.3 - 1| + |2.3 - 2| + |4.4 - 5| = 1.2
 
 /**
  * Uses ceil and floor
- */
-const roundUpOrDown = (arr: number[]): number => {
-    //  number[] => {
-    const helper = (i: number): number => {
-        console.log(`[i: ${i}] ${arr[i]}`);
-        if (i >= arr.length) {
-            return 0;
+ *                          
+ *                         / (4.4->5)
+ *                (2.3->3)
+ *               /         \ (4.4->4)
+ *      (1.3->2)             
+ *               \        / (4.4->5)
+ *                (2.3->2)
+ *                        \ (4.4->4)
+ * 
+ *      (1.3->1) ....            
+ *  */
+const roundUpOrDown = (floatArr: number[]): number => {
+    const roundedSumOfFloatArr = floatArr.reduce((accum, x) => {
+        accum += Math.round(x);
+        return accum;
+    }, 0)
+
+    const helper = (
+        floatArrSubset: number[],
+        roundedArrSubset: number[],
+        cumulDiff: number = 0
+    ): { diff: number, path: number[] } => {
+        const [curr, currCeil, currFloor] = [
+            floatArrSubset[0],
+            Math.ceil(floatArrSubset[0]),
+            Math.floor(floatArrSubset[0])];
+
+        console.log(`[curr: ${curr}]`);
+
+        // recurse
+        const restUp = helper(
+            floatArrSubset.slice(1),
+            [currCeil, ...roundedArrSubset],
+            cumulDiff + Math.abs(curr - currCeil));
+        const restDown = helper(
+                floatArrSubset.slice(1),
+                [currFloor, ...roundedArrSubset],
+                cumulDiff + Math.abs(curr - currFloor));
+        const best = restUp.diff < restDown.diff ? restUp : restDown;
+        return {
+            diff: best.diff,
+            path: best.path
         }
-        const accumCeil = Math.ceil(arr[i]) + helper(i + 1);
-        // const accumFloor = [...accum].push(Math.floor(arr[i]));
-        return accumCeil;
     }
 
-    return helper(0);
+}
+
+return helper(0, true);
 }
 
 const absoluteDiff = (arr1: number[], arr2: number[]): number => {

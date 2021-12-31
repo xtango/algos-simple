@@ -17,17 +17,19 @@ which has an absolute difference of |1.3 - 1| + |2.3 - 2| + |4.4 - 5| = 1.2
 /**
  * Uses ceil and floor
  */
- const roundUpOrDown = (arr: number[]): number[] => {
-    const helper = (accum: number[], i:number): number => {
+const roundUpOrDown = (arr: number[]): number => {
+    //  number[] => {
+    const helper = (i: number): number => {
         console.log(`[i: ${i}] ${arr[i]}`);
         if (i >= arr.length) {
             return 0;
         }
-        const accumCeil = Math.ceil(arr[i]) + helper(accum, i + 1);
+        const accumCeil = Math.ceil(arr[i]) + helper(i + 1);
         // const accumFloor = [...accum].push(Math.floor(arr[i]));
         return accumCeil;
     }
-    return []
+
+    return helper(0);
 }
 
 const absoluteDiff = (arr1: number[], arr2: number[]): number => {
@@ -37,4 +39,5 @@ const absoluteDiff = (arr1: number[], arr2: number[]): number => {
     }, 0);
 }
 
-console.log(absoluteDiff([1.3, 2.3, 4.4], [1, 2, 5]))
+// console.log(absoluteDiff([1.3, 2.3, 4.4], [1, 2, 5]))
+console.log(roundUpOrDown([1.3, 2.3, 4.4]))

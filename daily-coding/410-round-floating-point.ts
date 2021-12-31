@@ -14,6 +14,12 @@ For example, suppose your input is [1.3, 2.3, 4.4]. In this case you cannot do b
 which has an absolute difference of |1.3 - 1| + |2.3 - 2| + |4.4 - 5| = 1.2
 */
 
+interface SearchResult { diff: number, path: number[] }
+const NOT_FOUND: SearchResult = {
+    diff: Number.POSITIVE_INFINITY,
+    path: []
+};
+
 /**
  * Uses ceil and floor
  *                          
@@ -27,8 +33,8 @@ which has an absolute difference of |1.3 - 1| + |2.3 - 2| + |4.4 - 5| = 1.2
  * 
  *      (1.3->1) ....            
  *  */
-const roundUpOrDown = (floatArr: number[]): number => {
-    const roundedSumOfFloatArr = floatArr.reduce((accum, x) => {
+const roundUpOrDown = (inputFloatArr: number[]): number => {
+    const sumInputFloatArrRounded = inputFloatArr.reduce((accum, x) => {
         accum += Math.round(x);
         return accum;
     }, 0)
@@ -36,8 +42,18 @@ const roundUpOrDown = (floatArr: number[]): number => {
     const helper = (
         floatArrSubset: number[],
         roundedArrSubset: number[],
+        cumulRoundedSum: number = 0,
         cumulDiff: number = 0
-    ): { diff: number, path: number[] } => {
+    ): SearchResult => {
+        if (floatArrSubset === undefined) {
+            // went past last
+            return (cumulRoundedSum === sumInputFloatArrRounded)
+                ? NOT_FOUND
+                : {
+                    diff: cumulDiff,
+                    path: roundedArrSubset
+                };
+        }
         const [curr, currCeil, currFloor] = [
             floatArrSubset[0],
             Math.ceil(floatArrSubset[0]),
@@ -50,17 +66,19 @@ const roundUpOrDown = (floatArr: number[]): number => {
             floatArrSubset.slice(1),
             [currCeil, ...roundedArrSubset],
             cumulDiff + Math.abs(curr - currCeil));
+
         const restDown = helper(
-                floatArrSubset.slice(1),
-                [currFloor, ...roundedArrSubset],
-                cumulDiff + Math.abs(curr - currFloor));
+            floatArrSubset.slice(1),
+            [currFloor, ...roundedArrSubset],
+            cumulDiff + Math.abs(curr - currFloor));
+
         const best = restUp.diff < restDown.diff ? restUp : restDown;
+
         return {
             diff: best.diff,
             path: best.path
         }
     }
-
 }
 
 return helper(0, true);

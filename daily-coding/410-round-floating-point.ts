@@ -50,13 +50,13 @@ const roundUpDownArray = (inputFloatArr: number[]): number[] => {
         cumulRoundedSum: number = 0,
         cumulDiff: number = 0
     ): SearchResult => {
-        console.log(`[i: ${i}] path: ${roundedArrSubset.join(',')}`);
+        //console.log(`[i: ${i}] path: ${roundedArrSubset.join(',')}`);
 
         // Base case: when hit last, check "The rounded sums of both arrays should be equal."
         if (i >= inputFloatArr.length) {
             const roundedSumsEqual = cumulRoundedSum === inputFloatArrRoundedSum;
-            console.log(`\tEnd. Rounded sums ${cumulRoundedSum} =? ${inputFloatArrRoundedSum} ${roundedSumsEqual}`);
-            console.log(`\tDiff: ${cumulDiff}`);
+            //console.log(`\tEnd. Rounded sums ${cumulRoundedSum} =? ${inputFloatArrRoundedSum} ${roundedSumsEqual}`);
+            //console.log(`\tDiff: ${cumulDiff}`);
              
             return roundedSumsEqual
                 ? {
@@ -68,17 +68,17 @@ const roundUpDownArray = (inputFloatArr: number[]): number[] => {
 
         const curr = inputFloatArr[i];
         const [currCeil, currFloor] = [Math.ceil(curr), Math.floor(curr)];
-        console.log(`\t floor, curr, ceil: ${currFloor} ${curr} ${currCeil}`);
+        //console.log(`\t floor, curr, ceil: ${currFloor} ${curr} ${currCeil}`);
 
-        // recurse
+        // Take the min of 2 recursive call results
         const ceilResult = helper(
             i + 1,
-            [currCeil, ...roundedArrSubset],
+            [...roundedArrSubset, currCeil],
             cumulRoundedSum + currCeil,
             cumulDiff + Math.abs(curr - currCeil));
         const floorResult = helper(
             i + 1,
-            [currFloor, ...roundedArrSubset],
+            [...roundedArrSubset, currFloor],
             cumulRoundedSum + currFloor,
             cumulDiff + Math.abs(curr - currFloor));
         const minDiff = ceilResult.diff < floorResult.diff ? ceilResult : floorResult;
@@ -89,19 +89,10 @@ const roundUpDownArray = (inputFloatArr: number[]): number[] => {
     return helper(0).path;
 }
 
-/**
- * Note that the javascript round function differs from many other languages
- */
-const roundedSum = (arr: number[]) => arr.reduce((accum, x) => accum + Math.round(x), 0);
+const roundedSum = (arr: number[]) => Math.round(arr.reduce((accum, x) => accum + x, 0));
 
 /**
  * ASSERTIONS
  */
-console.log(roundedSum([1.3, 2.3, 4.4]) === 7);
-
-// Note: The answer expected in the problem statement is [1, 2, 5], 
-//       which sums up to 8 instead of 7 and has an absolute difference of 
-//       |1.3 - 1| + |2.3 - 2| + |4.4 - 5| = 1.2
-//       The diff we get from the implemented above is Diff: 1.0000000000000002,
-//       which is better than than the expected value.
-console.log(roundUpDownArray([1.3, 2.3, 4.4]).join(',') === '4,2,1')
+console.log(roundedSum([1.3, 2.3, 4.4]) === 8);
+console.log(roundUpDownArray([1.3, 2.3, 4.4]).join(',') === '1,2,5')

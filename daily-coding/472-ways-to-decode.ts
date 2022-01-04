@@ -9,29 +9,54 @@
  */
 
 /**
- *    a: 1, b: 2,  ...  k: 11, l: 12
+ * The trick is to recognize two cases:
+ * 
+ *    Single digit: a: 1, b: 2,  ...i: 9, 
+ *    Pair of digits: j: 10, k: 11, l: 12 ...z: 26
+ * 
+ * CASE 1: Ways = 2                            CASE B: Ways = 1 
+ * (single + double digit decoding)            (31 > 26, so only single digit decoding)
+ * 
+ *     1->a + 1->a = 'aa'                         1->a + 3->c = 'ac'
+ *   /                                           /
+ * 11                                          31 
+ *    \  
+ *      11->k='k'                       
  */
-const charToNum = (ch: string): number => ch.codePointAt(0) - 96;
+const waysToDecode = (input: string): number => {
+    /**
+     * Recursion helper. Work our way from right to left 
+     * with i as the pointer to input.
+     */
+    const countWays = (i: number): number => {
+        // Base Case
+        if (i < 0) {
+            return 1;
+        }
 
-const numToChar = (num: number): string => String.fromCharCode(num + 96);
+        let ways = 0;
+        // Single digit can be decoded when right digit > '0'
+        // Example When right digit is 1, we can decode to 'a'
+        //         When right digit is 0, decoding is not possible
+        if (input[i] > '0') {
+            ways += countWays(i - 1);
+        }
 
-const getDecodeMap = (): { [key: string]: string } => {
-    const dm: { [key: string]: string } = {};
-    for (let i = 1; i < 27; i++) {
-        const key: string = i.toString();
-        dm[key] = numToChar(i);
+        // Pair (2nd to last and last) of digits possible
+        // when 10..27
+        const pair = parseInt(input.substring(i - 1, i + 1));
+        if (pair > 9 && pair < 27) {
+            ways += countWays(i - 2); // Recur skipping the next left
+        }
+        return ways;
     }
-    return dm;
-}
 
-// 11: [k, aa]
-const numWaysToEncode = (): number => {
-    return -1;
+    return countWays(input.length - 1); // Start with rightmost
 }
 
 /**
  * ASSERTIONS
  */
-console.log(charToNum('k') === 11);
-console.log(numToChar(1));
-console.log(getDecodeMap());
+console.log(waysToDecode('11') === 2);
+console.log(waysToDecode('31') === 1);
+console.log(waysToDecode('111') === 3);

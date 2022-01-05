@@ -12,7 +12,7 @@ For example, if a graph consists of A -> B -> C, it should become A <- B <- C.
  */
 type DG = { [id: string]: string[] }
 
-const reverseDG = (g: DG) => {
+const reverseDG = (g: DG): DG => {
     // Initialize new graph
     const newGraph: DG = {};
     Object.keys(g).forEach(g => newGraph[g] = []);

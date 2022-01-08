@@ -31,18 +31,62 @@ const minCoinsGreedy = (nCents: number, denominations: number[]): number => {
 }
 
 /**
- * TODO: General solver using recursion (or dynamic programming for effeciency)
+ * General solver using using a bottoms-up, dynamic programming appoach.
+ * 
+ * We store the min num of coins in array minCoins, that memoizes
+ * the min num of coins to reach nCents.
+ * @example denominations = [1, 5, 10], nCents = 16
+ *
+ * After initialization:
+ * cents      0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16
+ *          ---------------------------------------------------------------------- 
+ * m        | 0  Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf |
+ *          ----------------------------------------------------------------------
+ * i = 1          ^ 
+ *                |  
+ *           minCoins to make change for 1 cent.  Trying every coin 1, 5, 10,
+ *           Starting from coin 1: rem: 1-1=0, m[0] + 1 = 0 + 1 = 1
+ *           '+ 1' because we use the coin.
+ *                |
+ *                v
+ * cents      0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16
+ *          ---------------------------------------------------------------------- 
+ * m        | 0   1  Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf Inf |
+ *          ----------------------------------------------------------------------
+ * 
  */
+// Bottoms up approach
 const minCoins = (nCents: number, denominations: number[]): number => {
+    const denomsAsc = denominations.sort((a, b) => a - b);
+    const m = blankMemo(nCents);
+    for (let cents = 1; cents <= nCents; cents++) {
+        // Try each coin
+        const possibleCoins = denomsAsc.filter(c => c <= cents);
+        possibleCoins.forEach((coin) => {
+            console.log(`[${cents}] ${coin} Cent Coin`);
+        });
+    }
+    return -1; // todo
+}
+
+const blankMemo = (nCents: number): number[] => {
+    const m = new Array(nCents + 1).fill(Number.POSITIVE_INFINITY);
+    m[0] = 0; // The min num of coins to reach 0cents is 0
+    return m;
 }
 
 /**
  * ASSERTIONS
  */
 const US_COINS = [25, 10, 5, 1]; // An example of a canonical coin system
+
+// Test greedy solution
 console.log(minCoinsGreedy(0, US_COINS) === 0);
 console.log(minCoinsGreedy(1, US_COINS) === 1);
 console.log(minCoinsGreedy(7, US_COINS) === 3);
 console.log(minCoinsGreedy(16, US_COINS) === 3);
 console.log(minCoinsGreedy(45, US_COINS) === 3);
 console.log(minCoinsGreedy(46, US_COINS) === 4);
+
+// Test general solution
+console.log(minCoins(16, US_COINS));

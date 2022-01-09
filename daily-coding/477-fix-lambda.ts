@@ -13,21 +13,21 @@
  */
 
 /**
- * PYTHON   It prints 9 9 ... 9 ten times for the reason this reason: i remains 10 after the 1st for loop.
- *          Assuming the goal is to print 0..0, we can change the code to this:
+ * PYTHON   It prints 9 9 ... 9 ten times because i remains 9 after the 1st "for" loop.
+ *          Assuming the goal is to print 0..9, change the code to this:
  *
 functions = []
 for i in range(10):
     functions.append(lambda : i)
 
-i = 0 // Fix
+i = 0 // <-- Fix
 for f in functions:
     print(f())
-    i = i + 1 // Fix
+    i = i + 1 // <-- Fix
 */
 
 /**
- * TYPESCRIPT
+ * TYPESCRIPT VERSION
  */
 const functions = [];
 for (let i = 0; i < 10; i++) {

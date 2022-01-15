@@ -29,7 +29,7 @@ const safePosition = (N: number, K: number): number => {
             return survivors[0];
         }
 
-        // TRICK TO SOLUTION: The start index for the remove cannot simply use K, 
+        // TRICK TO SOLUTION: The start index for the remove cannot simply be K, 
         //                    since the survivors array shrinks.
         const removeIdx = (startIdx + K - 1) % survivors.length;
         // console.log(`\tremove [${removeIdx}] = ${survivors[removeIdx]}`);

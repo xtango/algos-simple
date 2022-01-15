@@ -18,9 +18,8 @@
 /**
  * @see https://en.wikipedia.org/wiki/Josephus_problem
  * 
- * Example N=5, K=2. 
- * 
- * Survivors after successive passes, with the person to be killed shown with an asterisk:
+ * @example N=5, K=2. Survivors after successive passes, 
+ *          with the person to be killed shown with an asterisk:
  *              1 2* 3 4 5
  *              1 3 4* 5
  *              1* 3 5

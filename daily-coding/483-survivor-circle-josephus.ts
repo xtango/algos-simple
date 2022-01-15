@@ -18,25 +18,29 @@
 /**
  * @see https://en.wikipedia.org/wiki/Josephus_problem
  * 
- *                   1    2   3   4   5      K = 2
- *  After Round 1:   1    x   3   x   5      Executed: 2, 4    Survivors: 1, 3, 5. 
- *  After Round 2:   x        3       x      Executed: 1, 5    Survivors: 3
+ * Example N=5, K=2. 
+ * 
+ * Survivors after successive passes, with the person to be killed shown with an asterisk:
+ *              1 2* 3 4 5
+ *              1 3 4* 5
+ *              1* 3 5
+ *              3 5*
+ *              3 <--
  */
 const safePosition = (N: number, K: number): number => {
     const helper = (survivors: number[], startIdx: number): number => {
-        // console.log(`[${startIdx}] ${survivors.join()}`);
         if (survivors.length === 1) { // last survivor
             return survivors[0];
         }
 
-        // TRICK TO SOLUTION: The start index for the remove cannot simply be K, 
-        //                    since the survivors array shrinks.
+        // SOLUTION TRICK: The start index for the remove cannot simply use K,
+        //                 since the survivors array shrinks.
         const removeIdx = (startIdx + K - 1) % survivors.length;
-        // console.log(`\tremove [${removeIdx}] = ${survivors[removeIdx]}`);
-        
+        console.log(pretty(survivors, removeIdx));
+
         // Kill person by removing in-place
         survivors.splice(removeIdx, 1);
-        
+
         // Recurse
         return helper(survivors, removeIdx);
     }
@@ -45,6 +49,14 @@ const safePosition = (N: number, K: number): number => {
         range(N, 1), // 1, 2, ...N
         0);
 }
+
+/**
+ * Formats list of survivors with the next person to be elimiated suffixed with an asterisk.
+ * @example returns 1 2* 3 4 5
+ */
+const pretty = (survivors: number[], removeIdx: number): string =>
+    survivors.map((x, idx) => `${x.toString()}${idx === removeIdx ? '*' : ''}`)
+        .join(' ');
 
 const range = (N: number, startFrom: number) => Array.from({ length: N }, (_, k) => k + startFrom);
 

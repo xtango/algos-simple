@@ -20,11 +20,16 @@
  * 
  * @example N=5, K=2. Survivors after successive passes, 
  *          with the person to be killed shown with an asterisk:
- *              1 2* 3 4 5
- *              1 3 4* 5
- *              1* 3 5
- *              3 5*
- *              3 <--
+ * 
+ *                              startIdx    removeIdx = (startIdx+ k-1) mod size
+ *                              --------    -------------------------------------
+ *              1 2* 3 4 5      0           (0+2-1) mod 5 = 1
+ *              1 3 4* 5        1           (1+2-1) mod 4 = 2
+ *              1* 3 5          2           (2+2-1) mod 3 = 0
+ *              3 5*            0           (0+2-1) mod 2 = 1
+ *              3 <-- SAFE
+ * 
+ * Time Complexity: O(n)
  */
 const safePosition = (N: number, K: number): number => {
     const helper = (survivors: number[], startIdx: number): number => {
@@ -32,7 +37,7 @@ const safePosition = (N: number, K: number): number => {
             return survivors[0];
         }
 
-        // SOLUTION TRICK: The start index for the remove cannot simply use K,
+        // SOLUTION TRICK: The start index for the remove cannot simply use K, 
         //                 since the survivors array shrinks.
         const removeIdx = (startIdx + K - 1) % survivors.length;
         console.log(pretty(survivors, removeIdx));
@@ -52,6 +57,7 @@ const safePosition = (N: number, K: number): number => {
 /**
  * Formats list of survivors with the next person to be elimiated suffixed with an asterisk.
  * @example returns 1 2* 3 4 5
+ * 
  */
 const pretty = (survivors: number[], removeIdx: number): string =>
     survivors.map((x, idx) => `${x.toString()}${idx === removeIdx ? '*' : ''}`)

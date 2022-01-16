@@ -1,3 +1,12 @@
+   _  __/ /_____ _____  ____ _____ 
+  | |/_/ __/ __ `/ __ \/ __ `/ __ \
+ _>  </ /_/ /_/ / / / / /_/ / /_/ /
+/_/|_|\__/\__,_/_/ /_/\__, /\____/ 
+                     /____/      
+# dailyCoding
+
+Run code examples using tsnode or the Typescript playground.
+
 # functional-js
 
 You can run your code in Tryit Editor here: http://www.w3schools.com/html/tryit.asp?filename=tryhtml_script

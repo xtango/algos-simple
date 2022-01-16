@@ -6,9 +6,10 @@
 /_/|_|\__/\__,_/_/ /_/\__, /\____/ 
                      /____/                            
 ```                     
-# dailyCoding
+# daily-coding
 
 Run code examples using tsnode or the Typescript playground.
+
 
 # functional-js
 

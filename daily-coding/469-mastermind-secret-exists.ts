@@ -1,5 +1,5 @@
 /**
- *                      Problem #469 [Medium] - MASTERMIND SECRET EXISTS? ********* IN PROGRESS *********
+ *                      Problem #469 [Medium] - DOES A MASTERMIND-SECRET-CODE EXIST? ********* IN PROGRESS *********
  * 
  * This problem was asked by Facebook.
  * 

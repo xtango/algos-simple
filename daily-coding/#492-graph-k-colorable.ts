@@ -1,5 +1,5 @@
 /**
- *                  Problem #492 [Medium]       IS GRAPH K-COLORABLE?
+ *                  Problem #492 [Medium] IS GRAPH K-COLORABLE?
  *
  * This problem was asked by Google.
  *

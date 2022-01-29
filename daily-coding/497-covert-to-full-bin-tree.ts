@@ -1,5 +1,5 @@
 /**
-*       Problem #497 [Medium] - CONVERT TO FULL BINARY TREE
+*                       Problem #497 [Medium] - CONVERT TO FULL BINARY TREE
 * 
 * This problem was asked by Yahoo.
 * 

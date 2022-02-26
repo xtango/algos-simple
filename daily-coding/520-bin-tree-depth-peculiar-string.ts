@@ -53,7 +53,7 @@ const splitLeftRight = (lrExpression: string): { left: string, right: string } =
  *                                 / \
  *                                b   c
  *     
- *   @example An unbalanced tree with three consecutive left children: ((((00)0)0)0). Depth = 3
+ * @example An unbalanced tree with three consecutive left children: ((((00)0)0)0). Depth = 3
  *                                  a ((((00)0)0)0)
  *                                 /
  *                                b    (((00)0)0)

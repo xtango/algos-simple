@@ -16,7 +16,7 @@
 /**
  * Splits an expression enclosed in parentheses into left and right expressions.
  * 
- * @example splitLeftRight('(0(00))')) return {left:'0',right: '(00)'}
+ * @example splitLeftRight('(0(00))')) returns {left:'0',right: '(00)'}
  */
 const splitLeftRight = (lrExpression: string): { left: string, right: string } => {
     let [i, countOpen] = [1, 0];

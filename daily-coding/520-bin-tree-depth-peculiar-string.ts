@@ -45,7 +45,6 @@ const splitLeftRight = (lrExpression: string): { left: string, right: string } =
  * @param lrExpression The left-right expression.
  * 
  * @example A root node with no children: (00). Depth = 0
- * 
  *                                  a
  * 
  * @example A root node with two children: ((00)(00)). Depth = 1

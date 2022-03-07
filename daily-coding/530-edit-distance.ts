@@ -15,7 +15,7 @@
  * Return a 2D matrix initialized to 0 except for the first row and first column.
  * Source = kitten, target = sitting
  * 
- * 		    k	i	t	t	e	n
+ * 	        k   i   t   t   e   n
  *      0	1	2	3	4	5	6
  * s	1	
  * i	2	
@@ -48,8 +48,8 @@ const newMemo = (m: number, n: number): number[][] => {
  *  
  *   Target
  *   / 
- *  /   k	i	t	t	e	n <---- Source
- * /  0	1	2	3	4	5	6 <---- See wikipedia for 1st row and 1st col
+ *  /       k   i   t   t   e   n <---- Source
+ * /    0	1	2	3	4	5	6 <---- See wikipedia for 1st row and 1st col
  * s	1	1	2	3	4	5	6
  * i	2	2	1	2	3	4	5
  * t	3	3	2	1	2	3	4

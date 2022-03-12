@@ -16,7 +16,7 @@ def next_num(n: int) -> int:
 '''
 Tests the conjecture that the sequence reaches 1.
 '''
-def test_conjecture(start_num: int, max_iteration = 10000) -> bool:
+def reaches_one(start_num: int, max_iteration = 10000) -> bool:
   i, new_num = 0, start_num
   while(i < max_iteration and new_num != 1):
     new_num = next_num(new_num)
@@ -27,4 +27,4 @@ def test_conjecture(start_num: int, max_iteration = 10000) -> bool:
 # ASSERTIONS
 assert(next_num(100) == 50)
 assert(next_num(101) == 304)
-assert(test_conjecture(start_num = 100))
+assert(reaches_one(start_num = 100))

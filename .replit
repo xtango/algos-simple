@@ -1,0 +1,2 @@
+language = "python3"
+run = "python daily-coding/537-collatze-sequence.py"

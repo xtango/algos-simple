@@ -10,8 +10,8 @@ It is conjectured that every such sequence eventually reaches the number 1. Test
 
 Bonus: What input n <= 1000000 gives the longest sequence?
 '''
-
 import array
+
 '''Returns the next Collatz number'''
 next_collatz_num = lambda n: int(n / 2) if n % 2 == 0 else int(3 * n + 1)
 
@@ -29,7 +29,6 @@ def length_to_reach_one(start_num: int, max_iteration=10000) -> int:
         print(i, seq_num)
         i = i + 1
     return i if seq_num == 1 else -1
-
 
 def find_longest_seq_start_num(n: int) -> (int, int):
     '''Bonus: What input n <= 1000000 gives the longest sequence?

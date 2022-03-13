@@ -10,18 +10,16 @@ It is conjectured that every such sequence eventually reaches the number 1. Test
 
 Bonus: What input n <= 1000000 gives the longest sequence?
 '''
-
 import array
+
 '''Returns the next Collatz number'''
 next_collatz_num = lambda n: int(n / 2) if n % 2 == 0 else int(3 * n + 1)
-
 
 def new_memo(max_cache: int = 1000000):
     ''' Fixed length array for sequence lengths. arr[1] is initialized to 1. The rest to -1.'''
     arr = array.array('i', [-1]) * (max_cache + 1)
     arr[1] = 1
     return arr
-
 
 def length_to_reach_one(start_num: int, max_iteration=10000) -> int:
     '''Returns the length of sequence to reach 1'''
@@ -31,7 +29,6 @@ def length_to_reach_one(start_num: int, max_iteration=10000) -> int:
         print(i, seq_num)
         i = i + 1
     return i if seq_num == 1 else -1
-
 
 def find_longest_seq_start_num(n: int) -> (int, int):
     '''Bonus: What input n <= 1000000 gives the longest sequence?
@@ -71,7 +68,6 @@ def find_longest_seq_start_num(n: int) -> (int, int):
         memo[i] = seq_len
 
     return start_num, longest_seq_len
-
 
 #
 # ASSERTIONS

@@ -10,11 +10,11 @@ const corpFlightBookings = (bookings: number[][], n: number): number[] {
 
     for (let booking of bookings) {
         // note that converting to array index needs to subtract one
-        let i = booking[0] - 1;
-        let j = booking[1] - 1;
-        let val = booking[2];
+        let flightRangeStart = booking[0] - 1;
+        let flightRangeEnd = booking[1] - 1;
+        let seats = booking[2];
         // increment the range nums[i..j] by val
-        diffs.increment(i, j, val);
+        diffs.increment(flightRangeStart, flightRangeEnd, seats);
     }
     // return the final result array
     return diffs.toResultArray();

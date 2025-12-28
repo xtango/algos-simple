@@ -11,13 +11,15 @@
  *                |           |                   |
  * Mailboxes:     M           M                   M
  * 
- * Costs(i,j)   0 1 2 3 4 5 6 7 8 9
- *              ------------------   
- *           0 | 
- *           1 |  
- * 
- *      
- */
+ *                 H1 H2 H3  H4 H5
+ * Position         1  4  8  10 20
+ * Costs(i,j): cost of placing one mailbox for all ranges (i to j) 
+ *              0: [0, 3, 7, 13,25], 
+ *              1: [0, 0, 4, 6, 18]
+ *              2: [0, 0, 0, 2, 12]
+ *              3: [0, 0, 0, 0, 10], 
+ *              4: [0, 0, 0, 0, 0]] 
+  */
 const minDistance = (houses: number[], k: number) {
     const n = houses.length;
 
@@ -35,6 +37,7 @@ const minDistance = (houses: number[], k: number) {
             }
         }
     }
+    console.log(cost);
 
     // Initialize DP to infinity
     // dp[i][j] will store the min cost to allocate 'j' mailboxes for houses[0...i]
@@ -58,3 +61,10 @@ const minDistance = (houses: number[], k: number) {
 
     return dp[n - 1][k]; // The result is the min cost to allocate 'k' mailboxes for all houses
 };
+
+
+/**
+ * Tests
+ */
+
+console.log(minDistance([1,4,8,10,20], 3))

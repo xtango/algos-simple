@@ -13,7 +13,7 @@ const corpFlightBookings = (bookings: number[][], n: number): number[] {
         let flightRangeStart = booking[0] - 1;
         let flightRangeEnd = booking[1] - 1;
         let seats = booking[2];
-        // increment the range nums[i..j] by val
+        // Increase the range nums[i..j] by the number of seats
         diffs.increment(flightRangeStart, flightRangeEnd, seats);
     }
     // return the final result array
@@ -43,7 +43,7 @@ class DifferenceArray {
     }
 
     /**
-     * Returns a result array based on the difference array
+     * Returns a new result array by evaluating the difference array
      */
     toResultArray(): number[] {
         let res = new Array(this.diff.length);
